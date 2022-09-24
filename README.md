@@ -1,6 +1,6 @@
-# onnxruntime
+# onnxruntime.cr
 
-TODO: Write a description here
+[ONNX Runtime](https://github.com/Microsoft/onnxruntime) bindings for Crystal
 
 ## Installation
 
@@ -9,7 +9,7 @@ TODO: Write a description here
    ```yaml
    dependencies:
      onnxruntime:
-       github: your-github-user/onnxruntime
+       github: kojix2/onnxruntime.cr
    ```
 
 2. Run `shards install`
@@ -20,20 +20,14 @@ TODO: Write a description here
 require "onnxruntime"
 ```
 
-TODO: Write usage instructions here
-
 ## Development
 
 TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/onnxruntime/fork>)
+1. Fork it (<https://github.com/kojix2/onnxruntime.cr/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
-
-## Contributors
-
-- [kojix2](https://github.com/your-github-user) - creator and maintainer
