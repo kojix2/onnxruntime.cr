@@ -1,9 +1,11 @@
 require "./spec_helper"
 
-describe Onnxruntime do
+describe OnnxRuntime do
   # TODO: Write tests
 
   it "works" do
-    false.should eq(true)
+    a = OnnxRuntime::LibOnnxRuntime.OrtGetApiBase
+    p a
+    false.should eq("hoge")
   end
 end

@@ -1,5 +1,5 @@
 require "./onnxruntime/libonnxruntime"
 require "./onnxruntime/version"
 
-module Onnxruntime
+module OnnxRuntime
 end
