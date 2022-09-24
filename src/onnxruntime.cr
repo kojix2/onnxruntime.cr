@@ -1,6 +1,5 @@
-# TODO: Write documentation for `Onnxruntime`
-module Onnxruntime
-  VERSION = "0.1.0"
+require "./onnxruntime/libonnxruntime"
+require "./onnxruntime/version"
 
-  # TODO: Put your code here
+module Onnxruntime
 end
