@@ -4,8 +4,8 @@ describe OnnxRuntime do
   # TODO: Write tests
 
   it "works" do
-    a = OnnxRuntime::LibOnnxRuntime.OrtGetApiBase
-    p a
-    false.should eq("hoge")
+    base = OnnxRuntime::LibOnnxRuntime.OrtGetApiBase
+    p String.new(base.value.get_version_string.call)
+    false.should eq("version")
   end
 end
