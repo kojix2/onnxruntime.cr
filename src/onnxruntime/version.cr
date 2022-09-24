@@ -1,4 +1,3 @@
 module OnnxRuntime
-    VERSION = "0.0.0"
-  end
-  
+  VERSION = "0.0.0"
+end
