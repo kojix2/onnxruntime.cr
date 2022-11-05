@@ -21,7 +21,7 @@ module OnnxRuntime
 
     private def load_session(path_or_bytes, session_options)
       session = Pointer(Void).null
-      #
+      # api.create_session.call(env.read_pointer, ort_string(path_or_bytes), session_options.read_pointer, session)
       return 0
     end
 
@@ -35,6 +35,12 @@ module OnnxRuntime
     end
 
     private def check_status(status)
+    end
+
+    private def ort_string
+    end
+
+    private def env
     end
   end
 end
