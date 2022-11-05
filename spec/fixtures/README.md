@@ -1,0 +1,1 @@
+https://github.com/microsoft/onnxruntime/raw/main/onnxruntime/test/testdata/mnist.onnx
