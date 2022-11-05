@@ -13,3 +13,10 @@ describe OnnxRuntime do
     v.should be_a(String)
   end
 end
+
+describe OnnxRuntime::InferenceSession do
+  it "create" do
+    session = OnnxRuntime::InferenceSession.new("spec/models/mnist.onnx")
+    session.should be_a(InferenceSession)
+  end
+end

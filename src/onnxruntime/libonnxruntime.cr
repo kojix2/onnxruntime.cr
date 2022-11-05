@@ -5,6 +5,7 @@ module OnnxRuntime
     @[Link("onnxruntime")]
   {% end %}
   lib LibOnnxRuntime
+    ORT_API_VERSION = 11.as(UInt32)
     enum TensorElementDataType
       Undefined
       Float
@@ -248,7 +249,7 @@ module OnnxRuntime
     end
 
     struct ApiBase
-      get_api : Void*
+      get_api : (UInt32 -> Api*)
       get_version_string : (-> LibC::Char*)
     end
 
