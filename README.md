@@ -1,5 +1,9 @@
 # onnxruntime.cr
 
+[![build](https://github.com/kojix2/onnxruntime.cr/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/onnxruntime.cr/actions/workflows/test.yml)
+
+:construction: Under construction :construction: - Does not work at the moment.
+
 [ONNX Runtime](https://github.com/Microsoft/onnxruntime) bindings for Crystal
 
 ## Installation
