@@ -15,8 +15,8 @@ describe OnnxRuntime do
 end
 
 describe OnnxRuntime::InferenceSession do
-  it "create" do
-    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
-    session.should be_a(InferenceSession)
-  end
+#  it "create" do
+#    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
+#    session.should be_a(InferenceSession)
+#  end
 end

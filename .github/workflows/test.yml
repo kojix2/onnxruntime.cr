@@ -19,8 +19,14 @@ jobs:
       - uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
+      - name: Download onnxruntime
+        run: |
+          wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
+          tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
       - name: Install dependencies
         run: shards install --without-development --release
       - name: Test
-        run: crystal spec
-
+        env:
+          ONNXRUNTIMEDIR: "/home/runner/work/onnxruntime.cr/onnxruntime.cr/onnxruntime-linux-x64-1.20.1"
+        run: |
+          crystal spec
