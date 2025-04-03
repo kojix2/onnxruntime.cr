@@ -20,7 +20,7 @@ begin
 rescue ex
   puts "Error reading MNIST data: #{ex.message}"
   puts "Using a simulated MNIST image instead."
-  
+
   input_data = MNISTDataset::Dataset.create_simulated_digit_3
   true_label = 3
   puts "True label: #{true_label} (simulated)"

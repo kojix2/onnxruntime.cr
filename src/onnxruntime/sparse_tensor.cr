@@ -28,7 +28,7 @@ module OnnxRuntime
       # Convert to the format expected by the SparseTensor constructor
       # Always create a Hash(Symbol, Array(Int32) | Array(Int64)) type
       indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
-      
+
       if indices.first.is_a?(Int32)
         indices_hash[:coo_indices] = indices.flatten.as(Array(Int32))
       else
@@ -46,7 +46,7 @@ module OnnxRuntime
     # * `dense_shape` - The shape of the dense tensor this sparse tensor represents
     def self.csr(values : Array(T), inner_indices : Array, outer_indices : Array, dense_shape : Array(Int64)) forall T
       indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
-      
+
       indices_hash[:inner_indices] = inner_indices.map(&.to_i64)
       indices_hash[:outer_indices] = outer_indices.map(&.to_i64)
 
@@ -60,7 +60,7 @@ module OnnxRuntime
     # * `dense_shape` - The shape of the dense tensor this sparse tensor represents
     def self.block_sparse(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T
       indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
-      
+
       indices_hash[:block_indices] = indices.map(&.to_i32)
 
       new(LibOnnxRuntime::SparseFormat::BLOCK_SPARSE, values, indices_hash, dense_shape)

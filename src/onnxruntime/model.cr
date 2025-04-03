@@ -62,8 +62,8 @@ module OnnxRuntime
 
     def metadata
       {
-        "inputs" => @session.inputs,
-        "outputs" => @session.outputs
+        "inputs"  => @session.inputs,
+        "outputs" => @session.outputs,
       }
     end
 

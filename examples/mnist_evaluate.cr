@@ -11,15 +11,15 @@ sample_count = 100
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal examples/mnist_evaluate.cr [options]"
-  
+
   parser.on("-a", "--all", "Evaluate all test images") do
     evaluate_all = true
   end
-  
+
   parser.on("-n COUNT", "--count=COUNT", "Number of samples to evaluate") do |count|
     sample_count = count.to_i
   end
-  
+
   parser.on("-h", "--help", "Show this help") do
     puts parser
     exit
@@ -51,16 +51,16 @@ count.times do |i|
     print "\rProcessing image #{i}/#{count} (#{(i * 100 / count).round(1)}%)..."
     STDOUT.flush
   end
-  
+
   begin
     # Read image and label
     image_data = MNISTDataset::Dataset.read_image(config.images_file, i)
     true_label = MNISTDataset::Dataset.read_label(config.labels_file, i)
-    
+
     # Make prediction
     result = predict_single.call(image_data)
     prediction = result[:prediction]
-    
+
     # Store results
     predictions << prediction
     true_labels << true_label
