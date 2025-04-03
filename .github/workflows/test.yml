@@ -5,28 +5,50 @@ on:
   pull_request:
   schedule:
     - cron: '51 3 * * 6'  # Runs at 03:51, only on Saturday
+
 jobs:
   build:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
     strategy:
+      fail-fast: false
       matrix:
-        os: ["ubuntu"]
+        os: ["ubuntu", "macos"]
+        include:
+          - os: ubuntu
+            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-linux-x64-1.21.0.tgz
+            onnxruntime_dir: onnxruntime-linux-x64-1.21.0
+          - os: macos
+            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-x86_64-1.21.0.tgz
+            onnxruntime_dir: onnxruntime-osx-x86_64-1.21.0
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
+
       - uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
+
       - name: Download onnxruntime
         run: |
-          wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
-          tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
+          wget ${{ matrix.onnxruntime_url }}
+          tar -xvzf $(basename ${{ matrix.onnxruntime_url }})
+
       - name: Install dependencies
         run: shards install --without-development --release
+
       - name: Test
         env:
-          ONNXRUNTIMEDIR: "/home/runner/work/onnxruntime.cr/onnxruntime.cr/onnxruntime-linux-x64-1.20.1"
+          ONNXRUNTIMEDIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
         run: |
+          echo "Using ONNX Runtime at: $ONNXRUNTIMEDIR"
           crystal spec
+
+      - name: Test with verbose output
+        if: failure()
+        env:
+          ONNXRUNTIMEDIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
+        run: |
+          crystal spec -v
