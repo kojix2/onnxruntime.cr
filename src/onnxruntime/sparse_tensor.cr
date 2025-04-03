@@ -1,4 +1,10 @@
 module OnnxRuntime
+  # Type aliases for common SparseTensor types
+  alias SparseTensorFloat32 = SparseTensor(Float32)
+  alias SparseTensorInt32 = SparseTensor(Int32)
+  alias SparseTensorInt64 = SparseTensor(Int64)
+  alias SparseTensorFloat64 = SparseTensor(Float64)
+
   # SparseTensor class provides high-level API for working with sparse tensors in ONNX Runtime.
   class SparseTensor(T)
     getter :format, :values, :indices, :dense_shape
@@ -94,7 +100,6 @@ module OnnxRuntime
 
       tensor
     end
-
 
     private def element_data_type
       case @values

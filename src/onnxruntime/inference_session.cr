@@ -1,12 +1,12 @@
 module OnnxRuntime
   class InferenceSession
     @@env : Pointer(LibOnnxRuntime::OrtEnv)?
-    
+
     @session : Pointer(LibOnnxRuntime::OrtSession)
     @allocator : Pointer(LibOnnxRuntime::OrtAllocator)
     @inputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
     @outputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
-    
+
     getter :inputs, :outputs, :session, :allocator
 
     def api
@@ -58,7 +58,7 @@ module OnnxRuntime
       inputs = [] of NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))
 
       count.times do |i|
-        name_ptr = Pointer(Pointer(UInt8)).null
+        name_ptr = Pointer(Pointer(UInt8)).malloc(1)
         status = api.session_get_input_name.call(@session, i, @allocator, name_ptr)
         check_status(status)
 
@@ -106,7 +106,7 @@ module OnnxRuntime
       outputs = [] of NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))
 
       count.times do |i|
-        name_ptr = Pointer(Pointer(UInt8)).null
+        name_ptr = Pointer(Pointer(UInt8)).malloc(1)
         status = api.session_get_output_name.call(@session, i, @allocator, name_ptr)
         check_status(status)
 
@@ -171,9 +171,15 @@ module OnnxRuntime
       input_tensors = [] of Pointer(LibOnnxRuntime::OrtValue)
       input_names = [] of String
 
+      # Check if custom shapes are provided
+      shapes = run_options["shape"]?.try &.as(Hash(String, Array(Int64)))
+
       input_feed.each do |name, data|
-        tensor = if data.is_a?(SparseTensor(Float32)) || data.is_a?(SparseTensor(Int32)) || data.is_a?(SparseTensor(Int64)) || data.is_a?(SparseTensor(Float64))
+        tensor = if data.is_a?(SparseTensorFloat32) || data.is_a?(SparseTensorInt32) || data.is_a?(SparseTensorInt64) || data.is_a?(SparseTensorFloat64)
                    data.to_ort_value(self)
+                 elsif shapes && shapes[name]? && data.is_a?(Array)
+                   # Create tensor with custom shape
+                   create_tensor_with_shape(data, shapes[name])
                  else
                    create_tensor(data)
                  end
@@ -207,7 +213,7 @@ module OnnxRuntime
       api.release_run_options.call(run_options_ptr)
 
       # Extract output data
-      result = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensor(Float32) | SparseTensor(Int32) | SparseTensor(Int64) | SparseTensor(Float64)
+      result = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
       output_names.each_with_index do |name, i|
         tensor = output_tensors[i]
 
@@ -494,6 +500,35 @@ module OnnxRuntime
 
     private def create_bool_tensor(data, shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::BOOL, sizeof(Bool))
+    end
+
+    private def create_tensor_with_shape(data, shape)
+      case data
+      when Array(Float32)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::FLOAT, sizeof(Float32))
+      when Array(Int32)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT32, sizeof(Int32))
+      when Array(Int64)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT64, sizeof(Int64))
+      when Array(Float64)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::DOUBLE, sizeof(Float64))
+      when Array(UInt8)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT8, sizeof(UInt8))
+      when Array(Int8)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT8, sizeof(Int8))
+      when Array(UInt16)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT16, sizeof(UInt16))
+      when Array(Int16)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT16, sizeof(Int16))
+      when Array(UInt32)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT32, sizeof(UInt32))
+      when Array(UInt64)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT64, sizeof(UInt64))
+      when Array(Bool)
+        create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::BOOL, sizeof(Bool))
+      else
+        raise "Unsupported data type: #{data.class}"
+      end
     end
 
     private def create_tensor_with_data(data, shape, element_type, element_size)

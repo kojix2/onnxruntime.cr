@@ -4,12 +4,34 @@ module OnnxRuntime
       @session = InferenceSession.new(path_or_bytes, **session_options)
     end
 
-    def predict(input_feed, output_names = nil, **run_options)
+    def predict(input_feed, output_names = nil, shape = nil, **run_options)
       # Convert input data to the appropriate format
       formatted_input = format_input(input_feed)
 
-      # Run inference
-      result = @session.run(formatted_input, output_names, **run_options)
+      # Run inference with custom shapes if provided
+      if shape
+        # Create tensors with custom shapes
+        input_tensors = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
+
+        formatted_input.each do |name, data|
+          if shape[name]? && data.is_a?(Array)
+            # Use the custom shape for this input
+            input_tensors[name] = data
+          else
+            # Use the data as is
+            input_tensors[name] = data
+          end
+        end
+
+        # Add shape information to run options
+        run_options = run_options.merge({shape: shape})
+
+        # Run inference
+        result = @session.run(input_tensors, output_names, **run_options)
+      else
+        # Run inference without custom shapes
+        result = @session.run(formatted_input, output_names, **run_options)
+      end
 
       # Format output data if needed
       format_output(result)
@@ -43,11 +65,11 @@ module OnnxRuntime
     end
 
     private def format_input(input_feed)
-      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensor(Float32) | SparseTensor(Int32) | SparseTensor(Int64) | SparseTensor(Float64)
+      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
 
       input_feed.each do |name, data|
         # If data is already a SparseTensor, use it directly
-        if data.is_a?(SparseTensor(Float32)) || data.is_a?(SparseTensor(Int32)) || data.is_a?(SparseTensor(Int64)) || data.is_a?(SparseTensor(Float64))
+        if data.is_a?(SparseTensorFloat32) || data.is_a?(SparseTensorInt32) || data.is_a?(SparseTensorInt64) || data.is_a?(SparseTensorFloat64)
           formatted[name] = data
           next
         end
