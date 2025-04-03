@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '51 3 * * 6'  # Runs at 03:51, only on Saturday
+    - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
             onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-linux-x64-1.21.0.tgz
             onnxruntime_dir: onnxruntime-linux-x64-1.21.0
           - os: macos
-            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-x86_64-1.21.0.tgz
-            onnxruntime_dir: onnxruntime-osx-x86_64-1.21.0
+            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-universal2-1.21.0.tgz
+            onnxruntime_dir: onnxruntime-osx-universal2-1.21.0
 
     steps:
       - uses: actions/checkout@v4
