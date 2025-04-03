@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.14.0">
+<meta name="crystal_docs.project_version" content="main">
+<meta name="crystal_docs.project_name" content="onnxruntime">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="onnxruntime">
+  <title>OnnxRuntime::InferenceSession - onnxruntime main</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          onnxruntime
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="onnxruntime/OnnxRuntime" data-name="onnxruntime">
+      <a href="../OnnxRuntime.html">OnnxRuntime</a>
+      
+        <ul>
+  
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/InferenceSession" data-name="onnxruntime::inferencesession">
+      <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Model" data-name="onnxruntime::model">
+      <a href="../OnnxRuntime/Model.html">Model</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensor" data-name="onnxruntime::sparsetensor(t)">
+      <a href="../OnnxRuntime/SparseTensor.html">SparseTensor</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat32" data-name="onnxruntime::sparsetensorfloat32">
+      <a href="../OnnxRuntime/SparseTensorFloat32.html">SparseTensorFloat32</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
+      <a href="../OnnxRuntime/SparseTensorFloat64.html">SparseTensorFloat64</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt32" data-name="onnxruntime::sparsetensorint32">
+      <a href="../OnnxRuntime/SparseTensorInt32.html">SparseTensorInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt64" data-name="onnxruntime::sparsetensorint64">
+      <a href="../OnnxRuntime/SparseTensorInt64.html">SparseTensorInt64</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> OnnxRuntime::<wbr>InferenceSession
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/InferenceSession.html">OnnxRuntime::InferenceSession</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L2" target="_blank">
+        onnxruntime/inference_session.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28path_or_bytes%2C%2A%2Asession_options%29-class-method" class="signature"><strong>.new</strong>(path_or_bytes, **session_options)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#allocator%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtAllocator%29-instance-method" class="signature"><strong>#allocator</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtAllocator)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#check_status%28status%29-instance-method" class="signature"><strong>#check_status</strong>(status)</a>
+        
+          <div class="summary"><p>Make check_status public so it can be used by SparseTensor</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#inputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method" class="signature"><strong>#inputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#outputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method" class="signature"><strong>#outputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#run%28input_feed%2Coutput_names%3Dnil%2C%2A%2Arun_options%29-instance-method" class="signature"><strong>#run</strong>(input_feed, output_names = <span class="n">nil</span>, **run_options)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#session%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtSession%29-instance-method" class="signature"><strong>#session</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtSession)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(path_or_bytes,**session_options)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(path_or_bytes, **session_options)
+
+        <a class="method-permalink" href="#new%28path_or_bytes%2C%2A%2Asession_options%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L20" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="allocator:Pointer(OnnxRuntime::LibOnnxRuntime::OrtAllocator)-instance-method">
+      <div class="signature">
+        
+        def <strong>allocator</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtAllocator)
+
+        <a class="method-permalink" href="#allocator%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtAllocator%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="api-instance-method">
+      <div class="signature">
+        
+        def <strong>api</strong>
+
+        <a class="method-permalink" href="#api-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="check_status(status)-instance-method">
+      <div class="signature">
+        
+        def <strong>check_status</strong>(status)
+
+        <a class="method-permalink" href="#check_status%28status%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Make check_status public so it can be used by SparseTensor</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L558" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L31" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="inputs:Array({name:String,type:OnnxRuntime::LibOnnxRuntime::TensorElementDataType,shape:Array(Int64)})-instance-method">
+      <div class="signature">
+        
+        def <strong>inputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})
+
+        <a class="method-permalink" href="#inputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="outputs:Array({name:String,type:OnnxRuntime::LibOnnxRuntime::TensorElementDataType,shape:Array(Int64)})-instance-method">
+      <div class="signature">
+        
+        def <strong>outputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})
+
+        <a class="method-permalink" href="#outputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="run(input_feed,output_names=nil,**run_options)-instance-method">
+      <div class="signature">
+        
+        def <strong>run</strong>(input_feed, output_names = <span class="n">nil</span>, **run_options)
+
+        <a class="method-permalink" href="#run%28input_feed%2Coutput_names%3Dnil%2C%2A%2Arun_options%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L149" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="session:Pointer(OnnxRuntime::LibOnnxRuntime::OrtSession)-instance-method">
+      <div class="signature">
+        
+        def <strong>session</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtSession)
+
+        <a class="method-permalink" href="#session%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtSession%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/inference_session.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>

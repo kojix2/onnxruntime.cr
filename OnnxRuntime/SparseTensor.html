@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.14.0">
+<meta name="crystal_docs.project_version" content="main">
+<meta name="crystal_docs.project_name" content="onnxruntime">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="onnxruntime">
+  <title>OnnxRuntime::SparseTensor(T) - onnxruntime main</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          onnxruntime
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="onnxruntime/OnnxRuntime" data-name="onnxruntime">
+      <a href="../OnnxRuntime.html">OnnxRuntime</a>
+      
+        <ul>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/InferenceSession" data-name="onnxruntime::inferencesession">
+      <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Model" data-name="onnxruntime::model">
+      <a href="../OnnxRuntime/Model.html">Model</a>
+      
+    </li>
+  
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/SparseTensor" data-name="onnxruntime::sparsetensor(t)">
+      <a href="../OnnxRuntime/SparseTensor.html">SparseTensor</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat32" data-name="onnxruntime::sparsetensorfloat32">
+      <a href="../OnnxRuntime/SparseTensorFloat32.html">SparseTensorFloat32</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
+      <a href="../OnnxRuntime/SparseTensorFloat64.html">SparseTensorFloat64</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt32" data-name="onnxruntime::sparsetensorint32">
+      <a href="../OnnxRuntime/SparseTensorInt32.html">SparseTensorInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt64" data-name="onnxruntime::sparsetensorint64">
+      <a href="../OnnxRuntime/SparseTensorInt64.html">SparseTensorInt64</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> OnnxRuntime::<wbr>SparseTensor(T)
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>SparseTensor class provides high-level API for working with sparse tensors in ONNX Runtime.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L9" target="_blank">
+        onnxruntime/sparse_tensor.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28format%3ALibOnnxRuntime%3A%3ASparseFormat%2Cvalues%3AArray%28T%29%2Cindices%3AHash%28Symbol%2CArray%28Int32%29%7CArray%28Int64%29%29%2Cdense_shape%3AArray%28Int64%29%29-class-method" class="signature"><strong>.new</strong>(format : LibOnnxRuntime::SparseFormat, values : Array(T), indices : Hash(Symbol, Array(Int32) | Array(Int64)), dense_shape : Array(Int64))</a>
+        
+          <div class="summary"><p>Creates a new SparseTensor instance.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#block_sparse%28values%3AArray%28T%29%2Cindices%3AArray%2Cdense_shape%3AArray%28Int64%29%29forallT-class-method" class="signature"><strong>.block_sparse</strong>(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T</a>
+        
+          <div class="summary"><p>Creates a BlockSparse format sparse tensor.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#coo%28values%3AArray%28T%29%2Cindices%3AArray%2Cdense_shape%3AArray%28Int64%29%29forallT-class-method" class="signature"><strong>.coo</strong>(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T</a>
+        
+          <div class="summary"><p>Creates a COO format sparse tensor.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#csr%28values%3AArray%28T%29%2Cinner_indices%3AArray%2Couter_indices%3AArray%2Cdense_shape%3AArray%28Int64%29%29forallT-class-method" class="signature"><strong>.csr</strong>(values : Array(T), inner_indices : Array, outer_indices : Array, dense_shape : Array(Int64)) forall T</a>
+        
+          <div class="summary"><p>Creates a CSR format sparse tensor.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#dense_shape-instance-method" class="signature"><strong>#dense_shape</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#format-instance-method" class="signature"><strong>#format</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#indices-instance-method" class="signature"><strong>#indices</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_ort_value%28session%29-instance-method" class="signature"><strong>#to_ort_value</strong>(session)</a>
+        
+          <div class="summary"><p>Converts the sparse tensor to an OrtValue that can be used with the ONNX Runtime API.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#values-instance-method" class="signature"><strong>#values</strong></a>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(format:LibOnnxRuntime::SparseFormat,values:Array(T),indices:Hash(Symbol,Array(Int32)|Array(Int64)),dense_shape:Array(Int64))-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(format : LibOnnxRuntime::SparseFormat, values : Array(T), indices : Hash(Symbol, Array(Int32) | Array(Int64)), dense_shape : Array(Int64))
+
+        <a class="method-permalink" href="#new%28format%3ALibOnnxRuntime%3A%3ASparseFormat%2Cvalues%3AArray%28T%29%2Cindices%3AHash%28Symbol%2CArray%28Int32%29%7CArray%28Int64%29%29%2Cdense_shape%3AArray%28Int64%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new SparseTensor instance.</p>
+<ul>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#format-instance-method">#format</a></code> - The sparse tensor format (COO, CSR, or BLOCK_SPARSE)</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#values-instance-method">#values</a></code> - The non-zero values in the sparse tensor</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#indices-instance-method">#indices</a></code> - The indices data for the sparse tensor (format-specific)</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#dense_shape-instance-method">#dense_shape</a></code> - The shape of the dense tensor this sparse tensor represents</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="block_sparse(values:Array(T),indices:Array,dense_shape:Array(Int64))forallT-class-method">
+      <div class="signature">
+        
+        def self.<strong>block_sparse</strong>(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T
+
+        <a class="method-permalink" href="#block_sparse%28values%3AArray%28T%29%2Cindices%3AArray%2Cdense_shape%3AArray%28Int64%29%29forallT-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a BlockSparse format sparse tensor.</p>
+<ul>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#values-instance-method">#values</a></code> - The non-zero values in the sparse tensor</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#indices-instance-method">#indices</a></code> - The block indices</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#dense_shape-instance-method">#dense_shape</a></code> - The shape of the dense tensor this sparse tensor represents</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L61" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="coo(values:Array(T),indices:Array,dense_shape:Array(Int64))forallT-class-method">
+      <div class="signature">
+        
+        def self.<strong>coo</strong>(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T
+
+        <a class="method-permalink" href="#coo%28values%3AArray%28T%29%2Cindices%3AArray%2Cdense_shape%3AArray%28Int64%29%29forallT-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a COO format sparse tensor.</p>
+<ul>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#values-instance-method">#values</a></code> - The non-zero values in the sparse tensor</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#indices-instance-method">#indices</a></code> - The indices data for the sparse tensor (2D array where each row is a coordinate)</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#dense_shape-instance-method">#dense_shape</a></code> - The shape of the dense tensor this sparse tensor represents</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L26" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="csr(values:Array(T),inner_indices:Array,outer_indices:Array,dense_shape:Array(Int64))forallT-class-method">
+      <div class="signature">
+        
+        def self.<strong>csr</strong>(values : Array(T), inner_indices : Array, outer_indices : Array, dense_shape : Array(Int64)) forall T
+
+        <a class="method-permalink" href="#csr%28values%3AArray%28T%29%2Cinner_indices%3AArray%2Couter_indices%3AArray%2Cdense_shape%3AArray%28Int64%29%29forallT-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a CSR format sparse tensor.</p>
+<ul>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#values-instance-method">#values</a></code> - The non-zero values in the sparse tensor</li>
+<li><code>inner_indices</code> - The column indices for each non-zero value</li>
+<li><code>outer_indices</code> - The row pointers indicating where each row starts in the values array</li>
+<li><code><a href="../OnnxRuntime/SparseTensor.html#dense_shape-instance-method">#dense_shape</a></code> - The shape of the dense tensor this sparse tensor represents</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="dense_shape-instance-method">
+      <div class="signature">
+        
+        def <strong>dense_shape</strong>
+
+        <a class="method-permalink" href="#dense_shape-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="format-instance-method">
+      <div class="signature">
+        
+        def <strong>format</strong>
+
+        <a class="method-permalink" href="#format-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="indices-instance-method">
+      <div class="signature">
+        
+        def <strong>indices</strong>
+
+        <a class="method-permalink" href="#indices-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_ort_value(session)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_ort_value</strong>(session)
+
+        <a class="method-permalink" href="#to_ort_value%28session%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Converts the sparse tensor to an OrtValue that can be used with the ONNX Runtime API.</p>
+<ul>
+<li><code>session</code> - The InferenceSession instance to use for creating the OrtValue</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L72" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="values-instance-method">
+      <div class="signature">
+        
+        def <strong>values</strong>
+
+        <a class="method-permalink" href="#values-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/96b7d65e803357abdf8480c41b114e33530bc04e/src/onnxruntime/sparse_tensor.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>
