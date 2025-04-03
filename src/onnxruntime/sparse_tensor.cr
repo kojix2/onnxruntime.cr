@@ -15,7 +15,7 @@ module OnnxRuntime
     # * `values` - The non-zero values in the sparse tensor
     # * `indices` - The indices data for the sparse tensor (format-specific)
     # * `dense_shape` - The shape of the dense tensor this sparse tensor represents
-    def initialize(@format : LibOnnxRuntime::SparseFormat, @values : Array(T), @indices : Hash(Symbol, Array(Int64) | Array(Int32)), @dense_shape : Array(Int64))
+    def initialize(@format : LibOnnxRuntime::SparseFormat, @values : Array(T), @indices : Hash(Symbol, Array(Int32) | Array(Int64)), @dense_shape : Array(Int64))
     end
 
     # Creates a COO format sparse tensor.
@@ -26,7 +26,14 @@ module OnnxRuntime
     def self.coo(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T
       # For COO format, indices should be a 2D array where each row is a coordinate
       # Convert to the format expected by the SparseTensor constructor
-      indices_hash = {:coo_indices => indices.flatten.map(&.to_i64)}
+      # Always create a Hash(Symbol, Array(Int32) | Array(Int64)) type
+      indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
+      
+      if indices.first.is_a?(Int32)
+        indices_hash[:coo_indices] = indices.flatten.as(Array(Int32))
+      else
+        indices_hash[:coo_indices] = indices.flatten.map(&.to_i64)
+      end
 
       new(LibOnnxRuntime::SparseFormat::COO, values, indices_hash, dense_shape)
     end
@@ -38,10 +45,10 @@ module OnnxRuntime
     # * `outer_indices` - The row pointers indicating where each row starts in the values array
     # * `dense_shape` - The shape of the dense tensor this sparse tensor represents
     def self.csr(values : Array(T), inner_indices : Array, outer_indices : Array, dense_shape : Array(Int64)) forall T
-      indices_hash = {
-        :inner_indices => inner_indices.map(&.to_i64),
-        :outer_indices => outer_indices.map(&.to_i64),
-      }
+      indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
+      
+      indices_hash[:inner_indices] = inner_indices.map(&.to_i64)
+      indices_hash[:outer_indices] = outer_indices.map(&.to_i64)
 
       new(LibOnnxRuntime::SparseFormat::CSRC, values, indices_hash, dense_shape)
     end
@@ -52,7 +59,9 @@ module OnnxRuntime
     # * `indices` - The block indices
     # * `dense_shape` - The shape of the dense tensor this sparse tensor represents
     def self.block_sparse(values : Array(T), indices : Array, dense_shape : Array(Int64)) forall T
-      indices_hash = {:block_indices => indices.map(&.to_i32)}
+      indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
+      
+      indices_hash[:block_indices] = indices.map(&.to_i32)
 
       new(LibOnnxRuntime::SparseFormat::BLOCK_SPARSE, values, indices_hash, dense_shape)
     end
@@ -135,7 +144,7 @@ module OnnxRuntime
       values_shape = [values.size.to_i64]
 
       # Get COO indices
-      coo_indices = @indices[:coo_indices].as(Array(Int64))
+      coo_indices = @indices[:coo_indices]
 
       # Fill the sparse tensor with COO format data based on value type
       values_ptr = Pointer(Void).null
@@ -156,13 +165,22 @@ module OnnxRuntime
         raise "Unsupported value type: #{@values.class}"
       end
 
+      # Convert indices to Int64 if needed
+      indices_ptr = if coo_indices.is_a?(Array(Int32))
+                      # Convert Int32 indices to Int64
+                      int64_indices = coo_indices.map(&.to_i64)
+                      int64_indices.to_unsafe
+                    else
+                      coo_indices.as(Array(Int64)).to_unsafe
+                    end
+
       status = api.fill_sparse_tensor_coo.call(
         tensor,
         memory_info,
         values_shape.to_unsafe,
         values_shape.size.to_u64,
         values_ptr,
-        coo_indices.to_unsafe,
+        indices_ptr,
         coo_indices.size.to_u64
       )
       session.check_status(status)

@@ -11,7 +11,7 @@ module OnnxRuntime
       # Run inference with custom shapes if provided
       if shape
         # Create tensors with custom shapes
-        input_tensors = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
+        input_tensors = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
 
         formatted_input.each do |name, data|
           if shape[name]? && data.is_a?(Array)
@@ -61,11 +61,14 @@ module OnnxRuntime
     end
 
     def metadata
-      @session.modelmeta
+      {
+        "inputs" => @session.inputs,
+        "outputs" => @session.outputs
+      }
     end
 
     private def format_input(input_feed)
-      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
+      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
 
       input_feed.each do |name, data|
         # If data is already a SparseTensor, use it directly
