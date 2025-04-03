@@ -306,7 +306,7 @@ module OnnxRuntime
       # OrtValue - Tensor
       create_tensor_as_ort_value : (OrtAllocator*, Int64*, LibC::SizeT, ONNXTensorElementDataType, OrtValue** -> OrtStatus*)
       create_tensor_with_data_as_ort_value : (OrtMemoryInfo*, Void*, LibC::SizeT, Int64*, LibC::SizeT, ONNXTensorElementDataType, OrtValue** -> OrtStatus*)
-      is_tensor : (OrtValue*, Int* -> OrtStatus*)
+      is_tensor : (OrtValue*, LibC::Int* -> OrtStatus*)
       get_tensor_mutable_data : (OrtValue*, Void** -> OrtStatus*)
       fill_string_tensor : (OrtValue*, LibC::Char**, LibC::SizeT -> OrtStatus*)
       get_string_tensor_data_length : (OrtValue*, LibC::SizeT* -> OrtStatus*)
@@ -331,9 +331,9 @@ module OnnxRuntime
       # OrtMemoryInfo
       create_memory_info : (LibC::Char*, OrtAllocatorType, Int32, OrtMemType, OrtMemoryInfo** -> OrtStatus*)
       create_cpu_memory_info : (OrtAllocatorType, OrtMemType, OrtMemoryInfo** -> OrtStatus*)
-      compare_memory_info : (OrtMemoryInfo*, OrtMemoryInfo*, Int* -> OrtStatus*)
+      compare_memory_info : (OrtMemoryInfo*, OrtMemoryInfo*, LibC::Int* -> OrtStatus*)
       memory_info_get_name : (OrtMemoryInfo*, LibC::Char** -> OrtStatus*)
-      memory_info_get_id : (OrtMemoryInfo*, Int* -> OrtStatus*)
+      memory_info_get_id : (OrtMemoryInfo*, LibC::Int* -> OrtStatus*)
       memory_info_get_mem_type : (OrtMemoryInfo*, OrtMemType* -> OrtStatus*)
       memory_info_get_type : (OrtMemoryInfo*, OrtAllocatorType* -> OrtStatus*)
 
@@ -415,8 +415,8 @@ module OnnxRuntime
       add_free_dimension_override_by_name : (OrtSessionOptions*, LibC::Char*, Int64 -> OrtStatus*)
 
       # Execution Providers
-      get_available_providers : (LibC::Char***, Int* -> OrtStatus*)
-      release_available_providers : (LibC::Char**, Int -> Void)
+      get_available_providers : (LibC::Char***, LibC::Int* -> OrtStatus*)
+      release_available_providers : (LibC::Char**, LibC::Int -> Void)
       # OrtValue - String Tensor
       get_string_tensor_element_length : (OrtValue*, LibC::SizeT, LibC::SizeT* -> OrtStatus*)
       get_string_tensor_element : (OrtValue*, LibC::SizeT, LibC::Char*, LibC::SizeT -> OrtStatus*)
@@ -507,7 +507,7 @@ module OnnxRuntime
       register_allocator : (OrtEnv*, OrtAllocator* -> OrtStatus*)
       unregister_allocator : (OrtEnv*, OrtAllocator* -> OrtStatus*)
       # OrtValue - Sparse Tensor
-      is_sparse_tensor : (OrtValue*, Int* -> OrtStatus*)
+      is_sparse_tensor : (OrtValue*, LibC::Int* -> OrtStatus*)
       create_sparse_tensor_as_ort_value : (OrtAllocator*, Int64*, LibC::SizeT, ONNXTensorElementDataType, OrtValue** -> OrtStatus*)
       fill_sparse_tensor_coo : (OrtValue*, OrtMemoryInfo*, Int64*, LibC::SizeT, Void*, Int64*, LibC::SizeT -> OrtStatus*)
       fill_sparse_tensor_csr : (OrtValue*, OrtMemoryInfo*, Int64*, LibC::SizeT, Void*, Int64*, LibC::SizeT, Int64*, LibC::SizeT -> OrtStatus*)
@@ -523,7 +523,7 @@ module OnnxRuntime
       get_sparse_tensor_indices : (OrtValue*, OrtSparseIndicesFormat, OrtValue** -> OrtStatus*)
 
       # OrtValue
-      has_value : (OrtValue*, Int* -> OrtStatus*)
+      has_value : (OrtValue*, LibC::Int* -> OrtStatus*)
 
       # OrtKernelContext
       kernel_context_get_gpu_compute_stream : (OrtKernelContext*, Void** -> OrtStatus*)
