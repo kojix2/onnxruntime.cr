@@ -13,3 +13,4 @@ onnxruntime*
 
 # Ignore the dataset directory
 examples/data
+examples/lib
