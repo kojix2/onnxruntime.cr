@@ -16,18 +16,18 @@ module OnnxRuntime
     end
 
     # Create a COO format sparse tensor
-    def create_coo_sparse_tensor(values, indices, dense_shape)
-      SparseTensor.coo(values, indices, dense_shape)
+    def create_coo_sparse_tensor(values : Array(T), indices, dense_shape) forall T
+      SparseTensor(T).coo(values, indices, dense_shape)
     end
 
     # Create a CSR format sparse tensor
-    def create_csr_sparse_tensor(values, inner_indices, outer_indices, dense_shape)
-      SparseTensor.csr(values, inner_indices, outer_indices, dense_shape)
+    def create_csr_sparse_tensor(values : Array(T), inner_indices, outer_indices, dense_shape) forall T
+      SparseTensor(T).csr(values, inner_indices, outer_indices, dense_shape)
     end
 
     # Create a BlockSparse format sparse tensor
-    def create_block_sparse_tensor(values, indices, dense_shape)
-      SparseTensor.block_sparse(values, indices, dense_shape)
+    def create_block_sparse_tensor(values : Array(T), indices, dense_shape) forall T
+      SparseTensor(T).block_sparse(values, indices, dense_shape)
     end
 
     def inputs
@@ -43,11 +43,11 @@ module OnnxRuntime
     end
 
     private def format_input(input_feed)
-      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensor
+      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | SparseTensor(Float32) | SparseTensor(Int32) | SparseTensor(Int64) | SparseTensor(Float64)
 
       input_feed.each do |name, data|
         # If data is already a SparseTensor, use it directly
-        if data.is_a?(SparseTensor)
+        if data.is_a?(SparseTensor(Float32)) || data.is_a?(SparseTensor(Int32)) || data.is_a?(SparseTensor(Int64)) || data.is_a?(SparseTensor(Float64))
           formatted[name] = data
           next
         end
@@ -58,27 +58,27 @@ module OnnxRuntime
 
         # Convert data to the appropriate type and shape
         case input_spec[:type]
-        when LibOnnxRuntime::TensorElementDataType::Float
+        when LibOnnxRuntime::TensorElementDataType::FLOAT
           formatted[name] = convert_to_float32_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Int32
+        when LibOnnxRuntime::TensorElementDataType::INT32
           formatted[name] = convert_to_int32_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Int64
+        when LibOnnxRuntime::TensorElementDataType::INT64
           formatted[name] = convert_to_int64_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Double
+        when LibOnnxRuntime::TensorElementDataType::DOUBLE
           formatted[name] = convert_to_float64_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Uint8
+        when LibOnnxRuntime::TensorElementDataType::UINT8
           formatted[name] = convert_to_uint8_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Int8
+        when LibOnnxRuntime::TensorElementDataType::INT8
           formatted[name] = convert_to_int8_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Uint16
+        when LibOnnxRuntime::TensorElementDataType::UINT16
           formatted[name] = convert_to_uint16_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Int16
+        when LibOnnxRuntime::TensorElementDataType::INT16
           formatted[name] = convert_to_int16_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Uint32
+        when LibOnnxRuntime::TensorElementDataType::UINT32
           formatted[name] = convert_to_uint32_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Uint64
+        when LibOnnxRuntime::TensorElementDataType::UINT64
           formatted[name] = convert_to_uint64_array(data, input_spec[:shape])
-        when LibOnnxRuntime::TensorElementDataType::Bool
+        when LibOnnxRuntime::TensorElementDataType::BOOL
           formatted[name] = convert_to_bool_array(data, input_spec[:shape])
         else
           raise "Unsupported input type: #{input_spec[:type]}"
@@ -94,7 +94,9 @@ module OnnxRuntime
         data
       when Array(Float64)
         data.map(&.to_f32)
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_f32)
+      when Array(Int64)
         data.map(&.to_f32)
       else
         raise "Cannot convert #{data.class} to Array(Float32)"
@@ -104,13 +106,15 @@ module OnnxRuntime
     private def convert_to_float64_array(data, shape)
       case data
       when Array(Float64)
-        data
+        data.map(&.to_f32)
       when Array(Float32)
-        data.map(&.to_f64)
-      when Array(Int)
-        data.map(&.to_f64)
+        data
+      when Array(Int32)
+        data.map(&.to_f32)
+      when Array(Int64)
+        data.map(&.to_f32)
       else
-        raise "Cannot convert #{data.class} to Array(Float64)"
+        raise "Cannot convert #{data.class} to Array(Float32)"
       end
     end
 
@@ -118,9 +122,11 @@ module OnnxRuntime
       case data
       when Array(Int32)
         data
-      when Array(Int)
+      when Array(Int64)
         data.map(&.to_i32)
-      when Array(Float)
+      when Array(Float32)
+        data.map(&.to_i32)
+      when Array(Float64)
         data.map(&.to_i32)
       else
         raise "Cannot convert #{data.class} to Array(Int32)"
@@ -131,9 +137,11 @@ module OnnxRuntime
       case data
       when Array(Int64)
         data
-      when Array(Int)
+      when Array(Int32)
         data.map(&.to_i64)
-      when Array(Float)
+      when Array(Float32)
+        data.map(&.to_i64)
+      when Array(Float64)
         data.map(&.to_i64)
       else
         raise "Cannot convert #{data.class} to Array(Int64)"
@@ -144,7 +152,9 @@ module OnnxRuntime
       case data
       when Array(UInt8)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_u8)
+      when Array(Int64)
         data.map(&.to_u8)
       else
         raise "Cannot convert #{data.class} to Array(UInt8)"
@@ -155,7 +165,9 @@ module OnnxRuntime
       case data
       when Array(Int8)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_i8)
+      when Array(Int64)
         data.map(&.to_i8)
       else
         raise "Cannot convert #{data.class} to Array(Int8)"
@@ -166,7 +178,9 @@ module OnnxRuntime
       case data
       when Array(UInt16)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_u16)
+      when Array(Int64)
         data.map(&.to_u16)
       else
         raise "Cannot convert #{data.class} to Array(UInt16)"
@@ -177,7 +191,9 @@ module OnnxRuntime
       case data
       when Array(Int16)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_i16)
+      when Array(Int64)
         data.map(&.to_i16)
       else
         raise "Cannot convert #{data.class} to Array(Int16)"
@@ -188,7 +204,9 @@ module OnnxRuntime
       case data
       when Array(UInt32)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_u32)
+      when Array(Int64)
         data.map(&.to_u32)
       else
         raise "Cannot convert #{data.class} to Array(UInt32)"
@@ -199,7 +217,9 @@ module OnnxRuntime
       case data
       when Array(UInt64)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map(&.to_u64)
+      when Array(Int64)
         data.map(&.to_u64)
       else
         raise "Cannot convert #{data.class} to Array(UInt64)"
@@ -210,7 +230,9 @@ module OnnxRuntime
       case data
       when Array(Bool)
         data
-      when Array(Int)
+      when Array(Int32)
+        data.map { |v| v != 0 }
+      when Array(Int64)
         data.map { |v| v != 0 }
       else
         raise "Cannot convert #{data.class} to Array(Bool)"

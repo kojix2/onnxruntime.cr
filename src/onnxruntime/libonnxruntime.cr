@@ -5,7 +5,7 @@ module OnnxRuntime
     @[Link("onnxruntime")]
   {% end %}
   lib LibOnnxRuntime
-    ORT_API_VERSION = 21.as(UInt32)
+    ORT_API_VERSION = 21_u32
 
     # Copied from TensorProto::DataType
     enum TensorElementDataType

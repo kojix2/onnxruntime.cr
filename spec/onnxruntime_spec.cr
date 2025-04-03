@@ -40,12 +40,14 @@ describe OnnxRuntime::Model do
     result = model.predict({"Input3" => input_data})
 
     # 結果は10クラス（0-9の数字）の確率分布
-    result.should be_a(Hash(String, Array(Float32) | Array(Int32) | Array(Int64)))
+    result.should be_a(Hash(String, Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | OnnxRuntime::SparseTensor))
     result.keys.should contain("Plus214_Output_0")
 
     # 出力は10個の値（各数字の確率）を持つ配列
     output = result["Plus214_Output_0"]
-    output.should be_a(Array)
-    output.size.should eq(10)
+    output.is_a?(Array(Float32)).should be_true
+    if output.is_a?(Array(Float32))
+      output.size.should eq(10)
+    end
   end
 end
