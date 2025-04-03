@@ -9,31 +9,31 @@ module OnnxRuntime
 
     # Copied from TensorProto::DataType
     enum TensorElementDataType
-      UNDEFINED = 0
-      FLOAT     # maps to c type float
-      UINT8     # maps to c type uint8_t
-      INT8      # maps to c type int8_t
-      UINT16    # maps to c type uint16_t
-      INT16     # maps to c type int16_t
-      INT32     # maps to c type int32_t
-      INT64     # maps to c type int64_t
-      STRING    # maps to c++ type std::string
+      UNDEFINED  = 0
+      FLOAT  # maps to c type float
+      UINT8  # maps to c type uint8_t
+      INT8   # maps to c type int8_t
+      UINT16 # maps to c type uint16_t
+      INT16  # maps to c type int16_t
+      INT32  # maps to c type int32_t
+      INT64  # maps to c type int64_t
+      STRING # maps to c++ type std::string
       BOOL
       FLOAT16
-      DOUBLE    # maps to c type double
-      UINT32    # maps to c type uint32_t
-      UINT64    # maps to c type uint64_t
+      DOUBLE     # maps to c type double
+      UINT32     # maps to c type uint32_t
+      UINT64     # maps to c type uint64_t
       COMPLEX64  # complex with float32 real and imaginary components
       COMPLEX128 # complex with float64 real and imaginary components
       BFLOAT16   # Non-IEEE floating-point format based on IEEE754 single-precision
       # float 8 types were introduced in onnx 1.14
-      FLOAT8E4M3FN    # Non-IEEE floating-point format based on IEEE754 single-precision
-      FLOAT8E4M3FNUZ  # Non-IEEE floating-point format based on IEEE754 single-precision
-      FLOAT8E5M2      # Non-IEEE floating-point format based on IEEE754 single-precision
-      FLOAT8E5M2FNUZ  # Non-IEEE floating-point format based on IEEE754 single-precision
+      FLOAT8E4M3FN   # Non-IEEE floating-point format based on IEEE754 single-precision
+      FLOAT8E4M3FNUZ # Non-IEEE floating-point format based on IEEE754 single-precision
+      FLOAT8E5M2     # Non-IEEE floating-point format based on IEEE754 single-precision
+      FLOAT8E5M2FNUZ # Non-IEEE floating-point format based on IEEE754 single-precision
       # Int4 types were introduced in ONNX 1.16
-      UINT4  # maps to a pair of packed uint4 values (size == 1 byte)
-      INT4   # maps to a pair of packed int4 values (size == 1 byte)
+      UINT4 # maps to a pair of packed uint4 values (size == 1 byte)
+      INT4  # maps to a pair of packed int4 values (size == 1 byte)
     end
 
     # For C API compatibility
@@ -41,7 +41,7 @@ module OnnxRuntime
 
     # Synced with onnx TypeProto oneof
     enum OnnxType
-      UNKNOWN = 0
+      UNKNOWN      = 0
       TENSOR
       SEQUENCE
       MAP
@@ -55,9 +55,9 @@ module OnnxRuntime
 
     # These types are synced with internal SparseFormatFlags
     enum SparseFormat
-      UNDEFINED = 0
-      COO = 0x1
-      CSRC = 0x2
+      UNDEFINED    =   0
+      COO          = 0x1
+      CSRC         = 0x2
       BLOCK_SPARSE = 0x4
     end
 
@@ -66,7 +66,7 @@ module OnnxRuntime
 
     # Enum allows to query sparse tensor indices
     enum SparseIndicesFormat
-      COO_INDICES = 0
+      COO_INDICES          = 0
       CSR_INNER_INDICES
       CSR_OUTER_INDICES
       BLOCK_SPARSE_INDICES
@@ -77,18 +77,18 @@ module OnnxRuntime
 
     # Logging severity levels
     enum LoggingLevel
-      VERBOSE = 0  # Verbose informational messages (least severe)
-      INFO     # Informational messages
-      WARNING  # Warning messages
-      ERROR    # Error messages
-      FATAL    # Fatal error messages (most severe)
+      VERBOSE = 0 # Verbose informational messages (least severe)
+      INFO        # Informational messages
+      WARNING     # Warning messages
+      ERROR       # Error messages
+      FATAL       # Fatal error messages (most severe)
     end
 
     # For C API compatibility
     alias OrtLoggingLevel = LoggingLevel
 
     enum ErrorCode
-      OK = 0
+      OK                = 0
       FAIL
       INVALID_ARGUMENT
       NO_SUCHFILE
@@ -119,19 +119,19 @@ module OnnxRuntime
     alias OrtOpAttrType = OpAttrType
 
     enum GraphOptimizationLevel
-      DISABLE_ALL = 0
-      ENABLE_BASIC = 1
-      ENABLE_EXTENDED = 2
-      ENABLE_ALL = 99
+      DISABLE_ALL     =  0
+      ENABLE_BASIC    =  1
+      ENABLE_EXTENDED =  2
+      ENABLE_ALL      = 99
     end
 
     enum ExecutionMode
       SEQUENTIAL = 0
-      PARALLEL = 1
+      PARALLEL   = 1
     end
 
     enum LanguageProjection
-      C = 0
+      C         = 0
       CPLUSPLUS
       CSHARP
       PYTHON
@@ -145,8 +145,8 @@ module OnnxRuntime
 
     enum AllocatorType
       INVALID = -1
-      DEVICE = 0
-      ARENA = 1
+      DEVICE  =  0
+      ARENA   =  1
     end
 
     # For C API compatibility
@@ -154,10 +154,10 @@ module OnnxRuntime
 
     # Memory types for allocated memory, execution provider specific types should be extended in each provider
     enum MemType
-      CPU_INPUT = -2    # Any CPU memory used by non-CPU execution provider
-      CPU_OUTPUT = -1   # CPU accessible memory outputted by non-CPU execution provider, i.e. CUDA_PINNED
-      CPU = CPU_OUTPUT  # Temporary CPU accessible memory allocated by non-CPU execution provider, i.e. CUDA_PINNED
-      DEFAULT = 0       # The default allocator for execution provider
+      CPU_INPUT  = -2         # Any CPU memory used by non-CPU execution provider
+      CPU_OUTPUT = -1         # CPU accessible memory outputted by non-CPU execution provider, i.e. CUDA_PINNED
+      CPU        = CPU_OUTPUT # Temporary CPU accessible memory allocated by non-CPU execution provider, i.e. CUDA_PINNED
+      DEFAULT    = 0          # The default allocator for execution provider
     end
 
     # For C API compatibility
@@ -165,7 +165,7 @@ module OnnxRuntime
 
     # This mimics OrtDevice type constants so they can be returned in the API
     enum MemoryInfoDeviceType
-      CPU = 0
+      CPU  = 0
       GPU
       FPGA
     end
@@ -175,7 +175,7 @@ module OnnxRuntime
 
     # Algorithm to use for cuDNN Convolution Op
     enum CudnnConvAlgoSearch
-      EXHAUSTIVE = 0  # expensive exhaustive benchmarking using cudnnFindConvolutionForwardAlgorithmEx
+      EXHAUSTIVE = 0 # expensive exhaustive benchmarking using cudnnFindConvolutionForwardAlgorithmEx
       HEURISTIC      # lightweight heuristic based search using cudnnGetConvolutionForwardAlgorithm_v7
       DEFAULT        # default algorithm using CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_PRECOMP_GEMM
     end
@@ -356,7 +356,7 @@ module OnnxRuntime
       kernel_info_get_attribute_float : (OrtKernelInfo*, LibC::Char*, Float32* -> OrtStatus*)
       kernel_info_get_attribute_int64 : (OrtKernelInfo*, LibC::Char*, Int64* -> OrtStatus*)
       kernel_info_get_attribute_string : (OrtKernelInfo*, LibC::Char*, LibC::Char*, LibC::SizeT* -> OrtStatus*)
-      
+
       # OrtKernelContext - Custom operator APIs
       kernel_context_get_input_count : (OrtKernelContext*, LibC::SizeT* -> OrtStatus*)
       kernel_context_get_output_count : (OrtKernelContext*, LibC::SizeT* -> OrtStatus*)
@@ -399,7 +399,7 @@ module OnnxRuntime
       model_metadata_get_description : (OrtModelMetadata*, OrtAllocator*, LibC::Char** -> OrtStatus*)
       model_metadata_lookup_custom_metadata_map : (OrtModelMetadata*, OrtAllocator*, LibC::Char*, LibC::Char** -> OrtStatus*)
       model_metadata_get_version : (OrtModelMetadata*, Int64* -> OrtStatus*)
-      
+
       # Release functions
       release_model_metadata : (OrtModelMetadata* -> Void)
       # OrtEnv - Threading
@@ -421,7 +421,7 @@ module OnnxRuntime
       get_string_tensor_element_length : (OrtValue*, LibC::SizeT, LibC::SizeT* -> OrtStatus*)
       get_string_tensor_element : (OrtValue*, LibC::SizeT, LibC::Char*, LibC::SizeT -> OrtStatus*)
       fill_string_tensor_element : (OrtValue*, LibC::SizeT, LibC::Char* -> OrtStatus*)
-      
+
       # OrtSessionOptions
       add_session_config_entry : (OrtSessionOptions*, LibC::Char*, LibC::Char* -> OrtStatus*)
       # OrtAllocator
@@ -451,27 +451,27 @@ module OnnxRuntime
       set_global_intra_op_num_threads : (OrtEnv*, Int32 -> OrtStatus*)
       set_global_inter_op_num_threads : (OrtEnv*, Int32 -> OrtStatus*)
       set_global_spin_control : (OrtEnv*, Int32 -> OrtStatus*)
-      
+
       # OrtSessionOptions
       add_initializer : (OrtSessionOptions*, LibC::Char*, OrtValue* -> OrtStatus*)
-      
+
       # OrtEnv
       create_env_with_custom_logger_and_global_thread_pools : (OrtLoggingFunction, Void*, OrtLoggingLevel, LibC::Char*, OrtThreadingOptions*, OrtEnv** -> OrtStatus*)
       # Execution Providers
       session_options_append_execution_provider_cuda : (OrtSessionOptions*, Int32 -> OrtStatus*)
       session_options_append_execution_provider_rocm : (OrtSessionOptions*, Int32 -> OrtStatus*)
       session_options_append_execution_provider_open_vino : (OrtSessionOptions*, LibC::Char* -> OrtStatus*)
-      
+
       # OrtEnv
       set_global_denormal_as_zero : (OrtEnv* -> OrtStatus*)
-      
+
       # OrtArenaCfg
       create_arena_cfg : (LibC::SizeT, Int32, Int32, Int32, OrtArenaCfg** -> OrtStatus*)
       release_arena_cfg : (OrtArenaCfg* -> Void)
-      
+
       # OrtModelMetadata
       model_metadata_get_graph_description : (OrtModelMetadata*, OrtAllocator*, LibC::Char** -> OrtStatus*)
-      
+
       # Execution Providers
       session_options_append_execution_provider_tensor_rt : (OrtSessionOptions*, Int32 -> OrtStatus*)
       set_current_gpu_device_id : (Int32 -> OrtStatus*)
@@ -479,17 +479,17 @@ module OnnxRuntime
       # OrtKernelInfo - Custom operator APIs
       kernel_info_get_attribute_array_float : (OrtKernelInfo*, LibC::Char*, Float32*, LibC::SizeT* -> OrtStatus*)
       kernel_info_get_attribute_array_int64 : (OrtKernelInfo*, LibC::Char*, Int64*, LibC::SizeT* -> OrtStatus*)
-      
+
       # OrtArenaCfg
       create_arena_cfg_v2 : (LibC::SizeT, Int32, Int32, Int32, Int32, Int32, OrtArenaCfg** -> OrtStatus*)
-      
+
       # OrtRunOptions
       add_run_config_entry : (OrtRunOptions*, LibC::Char*, LibC::Char* -> OrtStatus*)
-      
+
       # OrtPrepackedWeightsContainer
       create_prepacked_weights_container : (OrtPrepackedWeightsContainer** -> OrtStatus*)
       release_prepacked_weights_container : (OrtPrepackedWeightsContainer* -> Void)
-      
+
       # OrtSession
       create_session_with_prepacked_weights_container : (OrtEnv*, LibC::Char*, OrtSessionOptions*, OrtPrepackedWeightsContainer*, OrtSession** -> OrtStatus*)
       create_session_from_array_with_prepacked_weights_container : (OrtEnv*, Void*, LibC::SizeT, OrtSessionOptions*, OrtPrepackedWeightsContainer*, OrtSession** -> OrtStatus*)
@@ -499,10 +499,10 @@ module OnnxRuntime
       update_tensor_rt_provider_options : (OrtTensorRTProviderOptionsV2*, LibC::Char**, LibC::Char**, LibC::SizeT -> OrtStatus*)
       get_tensor_rt_provider_options_as_string : (OrtTensorRTProviderOptionsV2*, OrtAllocator*, LibC::Char** -> OrtStatus*)
       release_tensor_rt_provider_options : (OrtTensorRTProviderOptionsV2* -> Void)
-      
+
       # OrtSessionOptions
       enable_ort_custom_ops : (OrtSessionOptions* -> OrtStatus*)
-      
+
       # OrtAllocator
       register_allocator : (OrtEnv*, OrtAllocator* -> OrtStatus*)
       unregister_allocator : (OrtEnv*, OrtAllocator* -> OrtStatus*)
@@ -521,39 +521,39 @@ module OnnxRuntime
       get_sparse_tensor_values : (OrtValue*, OrtValue** -> OrtStatus*)
       get_sparse_tensor_indices_type_shape : (OrtValue*, OrtSparseIndicesFormat, OrtTensorTypeAndShapeInfo** -> OrtStatus*)
       get_sparse_tensor_indices : (OrtValue*, OrtSparseIndicesFormat, OrtValue** -> OrtStatus*)
-      
+
       # OrtValue
       has_value : (OrtValue*, Int* -> OrtStatus*)
-      
+
       # OrtKernelContext
       kernel_context_get_gpu_compute_stream : (OrtKernelContext*, Void** -> OrtStatus*)
-      
+
       # OrtValue
       get_tensor_memory_info : (OrtValue*, OrtMemoryInfo** -> OrtStatus*)
-      
+
       # Execution Providers
       get_execution_provider_api : (LibC::Char*, Int32, Void** -> OrtStatus*)
       # OrtSessionOptions - Custom thread functions
       session_options_set_custom_create_thread_fn : (OrtSessionOptions*, OrtCustomCreateThreadFn, Void* -> OrtStatus*)
       session_options_set_custom_thread_creation_options : (OrtSessionOptions*, Void* -> OrtStatus*)
       session_options_set_custom_join_thread_fn : (OrtSessionOptions*, OrtCustomJoinThreadFn -> OrtStatus*)
-      
+
       # OrtEnv - Custom thread functions
       set_global_custom_create_thread_fn : (OrtEnv*, OrtCustomCreateThreadFn, Void* -> OrtStatus*)
       set_global_custom_thread_creation_options : (OrtEnv*, Void* -> OrtStatus*)
       set_global_custom_join_thread_fn : (OrtEnv*, OrtCustomJoinThreadFn -> OrtStatus*)
-      
+
       # OrtIoBinding
       synchronize_bound_inputs : (OrtIoBinding* -> OrtStatus*)
       synchronize_bound_outputs : (OrtIoBinding* -> OrtStatus*)
-      
+
       # Execution Providers - CUDA
       session_options_append_execution_provider_cuda_v2 : (OrtSessionOptions*, OrtCUDAProviderOptionsV2* -> OrtStatus*)
       create_cuda_provider_options : (OrtCUDAProviderOptionsV2** -> OrtStatus*)
       update_cuda_provider_options : (OrtCUDAProviderOptionsV2*, LibC::Char**, LibC::Char**, LibC::SizeT -> OrtStatus*)
       get_cuda_provider_options_as_string : (OrtCUDAProviderOptionsV2*, OrtAllocator*, LibC::Char** -> OrtStatus*)
       release_cuda_provider_options : (OrtCUDAProviderOptionsV2* -> Void)
-      
+
       # Execution Providers - MIGraphX
       session_options_append_execution_provider_mi_graph_x : (OrtSessionOptions*, Int32, LibC::Char* -> OrtStatus*)
     end

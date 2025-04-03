@@ -31,18 +31,18 @@ describe OnnxRuntime::Model do
 
   it "predict" do
     model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-    
+
     # MNISTモデルの入力は28x28のグレースケール画像
     # ダミーの入力データを作成（すべて0の画像）
     input_data = Array(Float32).new(28 * 28, 0.0_f32)
-    
+
     # 予測を実行
     result = model.predict({"Input3" => input_data})
-    
+
     # 結果は10クラス（0-9の数字）の確率分布
     result.should be_a(Hash(String, Array(Float32) | Array(Int32) | Array(Int64)))
     result.keys.should contain("Plus214_Output_0")
-    
+
     # 出力は10個の値（各数字の確率）を持つ配列
     output = result["Plus214_Output_0"]
     output.should be_a(Array)
