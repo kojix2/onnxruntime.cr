@@ -216,6 +216,7 @@ module OnnxRuntime
     type OrtKernelContext = Void
     type OrtCustomOp = Void
     type OrtAllocator = Void
+    type OrtMIGraphXProviderOptions = Void
 
     # Memory allocation interface
     struct OrtAllocatorStruct
@@ -515,12 +516,12 @@ module OnnxRuntime
       create_sparse_tensor_with_values_as_ort_value : (OrtMemoryInfo*, Void*, LibC::SizeT, Int64*, LibC::SizeT, ONNXTensorElementDataType, OrtValue** -> OrtStatus*)
       use_coo_indices : (OrtValue*, Int64*, LibC::SizeT -> OrtStatus*)
       use_csr_indices : (OrtValue*, Int64*, LibC::SizeT, Int64*, LibC::SizeT -> OrtStatus*)
-      use_block_sparse_indices : (OrtValue*, Int64*, LibC::SizeT, Int64*, LibC::SizeT -> OrtStatus*)
+      use_block_sparse_indices : (OrtValue*, Int64*, LibC::SizeT, Int32* -> OrtStatus*)
       get_sparse_tensor_format : (OrtValue*, OrtSparseFormat* -> OrtStatus*)
       get_sparse_tensor_values_type_and_shape : (OrtValue*, OrtTensorTypeAndShapeInfo** -> OrtStatus*)
-      get_sparse_tensor_values : (OrtValue*, OrtValue** -> OrtStatus*)
+      get_sparse_tensor_values : (OrtValue*, Void** -> OrtStatus*)
       get_sparse_tensor_indices_type_shape : (OrtValue*, OrtSparseIndicesFormat, OrtTensorTypeAndShapeInfo** -> OrtStatus*)
-      get_sparse_tensor_indices : (OrtValue*, OrtSparseIndicesFormat, OrtValue** -> OrtStatus*)
+      get_sparse_tensor_indices : (OrtValue*, OrtSparseIndicesFormat, LibC::SizeT*, Void** -> OrtStatus*)
 
       # OrtValue
       has_value : (OrtValue*, LibC::Int* -> OrtStatus*)
@@ -555,7 +556,7 @@ module OnnxRuntime
       release_cuda_provider_options : (OrtCUDAProviderOptionsV2* -> Void)
 
       # Execution Providers - MIGraphX
-      session_options_append_execution_provider_mi_graph_x : (OrtSessionOptions*, Int32, LibC::Char* -> OrtStatus*)
+      session_options_append_execution_provider_mi_graph_x : (OrtSessionOptions*, OrtMIGraphXProviderOptions* -> OrtStatus*)
     end
 
     struct ApiBase

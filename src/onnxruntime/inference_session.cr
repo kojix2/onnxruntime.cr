@@ -333,12 +333,11 @@ module OnnxRuntime
       check_status(status)
 
       # Get values data
-      values_tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      status = api.get_sparse_tensor_values.call(tensor, pointerof(values_tensor))
+      values_ptr = Pointer(Void).null
+      status = api.get_sparse_tensor_values.call(tensor, pointerof(values_ptr))
       check_status(status)
 
-      data_ptr = Pointer(Void).null
-      status = api.get_tensor_mutable_data.call(values_tensor, pointerof(data_ptr))
+      data_ptr = values_ptr
       check_status(status)
 
       # Calculate total number of values
@@ -409,23 +408,22 @@ module OnnxRuntime
       check_status(status)
 
       # Get indices data
-      indices_tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      status = api.get_sparse_tensor_indices.call(tensor, indices_format, pointerof(indices_tensor))
+      indices_count = 0_u64
+      indices_ptr = Pointer(Void).null
+      status = api.get_sparse_tensor_indices.call(tensor, indices_format, pointerof(indices_count), pointerof(indices_ptr))
       check_status(status)
 
-      data_ptr = Pointer(Void).null
-      status = api.get_tensor_mutable_data.call(indices_tensor, pointerof(data_ptr))
-      check_status(status)
+      data_ptr = indices_ptr
 
       # Calculate total number of indices
-      indices_count = 1_i64
-      indices_shape.each { |d| indices_count *= d }
+      total_indices = 1_i64
+      indices_shape.each { |d| total_indices *= d }
 
       # Extract indices
       if indices_format == LibOnnxRuntime::SparseIndicesFormat::BLOCK_SPARSE_INDICES
-        Slice.new(data_ptr.as(Int32*), indices_count).to_a
+        Slice.new(data_ptr.as(Int32*), total_indices).to_a
       else
-        Slice.new(data_ptr.as(Int64*), indices_count).to_a
+        Slice.new(data_ptr.as(Int64*), total_indices).to_a
       end
     end
 
