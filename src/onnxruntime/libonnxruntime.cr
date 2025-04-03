@@ -6,6 +6,13 @@ module OnnxRuntime
   {% end %}
   lib LibOnnxRuntime
     ORT_API_VERSION = 21_u32
+    
+    # Define ORTCHAR_T based on platform
+    {% if flag?(:win32) %}
+      alias ORTCHAR_T = LibC::WChar
+    {% else %}
+      alias ORTCHAR_T = LibC::Char
+    {% end %}
 
     # Copied from TensorProto::DataType
     enum TensorElementDataType
@@ -557,6 +564,15 @@ module OnnxRuntime
 
       # Execution Providers - MIGraphX
       session_options_append_execution_provider_mi_graph_x : (OrtSessionOptions*, OrtMIGraphXProviderOptions* -> OrtStatus*)
+
+      # Lora Adapter
+      create_lora_adapter : (ORTCHAR_T*, OrtAllocator*, OrtLoraAdapter** -> OrtStatus*)
+      create_lora_adapter_from_array : (Void*, LibC::SizeT, OrtAllocator*, OrtLoraAdapter** -> OrtStatus*)
+      release_lora_adapter : (OrtLoraAdapter* -> Void)
+      run_options_add_active_lora_adapter : (OrtRunOptions*, OrtLoraAdapter* -> OrtStatus*)
+
+      # EP Dynamic Options
+      set_ep_dynamic_options : (OrtSession*, LibC::Char**, LibC::Char**, LibC::SizeT -> OrtStatus*)
     end
 
     struct ApiBase
