@@ -72,6 +72,11 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+      <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensor" data-name="onnxruntime::sparsetensor(t)">
       <a href="../OnnxRuntime/SparseTensor.html">SparseTensor</a>
       
@@ -144,7 +149,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L2" target="_blank">
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L2" target="_blank">
         onnxruntime/inference_session.cr
       </a>
     
@@ -187,7 +192,7 @@
       <li class="entry-summary">
         <a href="#release_env-class-method" class="signature"><strong>.release_env</strong></a>
         
-          <div class="summary"><p>Class method to explicitly release the environment</p></div>
+          <div class="summary"><p>Class method to explicitly release the environment This is kept for backward compatibility but is now just a wrapper around OrtEnvironment.release_reference</p></div>
         
       </li>
     
@@ -226,6 +231,8 @@
     
       <li class="entry-summary">
         <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+          <div class="summary"><p>Finalizer releases session-specific resources and the environment reference</p></div>
         
       </li>
     
@@ -318,7 +325,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -345,13 +352,15 @@
       
         <div class="doc">
           
-          <p>Class method to explicitly release the environment</p>
+          <p>Class method to explicitly release the environment
+This is kept for backward compatibility but is now just a wrapper
+around OrtEnvironment.release_reference</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L622" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L635" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -381,7 +390,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -397,7 +406,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -418,7 +427,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L597" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L612" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -431,10 +440,15 @@
         <a class="method-permalink" href="#finalize-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Finalizer releases session-specific resources and the environment reference</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -450,7 +464,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -466,7 +480,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -488,7 +502,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L55" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -509,7 +523,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -525,7 +539,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L175" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L190" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -541,7 +555,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/inference_session.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -72,6 +72,11 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+      <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensor" data-name="onnxruntime::sparsetensor(t)">
       <a href="../OnnxRuntime/SparseTensor.html">SparseTensor</a>
       
@@ -144,7 +149,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L2" target="_blank">
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L2" target="_blank">
         onnxruntime/model.cr
       </a>
     
@@ -210,6 +215,13 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+          <div class="summary"><p>Finalizer to release session resources This will also release the environment reference through the InferenceSession finalizer</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#inputs-instance-method" class="signature"><strong>#inputs</strong></a>
         
       </li>
@@ -226,6 +238,13 @@
     
       <li class="entry-summary">
         <a href="#predict%28input_feed%2Coutput_names%3Dnil%2Cshape%3Dnil%2C%2A%2Arun_options%29-instance-method" class="signature"><strong>#predict</strong>(input_feed, output_names = <span class="n">nil</span>, shape = <span class="n">nil</span>, **run_options)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
+        
+          <div class="summary"><p>Explicitly release resources</p></div>
         
       </li>
     
@@ -284,7 +303,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L3" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L3" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -321,7 +340,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -342,7 +361,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L52" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -363,7 +382,29 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L57" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Finalizer to release session resources
+This will also release the environment reference through the InferenceSession finalizer</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -379,7 +420,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L55" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L66" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -395,7 +436,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -411,7 +452,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -427,7 +468,28 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/77f76b66e510899cec6880c54bbf113dbaf786c6/src/onnxruntime/model.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="release-instance-method">
+      <div class="signature">
+        
+        def <strong>release</strong>
+
+        <a class="method-permalink" href="#release-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Explicitly release resources</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/382e1c4ed17beecf6c0f05a6ecfcd8ab0dcd6421/src/onnxruntime/model.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
