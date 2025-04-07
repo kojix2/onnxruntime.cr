@@ -1,6 +1,7 @@
 # onnxruntime.cr
 
 [![build](https://github.com/kojix2/onnxruntime.cr/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/onnxruntime.cr/actions/workflows/test.yml)
+[![Lines of Code](https://img.shields.io/endpoint?url=https%3A%2F%2Ftokei.kojix2.net%2Fbadge%2Fgithub%2Fkojix2%2Fonnxruntime%2Flines)](https://tokei.kojix2.net/github/kojix2/onnxruntime)
 
 [ONNX Runtime](https://github.com/Microsoft/onnxruntime) bindings for Crystal
 
