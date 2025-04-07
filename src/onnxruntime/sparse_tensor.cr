@@ -67,47 +67,52 @@ module OnnxRuntime
     end
 
     # Converts the sparse tensor to an OrtValue that can be used with the ONNX Runtime API.
+    # Note: The caller is responsible for releasing the returned OrtValue using api.release_value.call(tensor)
     #
     # * `session` - The InferenceSession instance to use for creating the OrtValue
     def to_ort_value(session)
       api = session.api
       allocator = session.allocator
-
-      # Create a sparse tensor OrtValue
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      status = api.create_sparse_tensor_as_ort_value.call(
-        allocator,
-        @dense_shape.to_unsafe,
-        @dense_shape.size.to_u64,
-        element_data_type,
-        pointerof(tensor)
-      )
-      session.check_status(status)
-
-      # Create memory info for CPU
       memory_info = Pointer(LibOnnxRuntime::OrtMemoryInfo).null
-      status = api.create_cpu_memory_info.call(
-        LibOnnxRuntime::AllocatorType::DEVICE,
-        LibOnnxRuntime::MemType::CPU,
-        pointerof(memory_info)
-      )
-      session.check_status(status)
+      
+      begin
+        # Create a sparse tensor OrtValue
+        status = api.create_sparse_tensor_as_ort_value.call(
+          allocator,
+          @dense_shape.to_unsafe,
+          @dense_shape.size.to_u64,
+          element_data_type,
+          pointerof(tensor)
+        )
+        session.check_status(status)
 
-      # Fill the sparse tensor with values and indices based on the format
-      case @format
-      when LibOnnxRuntime::SparseFormat::COO
-        fill_coo_tensor(api, tensor, memory_info, session)
-      when LibOnnxRuntime::SparseFormat::CSRC
-        fill_csr_tensor(api, tensor, memory_info, session)
-      when LibOnnxRuntime::SparseFormat::BLOCK_SPARSE
-        fill_block_sparse_tensor(api, tensor, memory_info, session)
-      else
-        raise "Unsupported sparse format: #{@format}"
+        # Create memory info for CPU
+        status = api.create_cpu_memory_info.call(
+          LibOnnxRuntime::AllocatorType::DEVICE,
+          LibOnnxRuntime::MemType::CPU,
+          pointerof(memory_info)
+        )
+        session.check_status(status)
+
+        # Fill the sparse tensor with values and indices based on the format
+        case @format
+        when LibOnnxRuntime::SparseFormat::COO
+          fill_coo_tensor(api, tensor, memory_info, session)
+        when LibOnnxRuntime::SparseFormat::CSRC
+          fill_csr_tensor(api, tensor, memory_info, session)
+        when LibOnnxRuntime::SparseFormat::BLOCK_SPARSE
+          fill_block_sparse_tensor(api, tensor, memory_info, session)
+        else
+          raise "Unsupported sparse format: #{@format}"
+        end
+        
+        # Return the tensor (caller is responsible for releasing it)
+        tensor
+      ensure
+        # Always release memory info
+        api.release_memory_info.call(memory_info) if memory_info
       end
-
-      api.release_memory_info.call(memory_info)
-
-      tensor
     end
 
     private def element_data_type

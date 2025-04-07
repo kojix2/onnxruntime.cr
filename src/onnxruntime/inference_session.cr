@@ -1,9 +1,12 @@
 module OnnxRuntime
   class InferenceSession
     @@env : Pointer(LibOnnxRuntime::OrtEnv)?
+    @@env_released = false  # Track if environment has been released
 
     @session : Pointer(LibOnnxRuntime::OrtSession)
+    @session_released = false  # Track if session has been released
     @allocator : Pointer(LibOnnxRuntime::OrtAllocator)
+    @allocator_released = false  # Track if allocator has been released
     @inputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
     @outputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
 
@@ -19,17 +22,40 @@ module OnnxRuntime
 
     def initialize(path_or_bytes, **session_options)
       session_options_ptr = Pointer(LibOnnxRuntime::OrtSessionOptions).null
-      status = api.create_session_options.call(pointerof(session_options_ptr))
-      check_status(status)
+      begin
+        status = api.create_session_options.call(pointerof(session_options_ptr))
+        check_status(status)
 
-      @session = load_session(path_or_bytes, session_options_ptr)
-      @allocator = load_allocator
-      @inputs = load_inputs
-      @outputs = load_outputs
+        @session = load_session(path_or_bytes, session_options_ptr)
+        @session_released = false
+        @allocator = load_allocator
+        @allocator_released = false
+        @inputs = load_inputs
+        @outputs = load_outputs
+      ensure
+        # Release session options
+        api.release_session_options.call(session_options_ptr) if session_options_ptr
+      end
     end
 
     def finalize
+      release_session
+      release_allocator
+    end
+
+    # Method to explicitly release the session
+    def release_session
+      return if @session_released
       api.release_session.call(@session) if @session
+      @session_released = true
+    end
+
+    # Method to explicitly release the allocator
+    # Note: Default allocator may not need to be released, so commented out
+    def release_allocator
+      # return if @allocator_released
+      # api.release_allocator.call(@allocator) if @allocator
+      # @allocator_released = true
     end
 
     private def load_session(path_or_bytes, session_options)
@@ -148,98 +174,109 @@ module OnnxRuntime
 
     def run(input_feed, output_names = nil, **run_options)
       run_options_ptr = Pointer(LibOnnxRuntime::OrtRunOptions).null
-      status = api.create_run_options.call(pointerof(run_options_ptr))
-      check_status(status)
-
-      # Set run options if provided
-      if tag = run_options["tag"]?
-        status = api.run_options_set_run_tag.call(run_options_ptr, tag.to_s)
-        check_status(status)
-      end
-
-      if level = run_options["log_severity_level"]?
-        status = api.run_options_set_run_log_severity_level.call(run_options_ptr, level.to_i)
-        check_status(status)
-      end
-
-      if level = run_options["log_verbosity_level"]?
-        status = api.run_options_set_run_log_verbosity_level.call(run_options_ptr, level.to_i)
-        check_status(status)
-      end
-
-      # Prepare input tensors
       input_tensors = [] of Pointer(LibOnnxRuntime::OrtValue)
-      input_names = [] of String
-
-      # Check if custom shapes are provided
-      shapes = run_options["shape"]?.try &.as(Hash(String, Array(Int64)))
-
-      input_feed.each do |name, data|
-        tensor = if data.is_a?(SparseTensorFloat32) || data.is_a?(SparseTensorInt32) || data.is_a?(SparseTensorInt64) || data.is_a?(SparseTensorFloat64)
-                   data.to_ort_value(self)
-                 elsif shapes && shapes[name]? && data.is_a?(Array)
-                   # Create tensor with custom shape
-                   create_tensor_with_shape(data, shapes[name])
-                 else
-                   create_tensor(data)
-                 end
-        input_tensors << tensor
-        input_names << name
-      end
-
-      # Prepare output names
-      output_names = output_names || @outputs.map { |o| o[:name] }
-
-      # Prepare output tensors
-      output_tensors = Array(Pointer(LibOnnxRuntime::OrtValue)).new(output_names.size, Pointer(LibOnnxRuntime::OrtValue).null)
-
-      # Run inference
-      input_names_ptr = input_names.map { |name| ort_string(name) }
-      output_names_ptr = output_names.map { |name| ort_string(name) }
-
-      status = api.run.call(
-        @session,
-        run_options_ptr,
-        input_names_ptr.to_unsafe,
-        input_tensors.to_unsafe,
-        input_tensors.size.to_u64,
-        output_names_ptr.to_unsafe,
-        output_names.size.to_u64,
-        output_tensors.to_unsafe
-      )
-      check_status(status)
-
-      # Clean up
-      api.release_run_options.call(run_options_ptr)
-
-      # Extract output data
-      result = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
-      output_names.each_with_index do |name, i|
-        tensor = output_tensors[i]
-
-        type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
-        status = api.get_type_info.call(tensor, pointerof(type_info))
+      
+      begin
+        status = api.create_run_options.call(pointerof(run_options_ptr))
         check_status(status)
 
-        onnx_type = LibOnnxRuntime::OnnxType::TENSOR
-        status = api.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type))
-        check_status(status)
-
-        if onnx_type == LibOnnxRuntime::OnnxType::TENSOR
-          # Handle dense tensor
-          result[name] = extract_dense_tensor_data(tensor, type_info)
-        elsif onnx_type == LibOnnxRuntime::OnnxType::SPARSETENSOR
-          # Handle sparse tensor
-          result[name] = extract_sparse_tensor_data(tensor)
-        else
-          raise "Unsupported ONNX type: #{onnx_type}"
+        # Set run options if provided
+        if tag = run_options["tag"]?
+          status = api.run_options_set_run_tag.call(run_options_ptr, tag.to_s)
+          check_status(status)
         end
 
-        api.release_type_info.call(type_info)
-        api.release_value.call(tensor)
-      end
+        if level = run_options["log_severity_level"]?
+          status = api.run_options_set_run_log_severity_level.call(run_options_ptr, level.to_i)
+          check_status(status)
+        end
 
-      result
+        if level = run_options["log_verbosity_level"]?
+          status = api.run_options_set_run_log_verbosity_level.call(run_options_ptr, level.to_i)
+          check_status(status)
+        end
+
+        # Prepare input tensors
+        input_names = [] of String
+
+        # Check if custom shapes are provided
+        shapes = run_options["shape"]?.try &.as(Hash(String, Array(Int64)))
+
+        input_feed.each do |name, data|
+          tensor = if data.is_a?(SparseTensorFloat32) || data.is_a?(SparseTensorInt32) || data.is_a?(SparseTensorInt64) || data.is_a?(SparseTensorFloat64)
+                     data.to_ort_value(self)
+                   elsif shapes && shapes[name]? && data.is_a?(Array)
+                     # Create tensor with custom shape
+                     create_tensor_with_shape(data, shapes[name])
+                   else
+                     create_tensor(data)
+                   end
+          input_tensors << tensor
+          input_names << name
+        end
+
+        # Prepare output names
+        output_names = output_names || @outputs.map { |o| o[:name] }
+
+        # Prepare output tensors
+        output_tensors = Array(Pointer(LibOnnxRuntime::OrtValue)).new(output_names.size, Pointer(LibOnnxRuntime::OrtValue).null)
+
+        # Run inference
+        input_names_ptr = input_names.map { |name| ort_string(name) }
+        output_names_ptr = output_names.map { |name| ort_string(name) }
+
+        status = api.run.call(
+          @session,
+          run_options_ptr,
+          input_names_ptr.to_unsafe,
+          input_tensors.to_unsafe,
+          input_tensors.size.to_u64,
+          output_names_ptr.to_unsafe,
+          output_names.size.to_u64,
+          output_tensors.to_unsafe
+        )
+        check_status(status)
+
+        # Extract output data
+        result = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
+        output_names.each_with_index do |name, i|
+          tensor = output_tensors[i]
+
+          type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
+          begin
+            status = api.get_type_info.call(tensor, pointerof(type_info))
+            check_status(status)
+
+            onnx_type = LibOnnxRuntime::OnnxType::TENSOR
+            status = api.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type))
+            check_status(status)
+
+            if onnx_type == LibOnnxRuntime::OnnxType::TENSOR
+              # Handle dense tensor
+              result[name] = extract_dense_tensor_data(tensor, type_info)
+            elsif onnx_type == LibOnnxRuntime::OnnxType::SPARSETENSOR
+              # Handle sparse tensor
+              result[name] = extract_sparse_tensor_data(tensor)
+            else
+              raise "Unsupported ONNX type: #{onnx_type}"
+            end
+          ensure
+            api.release_type_info.call(type_info) if type_info
+          end
+          
+          api.release_value.call(tensor) if tensor
+        end
+
+        result
+      ensure
+        # Clean up
+        api.release_run_options.call(run_options_ptr) if run_options_ptr
+        
+        # Release input tensors
+        input_tensors.each do |tensor|
+          api.release_value.call(tensor) if tensor
+        end
+      end
     end
 
     # Extract data from a dense tensor
@@ -532,24 +569,27 @@ module OnnxRuntime
     private def create_tensor_with_data(data, shape, element_type, element_size)
       shape = [data.size.to_i64] if shape.nil?
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
-
       memory_info = Pointer(LibOnnxRuntime::OrtMemoryInfo).null
-      status = api.create_cpu_memory_info.call(LibOnnxRuntime::AllocatorType::DEVICE, LibOnnxRuntime::MemType::CPU, pointerof(memory_info))
-      check_status(status)
+      
+      begin
+        status = api.create_cpu_memory_info.call(LibOnnxRuntime::AllocatorType::DEVICE, LibOnnxRuntime::MemType::CPU, pointerof(memory_info))
+        check_status(status)
 
-      status = api.create_tensor_with_data_as_ort_value.call(
-        memory_info,
-        data.to_unsafe.as(Void*),
-        (data.size * element_size).to_u64,
-        shape.to_unsafe,
-        shape.size.to_u64,
-        element_type,
-        pointerof(tensor)
-      )
-      check_status(status)
-
-      api.release_memory_info.call(memory_info)
-      tensor
+        status = api.create_tensor_with_data_as_ort_value.call(
+          memory_info,
+          data.to_unsafe.as(Void*),
+          (data.size * element_size).to_u64,
+          shape.to_unsafe,
+          shape.size.to_u64,
+          element_type,
+          pointerof(tensor)
+        )
+        check_status(status)
+        
+        tensor
+      ensure
+        api.release_memory_info.call(memory_info) if memory_info
+      end
     end
 
     # Make check_status public so it can be used by SparseTensor
@@ -572,8 +612,22 @@ module OnnxRuntime
         env = Pointer(LibOnnxRuntime::OrtEnv).null
         status = api.create_env.call(OnnxRuntime::LibOnnxRuntime::LoggingLevel::ERROR, ort_string("onnxruntime.cr"), pointerof(env))
         check_status(status)
+        @@env_released = false
         env
       end
+    end
+    
+    # Class method to explicitly release the environment
+    def self.release_env
+      return if @@env_released || @@env.nil?
+      api = OnnxRuntime::LibOnnxRuntime
+        .OrtGetApiBase.value
+        .get_api
+        .call(OnnxRuntime::LibOnnxRuntime::ORT_API_VERSION)
+        .value
+      api.release_env.call(@@env.not_nil!)
+      @@env_released = true
+      @@env = nil
     end
   end
 end
