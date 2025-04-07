@@ -1,8 +1,6 @@
 module OnnxRuntime
   class InferenceSession
-    @@env : Pointer(LibOnnxRuntime::OrtEnv)?
-    @@env_released = false # Track if environment has been released
-
+    # Use OrtEnvironment singleton for environment management
     @session : Pointer(LibOnnxRuntime::OrtSession)
     @session_released = false # Track if session has been released
     @allocator : Pointer(LibOnnxRuntime::OrtAllocator)
@@ -38,9 +36,12 @@ module OnnxRuntime
       end
     end
 
+    # Finalizer only releases session-specific resources
+    # Environment is managed separately and should be released explicitly by the user
     def finalize
       release_session
       release_allocator
+      # Note: Environment is not released here to avoid potential issues with concurrent finalization
     end
 
     # Method to explicitly release the session
@@ -608,27 +609,20 @@ module OnnxRuntime
       str.to_unsafe
     end
 
+    # Get the environment from the OrtEnvironment singleton
     private def env
-      @@env ||= begin
-        env = Pointer(LibOnnxRuntime::OrtEnv).null
-        status = api.create_env.call(OnnxRuntime::LibOnnxRuntime::LoggingLevel::ERROR, ort_string("onnxruntime.cr"), pointerof(env))
-        check_status(status)
-        @@env_released = false
-        env
-      end
+      OrtEnvironment.instance.env
     end
 
     # Class method to explicitly release the environment
+    # This method is now a wrapper around OrtEnvironment.instance.release
     def self.release_env
-      return if @@env_released || @@env.nil?
-      api = OnnxRuntime::LibOnnxRuntime
-        .OrtGetApiBase.value
-        .get_api
-        .call(OnnxRuntime::LibOnnxRuntime::ORT_API_VERSION)
-        .value
-      api.release_env.call(@@env.not_nil!)
-      @@env_released = true
-      @@env = nil
+      begin
+        OrtEnvironment.instance.release
+      rescue ex
+        # Log error but don't propagate it during shutdown
+        STDERR.puts "Error releasing ONNX Runtime environment: #{ex.message}"
+      end
     end
   end
 end

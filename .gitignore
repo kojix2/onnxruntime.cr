@@ -9,7 +9,7 @@
 /shard.lock
 
 # Ignore the downloaded libraries
-onnxruntime*
+onnxruntime-*
 
 # Ignore the dataset directory
 examples/data

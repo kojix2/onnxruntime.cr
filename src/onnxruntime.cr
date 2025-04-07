@@ -1,5 +1,6 @@
 require "./onnxruntime/libonnxruntime"
 require "./onnxruntime/sparse_tensor"
+require "./onnxruntime/ort_environment"
 require "./onnxruntime/inference_session"
 require "./onnxruntime/model"
 require "./onnxruntime/version"

@@ -4,6 +4,16 @@ module OnnxRuntime
       @session = InferenceSession.new(path_or_bytes, **session_options)
     end
 
+    # Finalizer to release session resources
+    def finalize
+      release
+    end
+
+    # Explicitly release resources
+    def release
+      @session.release_session if @session
+    end
+
     def predict(input_feed, output_names = nil, shape = nil, **run_options)
       # Convert input data to the appropriate format
       formatted_input = format_input(input_feed)
