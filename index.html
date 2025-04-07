@@ -209,7 +209,32 @@ probabilities <span class="o">=</span> result[<span class="s">&quot;Plus214_Outp
 
 <span class="c"># Find the digit with highest probability</span>
 predicted_digit <span class="o">=</span> probabilities.each_with_index.max_by { <span class="o">|</span>prob, _<span class="o">|</span> prob }[<span class="n">1</span>]
-puts <span class="s">&quot;Predicted digit: </span><span class="i">#{</span>predicted_digit<span class="i">}</span><span class="s">&quot;</span></code></pre>
+puts <span class="s">&quot;Predicted digit: </span><span class="i">#{</span>predicted_digit<span class="i">}</span><span class="s">&quot;</span>
+
+<span class="c"># Explicitly release resources</span>
+model.release
+<span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
+<h2><a id="memory-management" class="anchor" href="#memory-management">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Memory Management</h2>
+<p>Currently, this library requires explicit resource management as reference counting is not yet fully implemented. To prevent memory leaks, you must explicitly release resources when you're done with them:</p>
+<pre><code class="language-crystal"><span class="c"># Create and use model</span>
+model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
+result <span class="o">=</span> model.predict(input_data)
+
+<span class="c"># When finished, explicitly release resources</span>
+model.release
+<span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
+<p>For long-running applications like web servers, consider setting up signal handlers to ensure resources are properly released on shutdown:</p>
+<pre><code class="language-crystal"><span class="t">Signal</span><span class="t">::</span><span class="t">INT</span>.trap <span class="k">do</span>
+  puts <span class="s">&quot;Shutting down...&quot;</span>
+  model.release
+  <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env
+  exit
+<span class="k">end</span></code></pre>
+<p>See the examples directory for more detailed implementations.</p>
 <h2><a id="development" class="anchor" href="#development">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
