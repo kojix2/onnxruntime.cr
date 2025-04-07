@@ -244,7 +244,18 @@ server = HTTP::Server.new do |context|
   end
 end
 
+# Set up signal handler to release resources on shutdown
+Signal::INT.trap do
+  puts "\nShutting down server..."
+  # Explicitly release resources
+  model.release
+  OnnxRuntime::InferenceSession.release_env
+  puts "Resources released, exiting."
+  exit
+end
+
 # Start server
 address = server.bind_tcp 3000
 puts "Server running at http://localhost:3000"
+puts "Press Ctrl+C to stop the server"
 server.listen

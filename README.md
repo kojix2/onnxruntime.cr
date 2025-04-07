@@ -97,7 +97,38 @@ probabilities = result["Plus214_Output_0"].as(Array(Float32))
 # Find the digit with highest probability
 predicted_digit = probabilities.each_with_index.max_by { |prob, _| prob }[1]
 puts "Predicted digit: #{predicted_digit}"
+
+# Explicitly release resources
+model.release
+OnnxRuntime::InferenceSession.release_env
 ```
+
+## Memory Management
+
+Currently, this library requires explicit resource management as reference counting is not yet fully implemented. To prevent memory leaks, you must explicitly release resources when you're done with them:
+
+```crystal
+# Create and use model
+model = OnnxRuntime::Model.new("path/to/model.onnx")
+result = model.predict(input_data)
+
+# When finished, explicitly release resources
+model.release
+OnnxRuntime::InferenceSession.release_env
+```
+
+For long-running applications like web servers, consider setting up signal handlers to ensure resources are properly released on shutdown:
+
+```crystal
+Signal::INT.trap do
+  puts "Shutting down..."
+  model.release
+  OnnxRuntime::InferenceSession.release_env
+  exit
+end
+```
+
+See the examples directory for more detailed implementations.
 
 ## Development
 

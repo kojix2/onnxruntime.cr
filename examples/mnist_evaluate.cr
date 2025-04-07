@@ -81,3 +81,7 @@ f1_values = MNISTDataset::Metrics.f1_score(precision_values, recall_values)
 # Display metrics
 MNISTDataset::Metrics.display_confusion_matrix(confusion)
 MNISTDataset::Metrics.display_metrics(precision_values, recall_values, f1_values, accuracy_value)
+
+# Explicitly release resources
+model.release
+OnnxRuntime::InferenceSession.release_env
