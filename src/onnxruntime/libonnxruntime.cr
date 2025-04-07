@@ -6,7 +6,7 @@ module OnnxRuntime
   {% end %}
   lib LibOnnxRuntime
     ORT_API_VERSION = 21_u32
-    
+
     # Define ORTCHAR_T based on platform
     {% if flag?(:win32) %}
       alias ORTCHAR_T = LibC::WChar

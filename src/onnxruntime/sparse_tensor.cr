@@ -75,7 +75,7 @@ module OnnxRuntime
       allocator = session.allocator
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
       memory_info = Pointer(LibOnnxRuntime::OrtMemoryInfo).null
-      
+
       begin
         # Create a sparse tensor OrtValue
         status = api.create_sparse_tensor_as_ort_value.call(
@@ -106,7 +106,7 @@ module OnnxRuntime
         else
           raise "Unsupported sparse format: #{@format}"
         end
-        
+
         # Return the tensor (caller is responsible for releasing it)
         tensor
       ensure

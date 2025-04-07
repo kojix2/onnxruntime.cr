@@ -1,12 +1,12 @@
 module OnnxRuntime
   class InferenceSession
     @@env : Pointer(LibOnnxRuntime::OrtEnv)?
-    @@env_released = false  # Track if environment has been released
+    @@env_released = false # Track if environment has been released
 
     @session : Pointer(LibOnnxRuntime::OrtSession)
-    @session_released = false  # Track if session has been released
+    @session_released = false # Track if session has been released
     @allocator : Pointer(LibOnnxRuntime::OrtAllocator)
-    @allocator_released = false  # Track if allocator has been released
+    @allocator_released = false # Track if allocator has been released
     @inputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
     @outputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
 
@@ -175,7 +175,7 @@ module OnnxRuntime
     def run(input_feed, output_names = nil, **run_options)
       run_options_ptr = Pointer(LibOnnxRuntime::OrtRunOptions).null
       input_tensors = [] of Pointer(LibOnnxRuntime::OrtValue)
-      
+
       begin
         status = api.create_run_options.call(pointerof(run_options_ptr))
         check_status(status)
@@ -263,7 +263,7 @@ module OnnxRuntime
           ensure
             api.release_type_info.call(type_info) if type_info
           end
-          
+
           api.release_value.call(tensor) if tensor
         end
 
@@ -271,7 +271,7 @@ module OnnxRuntime
       ensure
         # Clean up
         api.release_run_options.call(run_options_ptr) if run_options_ptr
-        
+
         # Release input tensors
         input_tensors.each do |tensor|
           api.release_value.call(tensor) if tensor
@@ -345,13 +345,14 @@ module OnnxRuntime
 
     # Extract data from a sparse tensor
     private def extract_sparse_tensor_data(tensor)
+      values_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
+
       # Get sparse tensor format
       format = LibOnnxRuntime::SparseFormat::UNDEFINED
       status = api.get_sparse_tensor_format.call(tensor, pointerof(format))
       check_status(status)
 
       # Get values type and shape
-      values_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
       status = api.get_sparse_tensor_values_type_and_shape.call(tensor, pointerof(values_info))
       check_status(status)
 
@@ -375,7 +376,6 @@ module OnnxRuntime
       check_status(status)
 
       data_ptr = values_ptr
-      check_status(status)
 
       # Calculate total number of values
       values_count = 1_i64
@@ -430,8 +430,9 @@ module OnnxRuntime
 
     # Extract indices from a sparse tensor
     private def extract_sparse_indices(tensor, indices_format)
-      # Get indices type and shape
       indices_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
+
+      # Get indices type and shape
       status = api.get_sparse_tensor_indices_type_shape.call(tensor, indices_format, pointerof(indices_info))
       check_status(status)
 
@@ -570,7 +571,7 @@ module OnnxRuntime
       shape = [data.size.to_i64] if shape.nil?
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
       memory_info = Pointer(LibOnnxRuntime::OrtMemoryInfo).null
-      
+
       begin
         status = api.create_cpu_memory_info.call(LibOnnxRuntime::AllocatorType::DEVICE, LibOnnxRuntime::MemType::CPU, pointerof(memory_info))
         check_status(status)
@@ -585,7 +586,7 @@ module OnnxRuntime
           pointerof(tensor)
         )
         check_status(status)
-        
+
         tensor
       ensure
         api.release_memory_info.call(memory_info) if memory_info
@@ -616,7 +617,7 @@ module OnnxRuntime
         env
       end
     end
-    
+
     # Class method to explicitly release the environment
     def self.release_env
       return if @@env_released || @@env.nil?
