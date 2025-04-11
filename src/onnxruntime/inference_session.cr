@@ -1,14 +1,22 @@
 module OnnxRuntime
+  class InputOutput
+    getter name : String
+    getter type : LibOnnxRuntime::TensorElementDataType
+    getter shape : Array(Int64)
+
+    def initialize(@name, @type, @shape)
+    end
+  end
+
   class InferenceSession
     # Use OrtEnvironment singleton for environment management
-    @session : Pointer(LibOnnxRuntime::OrtSession)
-    @session_released = false # Track if session has been released
-    @allocator : Pointer(LibOnnxRuntime::OrtAllocator)
-    @allocator_released = false # Track if allocator has been released
-    @inputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
-    @outputs : Array(NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)))
+    getter session : Pointer(LibOnnxRuntime::OrtSession)
+    getter allocator : Pointer(LibOnnxRuntime::OrtAllocator)
+    getter inputs : Array(InputOutput)
+    getter outputs : Array(InputOutput)
 
-    getter :inputs, :outputs, :session, :allocator
+    @session_released = false   # Track if session has been released
+    @allocator_released = false # Track if allocator has been released
 
     protected getter api : LibOnnxRuntime::Api { create_api }
 
@@ -21,21 +29,17 @@ module OnnxRuntime
     end
 
     def initialize(path_or_bytes, **session_options)
-      session_options_ptr = Pointer(LibOnnxRuntime::OrtSessionOptions).null
-      begin
-        status = api.create_session_options.call(pointerof(session_options_ptr))
-        check_status(status)
+      session_options_ptr = api_create_session_options
 
-        @session = load_session(path_or_bytes, session_options_ptr)
-        @session_released = false
-        @allocator = load_allocator
-        @allocator_released = false
-        @inputs = load_inputs
-        @outputs = load_outputs
-      ensure
-        # Release session options
-        api.release_session_options.call(session_options_ptr) if session_options_ptr
-      end
+      @session = load_session(path_or_bytes, session_options_ptr)
+      @session_released = false
+      @allocator = api_get_allocator_with_default_options
+      @allocator_released = false
+      @inputs = load_inputs
+      @outputs = load_outputs
+    ensure
+      # Release session options
+      api.release_session_options.call(session_options_ptr) if session_options_ptr
     end
 
     # Finalizer only releases session-specific resources
@@ -72,107 +76,89 @@ module OnnxRuntime
       session
     end
 
-    private def load_allocator
+    private def api_get_allocator_with_default_options
       allocator = Pointer(LibOnnxRuntime::OrtAllocator).null
-      status = api.get_allocator_with_default_options.call(pointerof(allocator))
-      check_status(status)
+      api_call &.get_allocator_with_default_options.call(pointerof(allocator))
       allocator
     end
 
-    private def load_inputs
-      count = 0_u64
-      status = api.session_get_input_count.call(@session, pointerof(count))
+    private def api_session_get_input_name(session, index, allocator)
+      name_ptr = Pointer(Pointer(UInt8)).malloc(1)
+      status = api_call &.session_get_input_name.call(session, index, allocator, name_ptr)
       check_status(status)
+      name_ptr
+    end
 
-      inputs = [] of NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))
+    private def api_get_input_count(session)
+      count = 0_u64
+      api_call &.session_get_input_count.call(session, pointerof(count))
+      count
+    end
 
+    private def api_session_get_input_type_info(session, index)
+      type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
+      api_call &.session_get_input_type_info.call(session, index, pointerof(type_info))
+      type_info
+    end
+
+    private def api_get_output_count(session)
+      count = 0_u64
+      api_call &.session_get_output_count.call(session, pointerof(count))
+      count
+    end
+
+    private def api_session_get_output_name(session, index, allocator)
+      name_ptr = Pointer(Pointer(UInt8)).malloc(1)
+      status = api_call &.session_get_output_name.call(session, index, allocator, name_ptr)
+      check_status(status)
+      name_ptr
+    end
+
+    private def api_session_get_output_type_info(session, index)
+      type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
+      api_call &.session_get_output_type_info.call(session, index, pointerof(type_info))
+      type_info
+    end
+
+    private def load_inputs
+      inputs = Array(InputOutput).new
+      count = api_get_input_count(@session)
       count.times do |i|
-        name_ptr = Pointer(Pointer(UInt8)).malloc(1)
-        status = api.session_get_input_name.call(@session, i, @allocator, name_ptr)
-        check_status(status)
-
+        name_ptr = api_session_get_input_name(@session, i, @allocator)
         name = String.new(name_ptr.value)
-
-        type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
-        status = api.session_get_input_type_info.call(@session, i, pointerof(type_info))
-        check_status(status)
-
-        onnx_type = LibOnnxRuntime::OnnxType::TENSOR
-        status = api.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type))
-        check_status(status)
-
-        if onnx_type == LibOnnxRuntime::OnnxType::TENSOR
-          tensor_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
-          status = api.cast_type_info_to_tensor_info.call(type_info, pointerof(tensor_info))
-          check_status(status)
-
-          element_type = LibOnnxRuntime::TensorElementDataType::FLOAT
-          status = api.get_tensor_element_type.call(tensor_info, pointerof(element_type))
-          check_status(status)
-
-          dims_count = 0_u64
-          status = api.get_dimensions_count.call(tensor_info, pointerof(dims_count))
-          check_status(status)
-
-          dims = Array(Int64).new(dims_count, 0_i64)
-          status = api.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
-          check_status(status)
-
-          inputs << {name: name, type: LibOnnxRuntime::TensorElementDataType.new(element_type), shape: dims}
-        end
-
+        type_info = api_session_get_input_type_info(@session, i)
+        inputs << type_info_to_input_output(name, type_info)
         api.release_type_info.call(type_info)
       end
-
       inputs
     end
 
     private def load_outputs
-      count = 0_u64
-      status = api.session_get_output_count.call(@session, pointerof(count))
-      check_status(status)
-
-      outputs = [] of NamedTuple(name: String, type: LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))
-
+      outputs = Array(InputOutput).new
+      count = api_get_output_count(@session)
       count.times do |i|
-        name_ptr = Pointer(Pointer(UInt8)).malloc(1)
-        status = api.session_get_output_name.call(@session, i, @allocator, name_ptr)
-        check_status(status)
-
+        name_ptr = api_session_get_output_name(@session, i, @allocator)
         name = String.new(name_ptr.value)
-
-        type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
-        status = api.session_get_output_type_info.call(@session, i, pointerof(type_info))
-        check_status(status)
-
-        onnx_type = LibOnnxRuntime::OnnxType::TENSOR
-        status = api.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type))
-        check_status(status)
-
-        if onnx_type == LibOnnxRuntime::OnnxType::TENSOR
-          tensor_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
-          status = api.cast_type_info_to_tensor_info.call(type_info, pointerof(tensor_info))
-          check_status(status)
-
-          element_type = LibOnnxRuntime::TensorElementDataType::FLOAT
-          status = api.get_tensor_element_type.call(tensor_info, pointerof(element_type))
-          check_status(status)
-
-          dims_count = 0_u64
-          status = api.get_dimensions_count.call(tensor_info, pointerof(dims_count))
-          check_status(status)
-
-          dims = Array(Int64).new(dims_count, 0_i64)
-          status = api.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
-          check_status(status)
-
-          outputs << {name: name, type: LibOnnxRuntime::TensorElementDataType.new(element_type), shape: dims}
-        end
-
+        type_info = api_session_get_output_type_info(@session, i)
+        outputs << type_info_to_input_output(name, type_info)
         api.release_type_info.call(type_info)
       end
-
       outputs
+    end
+
+    def type_info_to_input_output(name, type_info)
+      onnx_type = api_get_onnx_type_from_type_info(type_info)
+
+      case onnx_type
+      when LibOnnxRuntime::OnnxType::TENSOR
+        tensor_info = api_cast_type_info_to_tensor_info(type_info)
+        element_type = api_get_tensor_element_type(tensor_info)
+        dims_count = api_get_dimensions_count(tensor_info)
+        dims = api_get_dimensions(tensor_info, dims_count)
+        InputOutput.new(name, LibOnnxRuntime::TensorElementDataType.new(element_type), dims)
+      else
+        raise "Unsupported ONNX type: #{onnx_type}"
+      end
     end
 
     def run(input_feed, output_names = nil, **run_options)
@@ -205,7 +191,7 @@ module OnnxRuntime
       end
 
       # Prepare output names
-      output_names = output_names || @outputs.map { |output| output[:name] }
+      output_names = output_names || @outputs.map(&.name)
 
       # Prepare output tensors
       output_tensors = Array(Pointer(LibOnnxRuntime::OrtValue)).new(output_names.size, Pointer(LibOnnxRuntime::OrtValue).null)
@@ -247,9 +233,15 @@ module OnnxRuntime
       status
     end
 
+    private def api_create_session_options
+      session_options_ptr = Pointer(LibOnnxRuntime::OrtSessionOptions).null
+      api_call &.create_session_options.call(pointerof(session_options_ptr))
+      session_options_ptr
+    end
+
     private def api_create_run_options
       run_options_ptr = Pointer(LibOnnxRuntime::OrtRunOptions).null
-      api_call(&.create_run_options.call(pointerof(run_options_ptr)))
+      api_call &.create_run_options.call(pointerof(run_options_ptr))
       run_options_ptr
     end
 
@@ -273,8 +265,7 @@ module OnnxRuntime
 
     private def api_get_dimensions(tensor_info, dims_count)
       dims = Array(Int64).new(dims_count, 0_i64)
-      status = api.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
-      check_status(status)
+      api_call &.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
       dims
     end
 
@@ -286,13 +277,13 @@ module OnnxRuntime
 
     private def api_get_type_info(tensor)
       type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
-      api_call(&.get_type_info.call(tensor, pointerof(type_info)))
+      api_call &.get_type_info.call(tensor, pointerof(type_info))
       type_info
     end
 
     private def api_get_onnx_type_from_type_info(type_info)
       onnx_type = LibOnnxRuntime::OnnxType::TENSOR
-      api_call(&.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type)))
+      api_call &.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type))
       onnx_type
     end
 
@@ -435,7 +426,7 @@ module OnnxRuntime
       indices = extract_indices_format(tensor, format)
 
       # Get dense shape from the first output
-      dense_shape = @outputs.first[:shape]
+      dense_shape = @outputs.first.shape
 
       # Create and return SparseTensor with the appropriate type
       case values

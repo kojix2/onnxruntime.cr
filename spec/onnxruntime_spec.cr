@@ -16,8 +16,8 @@ describe OnnxRuntime::InferenceSession do
   it "create" do
     session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
     session.should be_a(OnnxRuntime::InferenceSession)
-    session.inputs.should be_a(Array(NamedTuple(name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))))
-    session.outputs.should be_a(Array(NamedTuple(name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))))
+    session.inputs.should be_a(Array(OnnxRuntime::InputOutput))
+    session.outputs.should be_a(Array(OnnxRuntime::InputOutput))
   end
 end
 
@@ -25,8 +25,8 @@ describe OnnxRuntime::Model do
   it "create" do
     model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
     model.should be_a(OnnxRuntime::Model)
-    model.inputs.should be_a(Array(NamedTuple(name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))))
-    model.outputs.should be_a(Array(NamedTuple(name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64))))
+    model.inputs.should be_a(Array(OnnxRuntime::InputOutput))
+    model.outputs.should be_a(Array(OnnxRuntime::InputOutput))
   end
 
   it "predict" do

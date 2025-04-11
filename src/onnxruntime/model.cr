@@ -39,7 +39,7 @@ module OnnxRuntime
         result = @session.run(input_tensors, output_names, **run_options)
       else
         # Run inference without custom shapes, using the original input data
-        shape = @session.inputs.map { |i| {i[:name], i[:shape]} }.to_h.select(input_feed.keys)
+        shape = @session.inputs.map { |i| {i.name, i.shape} }.to_h.select(input_feed.keys)
         run_options = run_options.merge({shape: shape})
         result = @session.run(formatted_input, output_names, **run_options)
       end
@@ -83,17 +83,17 @@ module OnnxRuntime
 
       input_feed.each do |name, data|
         # If data is already a SparseTensor, use it directly
-        if data.is_a?(SparseTensorFloat32) || data.is_a?(SparseTensorInt32) || data.is_a?(SparseTensorInt64) || data.is_a?(SparseTensorFloat64)
+        if data.is_a?(SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64)
           formatted[name] = data
           next
         end
 
         # Find the input specification
-        input_spec = @session.inputs.find { |i| i[:name] == name }
+        input_spec = @session.inputs.find(&.name.==(name))
         raise "Unknown input: #{name}" unless input_spec
 
         # Convert data to the appropriate type and shape
-        case input_spec[:type]
+        case input_spec.type
         when LibOnnxRuntime::TensorElementDataType::FLOAT
           formatted[name] = convert_to_float32_array(data)
         when LibOnnxRuntime::TensorElementDataType::INT32
@@ -117,7 +117,7 @@ module OnnxRuntime
         when LibOnnxRuntime::TensorElementDataType::BOOL
           formatted[name] = convert_to_bool_array(data)
         else
-          raise "Unsupported input type: #{input_spec[:type]}"
+          raise "Unsupported input type: #{input_spec.type}"
         end
       end
 
