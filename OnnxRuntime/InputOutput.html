@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::TensorType - onnxruntime main</title>
+  <title>OnnxRuntime::InputOutput - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -67,7 +67,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/InputOutput" data-name="onnxruntime::inputoutput">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/InputOutput" data-name="onnxruntime::inputoutput">
       <a href="../OnnxRuntime/InputOutput.html">InputOutput</a>
       
     </li>
@@ -117,7 +117,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/TensorType" data-name="onnxruntime::tensortype">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorType" data-name="onnxruntime::tensortype">
       <a href="../OnnxRuntime/TensorType.html">TensorType</a>
       
     </li>
@@ -137,26 +137,18 @@
 <h1 class="type-name">
 
   <span class="kind">
-    alias
-  </span> OnnxRuntime::<wbr>TensorType
+    class
+  </span> OnnxRuntime::<wbr>InputOutput
 
 </h1>
 
 
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/InputOutput.html">OnnxRuntime::InputOutput</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
 
 
-  <h2>
-    <a id="alias-definition" class="anchor" href="#alias-definition">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Alias Definition
-  </h2>
-  <code>Array(Bool) | Array(Float32) | Array(Float64) | Array(Int16) | Array(Int32) | Array(Int64) | Array(Int8) | Array(UInt16) | Array(UInt32) | Array(UInt64) | Array(UInt8) | <a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(Float32)</a> | <a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(Float64)</a> | <a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(Int32)</a> | <a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(Int64)</a></code>
 
 
 
@@ -181,8 +173,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime.cr#L9" target="_blank">
-        onnxruntime.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L2" target="_blank">
+        onnxruntime/inference_session.cr
       </a>
     
     <br/>
@@ -193,25 +185,179 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28name%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%29-class-method" class="signature"><strong>.new</strong>(name : String, type : OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape : Array(Int64))</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#shape%3AArray%28Int64%29-instance-method" class="signature"><strong>#shape</strong> : Array(Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#type%3ALibOnnxRuntime%3A%3ATensorElementDataType-instance-method" class="signature"><strong>#type</strong> : LibOnnxRuntime::TensorElementDataType</a>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
     
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(name:String,type:OnnxRuntime::LibOnnxRuntime::TensorElementDataType,shape:Array(Int64))-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(name : String, type : OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape : Array(Int64))
+
+        <a class="method-permalink" href="#new%28name%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L7" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : String
+
+        <a class="method-permalink" href="#name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L3" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="shape:Array(Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>shape</strong> : Array(Int64)
+
+        <a class="method-permalink" href="#shape%3AArray%28Int64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L5" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="type:LibOnnxRuntime::TensorElementDataType-instance-method">
+      <div class="signature">
+        
+        def <strong>type</strong> : LibOnnxRuntime::TensorElementDataType
+
+        <a class="method-permalink" href="#type%3ALibOnnxRuntime%3A%3ATensorElementDataType-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>

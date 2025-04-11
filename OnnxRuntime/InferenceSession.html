@@ -67,6 +67,11 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/InputOutput" data-name="onnxruntime::inputoutput">
+      <a href="../OnnxRuntime/InputOutput.html">InputOutput</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/Model" data-name="onnxruntime::model">
       <a href="../OnnxRuntime/Model.html">Model</a>
       
@@ -168,7 +173,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L2" target="_blank">
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L11" target="_blank">
         onnxruntime/inference_session.cr
       </a>
     
@@ -233,7 +238,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#allocator%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtAllocator%29-instance-method" class="signature"><strong>#allocator</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtAllocator)</a>
+        <a href="#allocator%3APointer%28LibOnnxRuntime%3A%3AOrtAllocator%29-instance-method" class="signature"><strong>#allocator</strong> : Pointer(LibOnnxRuntime::OrtAllocator)</a>
         
       </li>
     
@@ -264,12 +269,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#inputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method" class="signature"><strong>#inputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})</a>
+        <a href="#inputs%3AArray%28InputOutput%29-instance-method" class="signature"><strong>#inputs</strong> : Array(InputOutput)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#outputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method" class="signature"><strong>#outputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})</a>
+        <a href="#outputs%3AArray%28InputOutput%29-instance-method" class="signature"><strong>#outputs</strong> : Array(InputOutput)</a>
         
       </li>
     
@@ -293,7 +298,14 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#session%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtSession%29-instance-method" class="signature"><strong>#session</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtSession)</a>
+        <a href="#session%3APointer%28LibOnnxRuntime%3A%3AOrtSession%29-instance-method" class="signature"><strong>#session</strong> : Pointer(LibOnnxRuntime::OrtSession)</a>
+        
+          <div class="summary"><p>Use OrtEnvironment singleton for environment management</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#type_info_to_input_output%28name%2Ctype_info%29-instance-method" class="signature"><strong>#type_info_to_input_output</strong>(name, type_info)</a>
         
       </li>
     
@@ -352,7 +364,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -386,7 +398,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L592" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L581" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -405,18 +417,18 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="allocator:Pointer(OnnxRuntime::LibOnnxRuntime::OrtAllocator)-instance-method">
+    <div class="entry-detail" id="allocator:Pointer(LibOnnxRuntime::OrtAllocator)-instance-method">
       <div class="signature">
         
-        def <strong>allocator</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtAllocator)
+        def <strong>allocator</strong> : Pointer(LibOnnxRuntime::OrtAllocator)
 
-        <a class="method-permalink" href="#allocator%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtAllocator%29-instance-method">#</a>
+        <a class="method-permalink" href="#allocator%3APointer%28LibOnnxRuntime%3A%3AOrtAllocator%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -437,7 +449,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L571" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L560" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -453,7 +465,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -474,7 +486,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L329" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L318" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -496,39 +508,39 @@ Environment is managed separately and should be released explicitly by the user<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L43" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="inputs:Array({name:String,type:OnnxRuntime::LibOnnxRuntime::TensorElementDataType,shape:Array(Int64)})-instance-method">
+    <div class="entry-detail" id="inputs:Array(InputOutput)-instance-method">
       <div class="signature">
         
-        def <strong>inputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})
+        def <strong>inputs</strong> : Array(<a href="../OnnxRuntime/InputOutput.html">InputOutput</a>)
 
-        <a class="method-permalink" href="#inputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method">#</a>
+        <a class="method-permalink" href="#inputs%3AArray%28InputOutput%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="outputs:Array({name:String,type:OnnxRuntime::LibOnnxRuntime::TensorElementDataType,shape:Array(Int64)})-instance-method">
+    <div class="entry-detail" id="outputs:Array(InputOutput)-instance-method">
       <div class="signature">
         
-        def <strong>outputs</strong> : Array({name: String, type: OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape: Array(Int64)})
+        def <strong>outputs</strong> : Array(<a href="../OnnxRuntime/InputOutput.html">InputOutput</a>)
 
-        <a class="method-permalink" href="#outputs%3AArray%28%7Bname%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%7D%29-instance-method">#</a>
+        <a class="method-permalink" href="#outputs%3AArray%28InputOutput%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -550,7 +562,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L58" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -571,7 +583,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -587,23 +599,44 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L162" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="session:Pointer(OnnxRuntime::LibOnnxRuntime::OrtSession)-instance-method">
+    <div class="entry-detail" id="session:Pointer(LibOnnxRuntime::OrtSession)-instance-method">
       <div class="signature">
         
-        def <strong>session</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtSession)
+        def <strong>session</strong> : Pointer(LibOnnxRuntime::OrtSession)
 
-        <a class="method-permalink" href="#session%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtSession%29-instance-method">#</a>
+        <a class="method-permalink" href="#session%3APointer%28LibOnnxRuntime%3A%3AOrtSession%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Use OrtEnvironment singleton for environment management</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="type_info_to_input_output(name,type_info)-instance-method">
+      <div class="signature">
+        
+        def <strong>type_info_to_input_output</strong>(name, type_info)
+
+        <a class="method-permalink" href="#type_info_to_input_output%28name%2Ctype_info%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/bbaeb8832f50fe0b36f0e69ca5deb641759a1379/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/0cc8e922132cb007be4c2799c55b29640e2e0129/src/onnxruntime/inference_session.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
