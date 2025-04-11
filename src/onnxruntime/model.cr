@@ -39,7 +39,9 @@ module OnnxRuntime
         # Run inference
         result = @session.run(input_tensors, output_names, **run_options)
       else
-        # Run inference without custom shapes
+        # Run inference without custom shapes, using the original input data
+        shape = @session.inputs.map { |i| {i[:name], i[:shape]} }.to_h.select(input_feed.keys)
+        run_options = run_options.merge({shape: shape})
         result = @session.run(formatted_input, output_names, **run_options)
       end
 
