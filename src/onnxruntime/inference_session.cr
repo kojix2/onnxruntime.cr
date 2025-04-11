@@ -15,8 +15,8 @@ module OnnxRuntime
     getter inputs : Array(InputOutput)
     getter outputs : Array(InputOutput)
 
-    @session_released = false   # Track if session has been released
-    @allocator_released = false # Track if allocator has been released
+    @session_released = true   # Track if session has been released
+    @allocator_released = true # Track if allocator has been released
 
     protected getter api : LibOnnxRuntime::Api { create_api }
 
