@@ -84,8 +84,7 @@ module OnnxRuntime
 
     private def api_session_get_input_name(session, index, allocator)
       name_ptr = Pointer(Pointer(UInt8)).malloc(1)
-      status = api_call &.session_get_input_name.call(session, index, allocator, name_ptr)
-      check_status(status)
+      api_call &.session_get_input_name.call(session, index, allocator, name_ptr)
       name_ptr
     end
 
@@ -109,8 +108,7 @@ module OnnxRuntime
 
     private def api_session_get_output_name(session, index, allocator)
       name_ptr = Pointer(Pointer(UInt8)).malloc(1)
-      status = api_call &.session_get_output_name.call(session, index, allocator, name_ptr)
-      check_status(status)
+      api_call &.session_get_output_name.call(session, index, allocator, name_ptr)
       name_ptr
     end
 
