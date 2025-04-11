@@ -6,6 +6,12 @@ require "./onnxruntime/model"
 require "./onnxruntime/version"
 
 module OnnxRuntime
+  alias TensorType = Array(Float32) | Array(Float64) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
+
+  alias NamedTensors = Hash(String, TensorType)
+
+  alias TensorElementDataType = LibOnnxRuntime::TensorElementDataType
+
   # Create a COO format sparse tensor
   def self.coo_sparse_tensor(values, indices, dense_shape)
     SparseTensor.coo(values, indices, dense_shape)

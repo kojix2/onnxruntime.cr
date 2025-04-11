@@ -21,8 +21,7 @@ module OnnxRuntime
       # Run inference with custom shapes if provided
       if shape
         # Create tensors with custom shapes
-        input_tensors = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
-
+        input_tensors = NamedTensors.new
         formatted_input.each do |name, data|
           if shape[name]? && data.is_a?(Array)
             # Use the custom shape for this input
@@ -80,7 +79,7 @@ module OnnxRuntime
     end
 
     private def format_input(input_feed)
-      formatted = {} of String => Array(Float32) | Array(Int32) | Array(Int64) | Array(Bool) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
+      formatted = NamedTensors.new
 
       input_feed.each do |name, data|
         # If data is already a SparseTensor, use it directly
@@ -96,27 +95,27 @@ module OnnxRuntime
         # Convert data to the appropriate type and shape
         case input_spec[:type]
         when LibOnnxRuntime::TensorElementDataType::FLOAT
-          formatted[name] = convert_to_float32_array(data, input_spec[:shape])
+          formatted[name] = convert_to_float32_array(data)
         when LibOnnxRuntime::TensorElementDataType::INT32
-          formatted[name] = convert_to_int32_array(data, input_spec[:shape])
+          formatted[name] = convert_to_int32_array(data)
         when LibOnnxRuntime::TensorElementDataType::INT64
-          formatted[name] = convert_to_int64_array(data, input_spec[:shape])
+          formatted[name] = convert_to_int64_array(data)
         when LibOnnxRuntime::TensorElementDataType::DOUBLE
-          formatted[name] = convert_to_float64_array(data, input_spec[:shape])
+          formatted[name] = convert_to_float64_array(data)
         when LibOnnxRuntime::TensorElementDataType::UINT8
-          formatted[name] = convert_to_uint8_array(data, input_spec[:shape])
+          formatted[name] = convert_to_uint8_array(data)
         when LibOnnxRuntime::TensorElementDataType::INT8
-          formatted[name] = convert_to_int8_array(data, input_spec[:shape])
+          formatted[name] = convert_to_int8_array(data)
         when LibOnnxRuntime::TensorElementDataType::UINT16
-          formatted[name] = convert_to_uint16_array(data, input_spec[:shape])
+          formatted[name] = convert_to_uint16_array(data)
         when LibOnnxRuntime::TensorElementDataType::INT16
-          formatted[name] = convert_to_int16_array(data, input_spec[:shape])
+          formatted[name] = convert_to_int16_array(data)
         when LibOnnxRuntime::TensorElementDataType::UINT32
-          formatted[name] = convert_to_uint32_array(data, input_spec[:shape])
+          formatted[name] = convert_to_uint32_array(data)
         when LibOnnxRuntime::TensorElementDataType::UINT64
-          formatted[name] = convert_to_uint64_array(data, input_spec[:shape])
+          formatted[name] = convert_to_uint64_array(data)
         when LibOnnxRuntime::TensorElementDataType::BOOL
-          formatted[name] = convert_to_bool_array(data, input_spec[:shape])
+          formatted[name] = convert_to_bool_array(data)
         else
           raise "Unsupported input type: #{input_spec[:type]}"
         end
@@ -125,155 +124,136 @@ module OnnxRuntime
       formatted
     end
 
-    private def convert_to_float32_array(data, shape)
-      case data
-      when Array(Float32)
-        data
-      when Array(Float64)
-        data.map(&.to_f32)
-      when Array(Int32)
-        data.map(&.to_f32)
-      when Array(Int64)
-        data.map(&.to_f32)
-      else
-        raise "Cannot convert #{data.class} to Array(Float32)"
-      end
+    private def convert_to_float32_array(data : Array(Float32))
+      data
     end
 
-    private def convert_to_float64_array(data, shape)
-      case data
-      when Array(Float64)
-        data.map(&.to_f32)
-      when Array(Float32)
-        data
-      when Array(Int32)
-        data.map(&.to_f32)
-      when Array(Int64)
-        data.map(&.to_f32)
-      else
-        raise "Cannot convert #{data.class} to Array(Float32)"
-      end
+    private def convert_to_float32_array(data : Array(Float64) | Array(Int32) | Array(Int64))
+      data.map(&.to_f32)
     end
 
-    private def convert_to_int32_array(data, shape)
-      case data
-      when Array(Int32)
-        data
-      when Array(Int64)
-        data.map(&.to_i32)
-      when Array(Float32)
-        data.map(&.to_i32)
-      when Array(Float64)
-        data.map(&.to_i32)
-      else
-        raise "Cannot convert #{data.class} to Array(Int32)"
-      end
+    private def convert_to_float32_array(data)
+      raise "Cannot convert #{data.class} to Array(Float32)"
     end
 
-    private def convert_to_int64_array(data, shape)
-      case data
-      when Array(Int64)
-        data
-      when Array(Int32)
-        data.map(&.to_i64)
-      when Array(Float32)
-        data.map(&.to_i64)
-      when Array(Float64)
-        data.map(&.to_i64)
-      else
-        raise "Cannot convert #{data.class} to Array(Int64)"
-      end
+    private def convert_to_float64_array(data : Array(Float64))
+      data
     end
 
-    private def convert_to_uint8_array(data, shape)
-      case data
-      when Array(UInt8)
-        data
-      when Array(Int32)
-        data.map(&.to_u8)
-      when Array(Int64)
-        data.map(&.to_u8)
-      else
-        raise "Cannot convert #{data.class} to Array(UInt8)"
-      end
+    private def convert_to_float64_array(data : Array(Float32) | Array(Int32) | Array(Int64))
+      data.map(&.to_f64)
     end
 
-    private def convert_to_int8_array(data, shape)
-      case data
-      when Array(Int8)
-        data
-      when Array(Int32)
-        data.map(&.to_i8)
-      when Array(Int64)
-        data.map(&.to_i8)
-      else
-        raise "Cannot convert #{data.class} to Array(Int8)"
-      end
+    private def convert_to_float64_array(data)
+      raise "Cannot convert #{data.class} to Array(Float64)"
     end
 
-    private def convert_to_uint16_array(data, shape)
-      case data
-      when Array(UInt16)
-        data
-      when Array(Int32)
-        data.map(&.to_u16)
-      when Array(Int64)
-        data.map(&.to_u16)
-      else
-        raise "Cannot convert #{data.class} to Array(UInt16)"
-      end
+    private def convert_to_int32_array(data : Array(Int32))
+      data
     end
 
-    private def convert_to_int16_array(data, shape)
-      case data
-      when Array(Int16)
-        data
-      when Array(Int32)
-        data.map(&.to_i16)
-      when Array(Int64)
-        data.map(&.to_i16)
-      else
-        raise "Cannot convert #{data.class} to Array(Int16)"
-      end
+    private def convert_to_int32_array(data : Array(Int64) | Array(Float32) | Array(Float64))
+      data.map(&.to_i32)
     end
 
-    private def convert_to_uint32_array(data, shape)
-      case data
-      when Array(UInt32)
-        data
-      when Array(Int32)
-        data.map(&.to_u32)
-      when Array(Int64)
-        data.map(&.to_u32)
-      else
-        raise "Cannot convert #{data.class} to Array(UInt32)"
-      end
+    private def convert_to_int32_array(data)
+      raise "Cannot convert #{data.class} to Array(Int32)"
     end
 
-    private def convert_to_uint64_array(data, shape)
-      case data
-      when Array(UInt64)
-        data
-      when Array(Int32)
-        data.map(&.to_u64)
-      when Array(Int64)
-        data.map(&.to_u64)
-      else
-        raise "Cannot convert #{data.class} to Array(UInt64)"
-      end
+    private def convert_to_int64_array(data : Array(Int64))
+      data
     end
 
-    private def convert_to_bool_array(data, shape)
-      case data
-      when Array(Bool)
-        data
-      when Array(Int32)
-        data.map { |v| v != 0 }
-      when Array(Int64)
-        data.map { |v| v != 0 }
-      else
-        raise "Cannot convert #{data.class} to Array(Bool)"
-      end
+    private def convert_to_int64_array(data : Array(Int32) | Array(Float32) | Array(Float64))
+      data.map(&.to_i64)
+    end
+
+    private def convert_to_int64_array(data)
+      raise "Cannot convert #{data.class} to Array(Int64)"
+    end
+
+    private def convert_to_uint8_array(data : Array(UInt8))
+      data
+    end
+
+    private def convert_to_uint8_array(data : Array(Int32) | Array(Int64))
+      data.map(&.to_u8)
+    end
+
+    private def convert_to_uint8_array(data)
+      raise "Cannot convert #{data.class} to Array(UInt8)"
+    end
+
+    private def convert_to_int8_array(data : Array(Int8))
+      data
+    end
+
+    private def convert_to_int8_array(data : Array(Int32) | Array(Int64))
+      data.map(&.to_i8)
+    end
+
+    private def convert_to_int8_array(data)
+      raise "Cannot convert #{data.class} to Array(Int8)"
+    end
+
+    private def convert_to_uint16_array(data : Array(UInt16))
+      data
+    end
+
+    private def convert_to_uint16_array(data : Array(Int32) | Array(Int64))
+      data.map(&.to_u16)
+    end
+
+    private def convert_to_uint16_array(data)
+      raise "Cannot convert #{data.class} to Array(UInt16)"
+    end
+
+    private def convert_to_int16_array(data : Array(Int16))
+      data
+    end
+
+    private def convert_to_int16_array(data : Array(Int32) | Array(Int64))
+      data.map(&.to_i16)
+    end
+
+    private def convert_to_int16_array(data)
+      raise "Cannot convert #{data.class} to Array(Int16)"
+    end
+
+    private def convert_to_uint32_array(data : Array(UInt32))
+      data
+    end
+
+    private def convert_to_uint32_array(data : Array(Int32) | Array(Int64))
+      data.map(&.to_u32)
+    end
+
+    private def convert_to_uint32_array(data)
+      raise "Cannot convert #{data.class} to Array(UInt32)"
+    end
+
+    private def convert_to_uint64_array(data : Array(UInt64))
+      data
+    end
+
+    private def convert_to_uint64_array(data : Array(Int32) | Array(Int64))
+      data.map(&.to_u64)
+    end
+
+    private def convert_to_uint64_array(data)
+      raise "Cannot convert #{data.class} to Array(UInt64)"
+    end
+
+    private def convert_to_bool_array(data : Array(Bool))
+      data
+    end
+
+    private def convert_to_bool_array(data : Array(Int32) | Array(Int64))
+      data.map { |v| v != 0 }
+    end
+
+    private def convert_to_bool_array(data)
+      raise "Cannot convert #{data.class} to Array(Bool)"
     end
 
     private def format_output(result)
