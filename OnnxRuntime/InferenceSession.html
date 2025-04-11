@@ -72,6 +72,11 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/NamedTensors" data-name="onnxruntime::namedtensors">
+      <a href="../OnnxRuntime/NamedTensors.html">NamedTensors</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
       
@@ -99,6 +104,16 @@
   
   <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt64" data-name="onnxruntime::sparsetensorint64">
       <a href="../OnnxRuntime/SparseTensorInt64.html">SparseTensorInt64</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorElementDataType" data-name="onnxruntime::tensorelementdatatype">
+      <a href="../OnnxRuntime/TensorElementDataType.html">TensorElementDataType</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorType" data-name="onnxruntime::tensortype">
+      <a href="../OnnxRuntime/TensorType.html">TensorType</a>
       
     </li>
   
@@ -153,7 +168,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L2" target="_blank">
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L2" target="_blank">
         onnxruntime/inference_session.cr
       </a>
     
@@ -223,14 +238,21 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
+        <a href="#check_status%28status%29-instance-method" class="signature"><strong>#check_status</strong>(status)</a>
+        
+          <div class="summary"><p>Make check_status public so it can be used by SparseTensor</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#check_status%28status%29-instance-method" class="signature"><strong>#check_status</strong>(status)</a>
+        <a href="#create_api-instance-method" class="signature"><strong>#create_api</strong></a>
         
-          <div class="summary"><p>Make check_status public so it can be used by SparseTensor</p></div>
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#extract_output_data%28tensor%29-instance-method" class="signature"><strong>#extract_output_data</strong>(tensor)</a>
+        
+          <div class="summary"><p>Extract data from the output tensor</p></div>
         
       </li>
     
@@ -330,7 +352,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -364,7 +386,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L619" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L592" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -394,23 +416,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="api-instance-method">
-      <div class="signature">
-        
-        def <strong>api</strong>
-
-        <a class="method-permalink" href="#api-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -431,7 +437,44 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L598" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L571" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create_api-instance-method">
+      <div class="signature">
+        
+        def <strong>create_api</strong>
+
+        <a class="method-permalink" href="#create_api-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L15" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="extract_output_data(tensor)-instance-method">
+      <div class="signature">
+        
+        def <strong>extract_output_data</strong>(tensor)
+
+        <a class="method-permalink" href="#extract_output_data%28tensor%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Extract data from the output tensor</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L329" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -453,7 +496,7 @@ Environment is managed separately and should be released explicitly by the user<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L43" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -469,7 +512,7 @@ Environment is managed separately and should be released explicitly by the user<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -485,7 +528,7 @@ Environment is managed separately and should be released explicitly by the user<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -507,7 +550,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L58" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -528,7 +571,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -544,7 +587,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L176" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L178" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -560,7 +603,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d92b32cad8e162f136ac6aadf659f10b1350f094/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/a0f7dcb4c94be753025a902498056e2a71e1900d/src/onnxruntime/inference_session.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
