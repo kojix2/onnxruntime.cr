@@ -102,7 +102,7 @@ OnnxRuntime::InferenceSession.release_env
 
 ## Memory Management
 
-Currently, this library requires explicit resource management as reference counting is not yet fully implemented. To prevent memory leaks, you must explicitly release resources when you're done with them:
+Currently, you must explicitly release resources when you're done with them:
 
 ```crystal
 # Create and use model
@@ -126,6 +126,17 @@ end
 ```
 
 See the examples directory for more detailed implementations.
+
+Why do you need to manually free memory?
+
+Previously, the following error was displayed on macOS.
+
+```
+libc++abi: terminating due to uncaught exception of type std::__1::system_error: mutex lock failed: Invalid argument
+Program received and didn't handle signal ABRT (6)
+```
+
+This seems to be related to multithreading and mutex. According to the AI, this is difficult to solve with `finalize`, so we tried to solve it by creating a reference counter, but we were unable to solve it in the end. If you can solve this problem, please create a pull request!
 
 ## Development
 
