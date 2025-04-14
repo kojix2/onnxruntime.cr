@@ -41,14 +41,14 @@ jobs:
 
       - name: Test
         env:
-          ONNXRUNTIMEDIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
+          ONNXRUNTIME_DIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
         run: |
-          echo "Using ONNX Runtime at: $ONNXRUNTIMEDIR"
+          echo "Using ONNX Runtime at: $ONNXRUNTIME_DIR"
           crystal spec
 
       - name: Test with verbose output
         if: failure()
         env:
-          ONNXRUNTIMEDIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
+          ONNXRUNTIME_DIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
         run: |
           crystal spec -v

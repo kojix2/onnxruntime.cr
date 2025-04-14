@@ -1,6 +1,6 @@
 module OnnxRuntime
-  {% if env("ONNXRUNTIMEDIR") %}
-    @[Link(ldflags: "-L `echo $ONNXRUNTIMEDIR/lib` -lonnxruntime -Wl,-rpath,`echo $ONNXRUNTIMEDIR/lib`")]
+  {% if env("ONNXRUNTIME_DIR") %}
+    @[Link(ldflags: "-L `echo $ONNXRUNTIME_DIR/lib` -lonnxruntime -Wl,-rpath,`echo $ONNXRUNTIME_DIR/lib`")]
   {% else %}
     @[Link("onnxruntime")]
   {% end %}

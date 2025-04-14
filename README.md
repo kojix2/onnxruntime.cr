@@ -17,7 +17,7 @@
    # Example for Linux
    wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-linux-x64-1.21.0.tgz
    tar -xzf onnxruntime-linux-x64-1.21.0.tgz
-   export ONNXRUNTIMEDIR=/path/to/onnxruntime-linux-x64-1.21.0
+   export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.21.0
    ```
 
    For macOS:
@@ -26,7 +26,7 @@
    # Example for macOS
    wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-x86_64-1.21.0.tgz
    tar -xzf onnxruntime-osx-x86_64-1.21.0.tgz
-   export ONNXRUNTIMEDIR=/path/to/onnxruntime-osx-x86_64-1.21.0
+   export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-x86_64-1.21.0
    ```
 
    For Windows:
@@ -35,7 +35,7 @@
    # Example for Windows
    # Download from https://github.com/microsoft/onnxruntime/releases
    # Extract and set environment variable
-   $env:ONNXRUNTIMEDIR = "C:\path\to\onnxruntime-win-x64-1.21.0"
+   $env:ONNXRUNTIME_DIR = "C:\path\to\onnxruntime-win-x64-1.21.0"
    ```
 
 2. Add the dependency to your `shard.yml`:
