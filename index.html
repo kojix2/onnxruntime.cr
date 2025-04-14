@@ -236,7 +236,7 @@ model.release
     <use href="#octicon-link"/>
   </svg>
 </a>Memory Management</h2>
-<p>Currently, this library requires explicit resource management as reference counting is not yet fully implemented. To prevent memory leaks, you must explicitly release resources when you're done with them:</p>
+<p>Currently, you must explicitly release resources when you're done with them:</p>
 <pre><code class="language-crystal"><span class="c"># Create and use model</span>
 model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
 result <span class="o">=</span> model.predict(input_data)
@@ -252,6 +252,11 @@ model.release
   exit
 <span class="k">end</span></code></pre>
 <p>See the examples directory for more detailed implementations.</p>
+<p>Why do you need to manually free memory?</p>
+<p>Previously, the following error was displayed on macOS.</p>
+<pre><code class="language-crystal">libc++abi: terminating due to uncaught exception of type std::__1::system_error: mutex lock failed: Invalid argument
+Program received and didn&#39;t handle signal ABRT (6)</code></pre>
+<p>This seems to be related to multithreading and mutex. According to the AI, this is difficult to solve with <code>finalize</code>, so we tried to solve it by creating a reference counter, but we were unable to solve it in the end. If you can solve this problem, please create a pull request!</p>
 <h2><a id="development" class="anchor" href="#development">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
