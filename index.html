@@ -156,10 +156,10 @@ wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxrunt
 tar -xzf onnxruntime-linux-x64-1.21.0.tgz
 export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.21.0</code></pre>
 <p>For macOS:</p>
-<pre><code class="language-bash"># Example for macOS
-wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-x86_64-1.21.0.tgz
-tar -xzf onnxruntime-osx-x86_64-1.21.0.tgz
-export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-x86_64-1.21.0</code></pre>
+<pre><code class="language-bash"># Example for macOS (arm64)
+curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-arm64-1.21.0.tgz -o onnxruntime-osx-arm64-1.21.0.tgz
+tar -xzf onnxruntime-osx-arm64-1.21.0.tgz
+export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.21.0</code></pre>
 </li>
 <li>
 <p>Add the dependency to your <code>shard.yml</code>:</p>
@@ -209,11 +209,11 @@ result.each <span class="k">do</span> <span class="o">|</span>name, data<span cl
     <use href="#octicon-link"/>
   </svg>
 </a>MNIST Example</h2>
-<p>Download the MNIST model: <a href="https://github.com/onnx/models/blob/main/validated/vision/classification/mnist/model/mnist-12.onnx">mnist-12.onnx</a></p>
+<p>Download the MNIST model: <a href="https://github.com/onnx/models/blob/main/validated/vision/classification/mnist/model/mnist-12.onnx">mnist-12.onnx</a> (<a href="https://github.com/onnx/models/raw/refs/heads/main/validated/vision/classification/mnist/model/mnist-12.onnx">raw</a></p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;onnxruntime&quot;</span>
 
 <span class="c"># Load the MNIST model</span>
-model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;mnist.onnx&quot;</span>)
+model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;mnist-12.onnx&quot;</span>)
 
 <span class="c"># Create a dummy input (28x28 image draw 1)</span>
 input_data <span class="o">=</span> <span class="t">Array</span>(<span class="t">Float32</span>).new(<span class="n">28</span> <span class="o">*</span> <span class="n">28</span>) { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">%</span> <span class="n">14</span> <span class="o">==</span> <span class="n">0</span> ? <span class="n">1.0</span> : <span class="n">0.0</span>).to_f32 }
