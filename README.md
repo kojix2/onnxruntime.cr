@@ -29,15 +29,6 @@
    export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-x86_64-1.21.0
    ```
 
-   For Windows:
-
-   ```powershell
-   # Example for Windows
-   # Download from https://github.com/microsoft/onnxruntime/releases
-   # Extract and set environment variable
-   $env:ONNXRUNTIME_DIR = "C:\path\to\onnxruntime-win-x64-1.21.0"
-   ```
-
 2. Add the dependency to your `shard.yml`:
 
    ```yaml
