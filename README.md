@@ -23,10 +23,10 @@
    For macOS:
 
    ```bash
-   # Example for macOS
-   wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-x86_64-1.21.0.tgz
-   tar -xzf onnxruntime-osx-x86_64-1.21.0.tgz
-   export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-x86_64-1.21.0
+   # Example for macOS (arm64)
+   curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-arm64-1.21.0.tgz -o onnxruntime-osx-arm64-1.21.0.tgz
+   tar -xzf onnxruntime-osx-arm64-1.21.0.tgz
+   export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.21.0
    ```
 
 2. Add the dependency to your `shard.yml`:
@@ -74,13 +74,13 @@ end
 
 ## MNIST Example
 
-Download the MNIST model: [mnist-12.onnx](https://github.com/onnx/models/blob/main/validated/vision/classification/mnist/model/mnist-12.onnx)
+Download the MNIST model: [mnist-12.onnx](https://github.com/onnx/models/blob/main/validated/vision/classification/mnist/model/mnist-12.onnx) ([raw](https://github.com/onnx/models/raw/refs/heads/main/validated/vision/classification/mnist/model/mnist-12.onnx)
 
 ```crystal
 require "onnxruntime"
 
 # Load the MNIST model
-model = OnnxRuntime::Model.new("mnist.onnx")
+model = OnnxRuntime::Model.new("mnist-12.onnx")
 
 # Create a dummy input (28x28 image draw 1)
 input_data = Array(Float32).new(28 * 28) { |i| (i % 14 == 0 ? 1.0 : 0.0).to_f32 }
