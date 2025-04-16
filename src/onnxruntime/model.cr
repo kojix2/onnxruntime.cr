@@ -116,6 +116,8 @@ module OnnxRuntime
           formatted[name] = convert_to_uint64_array(data)
         when LibOnnxRuntime::TensorElementDataType::BOOL
           formatted[name] = convert_to_bool_array(data)
+        when LibOnnxRuntime::TensorElementDataType::STRING
+          formatted[name] = data
         else
           raise "Unsupported input type: #{input_spec.type}"
         end

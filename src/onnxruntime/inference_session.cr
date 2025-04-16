@@ -243,6 +243,12 @@ module OnnxRuntime
       run_options_ptr
     end
 
+    private def api_create_cpu_memory_info
+      memory_info = Pointer(LibOnnxRuntime::OrtMemoryInfo).null
+      api_call &.create_cpu_memory_info.call(LibOnnxRuntime::AllocatorType::DEVICE, LibOnnxRuntime::MemType::CPU, pointerof(memory_info))
+      memory_info
+    end
+
     private def api_cast_type_info_to_tensor_info(type_info)
       tensor_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
       api_call &.cast_type_info_to_tensor_info.call(type_info, pointerof(tensor_info))
@@ -498,62 +504,85 @@ module OnnxRuntime
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::DOUBLE, sizeof(Float64))
     end
 
-    private def create_uint8_tensor(data : Array(UInt8), shape = nil)
+    private def create_tensor(data : Array(UInt8), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT8, sizeof(UInt8))
     end
 
-    private def create_int8_tensor(data : Array(Int8), shape = nil)
+    private def create_tensor(data : Array(Int8), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT8, sizeof(Int8))
     end
 
-    private def create_uint16_tensor(data : Array(UInt16), shape = nil)
+    private def create_tensor(data : Array(UInt16), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT16, sizeof(UInt16))
     end
 
-    private def create_int16_tensor(data : Array(Int16), shape = nil)
+    private def create_tensor(data : Array(Int16), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT16, sizeof(Int16))
     end
 
-    private def create_uint32_tensor(data : Array(UInt32), shape = nil)
+    private def create_tensor(data : Array(UInt32), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT32, sizeof(UInt32))
     end
 
-    private def create_uint64_tensor(data : Array(UInt64), shape = nil)
+    private def create_tensor(data : Array(UInt64), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT64, sizeof(UInt64))
     end
 
-    private def create_bool_tensor(data : Array(Bool), shape = nil)
+    private def create_tensor(data : Array(Bool), shape = nil)
       create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::BOOL, sizeof(Bool))
     end
 
+    private def create_tensor(data : Array(String), shape = nil)
+      create_string_tensor(data, shape, LibOnnxRuntime::TensorElementDataType::STRING)
+    end
+
+    # Create a string tensor, but quite ugly way
+    private def create_string_tensor(data, shape, element_type) : Pointer(LibOnnxRuntime::OrtValue)
+      shape = [data.size.to_i64, 1_i64] if shape.nil?
+      shape = shape.map { |val| val < 0 ? data.size.to_i64 : val }
+      tensor = Pointer(LibOnnxRuntime::OrtValue).null
+
+      api_call &.create_tensor_as_ort_value.call(
+        @allocator,
+        shape.to_unsafe,
+        shape.size.to_u64,
+        element_type,
+        pointerof(tensor)
+      )
+
+      cstrs = data.map(&.to_unsafe)
+      str_ptrs = Pointer(UInt8*).malloc(data.size)
+      data.each_with_index { |_, i| str_ptrs[i] = cstrs[i] }
+
+      api_call &.fill_string_tensor.call(
+        tensor,
+        str_ptrs,
+        data.size.to_u64
+      )
+      tensor
+    end
+
     private def create_tensor(data, shape = nil)
-      raise "Unsupported data type: #{data.class}"
+      raise "Unsupported data type: #{data.class}, #{data.inspect}, shape: #{shape.inspect}"
     end
 
     private def create_tensor_with_data(data, shape, element_type, element_size)
       shape = [data.size.to_i64] if shape.nil?
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      memory_info = Pointer(LibOnnxRuntime::OrtMemoryInfo).null
+      memory_info = api_create_cpu_memory_info
 
-      begin
-        status = api.create_cpu_memory_info.call(LibOnnxRuntime::AllocatorType::DEVICE, LibOnnxRuntime::MemType::CPU, pointerof(memory_info))
-        check_status(status)
-
-        status = api.create_tensor_with_data_as_ort_value.call(
-          memory_info,
-          data.to_unsafe.as(Void*),
-          (data.size * element_size).to_u64,
-          shape.to_unsafe,
-          shape.size.to_u64,
-          element_type,
-          pointerof(tensor)
-        )
-        check_status(status)
-
-        tensor
-      ensure
-        api.release_memory_info.call(memory_info) if memory_info
-      end
+      api_call &.create_tensor_with_data_as_ort_value.call(
+        memory_info,
+        data.to_unsafe.as(Void*),
+        (data.size * element_size).to_u64,
+        shape.to_unsafe,
+        shape.size.to_u64,
+        element_type,
+        pointerof(tensor)
+      )
+      tensor
+    ensure
+      api.release_memory_info.call(memory_info) if memory_info
     end
 
     # Make check_status public so it can be used by SparseTensor
