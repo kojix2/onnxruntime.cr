@@ -13,37 +13,19 @@ describe OnnxRuntime do
 end
 
 describe OnnxRuntime::InferenceSession do
-  it "create" do
+  it "can be created" do
     session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
     session.should be_a(OnnxRuntime::InferenceSession)
-    session.inputs.should be_a(Array(OnnxRuntime::InputOutput))
-    session.outputs.should be_a(Array(OnnxRuntime::InputOutput))
-  end
-end
-
-describe OnnxRuntime::Model do
-  it "create" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-    model.should be_a(OnnxRuntime::Model)
-    model.inputs.should be_a(Array(OnnxRuntime::InputOutput))
-    model.outputs.should be_a(Array(OnnxRuntime::InputOutput))
+    session.inputs.should be_a(Array(OnnxRuntime::TensorInfo))
+    session.outputs.should be_a(Array(OnnxRuntime::TensorInfo))
   end
 
-  it "predict" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-
-    # MNIST model input is 4-dimensional [batch size, channels, height, width]
-    # Create dummy input data (all zeros image)
+  it "can run inference with float32 input" do
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
     input_data = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
-
-    # Execute prediction (specifying 4-dimensional shape)
-    result = model.predict({"Input3" => input_data})
-
-    # Result is a probability distribution for 10 classes (digits 0-9)
+    result = session.run({"Input3" => input_data})
     result.should be_a(OnnxRuntime::NamedTensors)
     result.keys.should contain("Plus214_Output_0")
-
-    # Output is an array with 10 values (probability for each digit)
     output = result["Plus214_Output_0"]
     output.is_a?(Array(Float32)).should be_true
     if output.is_a?(Array(Float32))
@@ -51,24 +33,19 @@ describe OnnxRuntime::Model do
     end
   end
 
-  it "predict with different data types" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-
-    # Float32 type input data
-    input_float32 = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
-    result_float32 = model.predict({"Input3" => input_float32})
-    result_float32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
-
-    # Int32 type input data (automatically converted to Float32)
+  it "can run inference with int32 input (auto-convert to float32)" do
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
     input_int32 = Array(Int32).new(1 * 1 * 28 * 28, 0)
-    result_int32 = model.predict({"Input3" => input_int32})
-    result_int32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
+    result = session.run({"Input3" => input_int32})
+    result["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
   end
 
-  it "metadata" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-    metadata = model.metadata
-    metadata.should_not be_nil
+  it "provides input/output metadata" do
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
+    session.inputs.should_not be_nil
+    session.outputs.should_not be_nil
+    session.inputs.first.should be_a(OnnxRuntime::TensorInfo)
+    session.outputs.first.should be_a(OnnxRuntime::TensorInfo)
   end
 end
 

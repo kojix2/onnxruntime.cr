@@ -40,7 +40,7 @@ module OnnxRuntime
 
       @@mutex.synchronize do
         return if @released
-        
+
         begin
           api.release_env.call(@env)
           @released = true

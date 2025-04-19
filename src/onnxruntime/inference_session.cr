@@ -1,5 +1,6 @@
 module OnnxRuntime
-  class InputOutput
+  # Information about a model input or output tensor.
+  class TensorInfo
     getter name : String
     getter type : LibOnnxRuntime::TensorElementDataType
     getter shape : Array(Int64)
@@ -8,12 +9,13 @@ module OnnxRuntime
     end
   end
 
+  # ONNX Runtime inference session for running models.
   class InferenceSession
     # Use OrtEnvironment singleton for environment management
     getter session : Pointer(LibOnnxRuntime::OrtSession)
     getter allocator : Pointer(LibOnnxRuntime::OrtAllocator)
-    getter inputs : Array(InputOutput)
-    getter outputs : Array(InputOutput)
+    getter inputs : Array(TensorInfo)
+    getter outputs : Array(TensorInfo)
 
     @session_released = true   # Track if session has been released
     @allocator_released = true # Track if allocator has been released
@@ -119,32 +121,32 @@ module OnnxRuntime
     end
 
     private def load_inputs
-      inputs = Array(InputOutput).new
+      inputs = Array(TensorInfo).new
       count = api_get_input_count(@session)
       count.times do |i|
         name_ptr = api_session_get_input_name(@session, i, @allocator)
         name = String.new(name_ptr.value)
         type_info = api_session_get_input_type_info(@session, i)
-        inputs << type_info_to_input_output(name, type_info)
+        inputs << type_info_to_tensor_info(name, type_info)
         api.release_type_info.call(type_info)
       end
       inputs
     end
 
     private def load_outputs
-      outputs = Array(InputOutput).new
+      outputs = Array(TensorInfo).new
       count = api_get_output_count(@session)
       count.times do |i|
         name_ptr = api_session_get_output_name(@session, i, @allocator)
         name = String.new(name_ptr.value)
         type_info = api_session_get_output_type_info(@session, i)
-        outputs << type_info_to_input_output(name, type_info)
+        outputs << type_info_to_tensor_info(name, type_info)
         api.release_type_info.call(type_info)
       end
       outputs
     end
 
-    def type_info_to_input_output(name, type_info)
+    def type_info_to_tensor_info(name, type_info)
       onnx_type = api_get_onnx_type_from_type_info(type_info)
 
       case onnx_type
@@ -153,7 +155,7 @@ module OnnxRuntime
         element_type = api_get_tensor_element_type(tensor_info)
         dims_count = api_get_dimensions_count(tensor_info)
         dims = api_get_dimensions(tensor_info, dims_count)
-        InputOutput.new(name, LibOnnxRuntime::TensorElementDataType.new(element_type), dims)
+        TensorInfo.new(name, LibOnnxRuntime::TensorElementDataType.new(element_type), dims)
       else
         raise "Unsupported ONNX type: #{onnx_type}"
       end

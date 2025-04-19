@@ -2,9 +2,9 @@ require "./onnxruntime/libonnxruntime"
 require "./onnxruntime/sparse_tensor"
 require "./onnxruntime/ort_environment"
 require "./onnxruntime/inference_session"
-require "./onnxruntime/model"
 require "./onnxruntime/version"
 
+# Main OnnxRuntime module providing tensor and sparse tensor utilities.
 module OnnxRuntime
   alias TensorType = Array(Float32) | Array(Float64) | Array(Int32) | Array(Int64) | Array(Bool) | Array(String) | Array(UInt8) | Array(Int8) | Array(UInt16) | Array(Int16) | Array(UInt32) | Array(UInt64) | SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64
 
