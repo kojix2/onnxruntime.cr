@@ -25,8 +25,8 @@ module MNISTDataset
     property labels_url : String
 
     def initialize
-      @data_dir = "examples/data"
-      @model_path = "spec/fixtures/mnist.onnx"
+      @data_dir = "data"
+      @model_path = "../spec/fixtures/mnist.onnx"
       @images_file = "#{@data_dir}/t10k-images-idx3-ubyte"
       @labels_file = "#{@data_dir}/t10k-labels-idx1-ubyte"
       @images_gz = "#{@data_dir}/t10k-images-idx3-ubyte.gz"
@@ -301,26 +301,26 @@ module MNISTDataset
   end
 
   # Load the MNIST model
-  def load_model(model_path : String) : OnnxRuntime::Model
+  def load_model(model_path : String) : OnnxRuntime::InferenceSession
     puts "Loading MNIST model from #{model_path}"
-    model = OnnxRuntime::Model.new(model_path)
+    session = OnnxRuntime::InferenceSession.new(model_path)
 
     # Display model input and output information
     puts "\nModel inputs:"
-    model.inputs.each do |input|
-      puts "  - #{input[:name]}: #{input[:type]} #{input[:shape]}"
+    session.inputs.each do |input|
+      puts "  - #{input.name}: #{input.type} #{input.shape}"
     end
 
     puts "\nModel outputs:"
-    model.outputs.each do |output|
-      puts "  - #{output[:name]}: #{output[:type]} #{output[:shape]}"
+    session.outputs.each do |output|
+      puts "  - #{output.name}: #{output.type} #{output.shape}"
     end
 
-    model
+    session
   end
 
   # Create a prediction function
-  def create_prediction_function(model : OnnxRuntime::Model)
+  def create_prediction_function(session : OnnxRuntime::InferenceSession)
     # MNIST image dimensions for the model
     batch_size = 1
     channels = 1
@@ -329,7 +329,7 @@ module MNISTDataset
 
     # Function to predict a single image
     ->(image_data : Array(Float32)) {
-      result = model.predict(
+      result = session.run(
         {"Input3" => image_data},
         nil,
         shape: {"Input3" => [batch_size.to_i64, channels.to_i64, height.to_i64, width.to_i64]}

@@ -51,5 +51,5 @@ puts "Prediction #{prediction == true_label ? "CORRECT" : "INCORRECT"}"
 MNISTDataset::Dataset.visualize_image(input_data)
 
 # Explicitly release resources
-model.release
+model.release_session
 OnnxRuntime::InferenceSession.release_env

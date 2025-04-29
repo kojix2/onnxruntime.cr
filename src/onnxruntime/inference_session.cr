@@ -1,19 +1,10 @@
 module OnnxRuntime
-  class InputOutput
-    getter name : String
-    getter type : LibOnnxRuntime::TensorElementDataType
-    getter shape : Array(Int64)
-
-    def initialize(@name, @type, @shape)
-    end
-  end
-
   class InferenceSession
     # Use OrtEnvironment singleton for environment management
     getter session : Pointer(LibOnnxRuntime::OrtSession)
     getter allocator : Pointer(LibOnnxRuntime::OrtAllocator)
-    getter inputs : Array(InputOutput)
-    getter outputs : Array(InputOutput)
+    getter inputs : Array(TensorInfo)
+    getter outputs : Array(TensorInfo)
 
     @session_released = true   # Track if session has been released
     @allocator_released = true # Track if allocator has been released
@@ -28,8 +19,31 @@ module OnnxRuntime
         .value
     end
 
-    def initialize(path_or_bytes, **session_options)
+    def initialize(path_or_bytes, provider : Provider? = nil, **session_options)
+      # Initialize instance variables
+      @inputs = [] of TensorInfo
+      @outputs = [] of TensorInfo
+      @session_released = true
+      @allocator_released = true
+
       session_options_ptr = api_create_session_options
+
+      # Set provider if provided
+      if provider
+        if provider_options = provider.options
+          if provider_options.is_a?(CpuProviderOptions)
+            # CPU provider is the default, no need to append
+            # Do nothing
+          elsif provider_options.is_a?(CudaProviderOptions)
+            # For CUDA provider, use the V2 API
+            status = api.session_options_append_execution_provider_cuda_v2.call(
+              session_options_ptr,
+              provider_options.to_unsafe
+            )
+            check_status(status)
+          end
+        end
+      end
 
       @session = load_session(path_or_bytes, session_options_ptr)
       @session_released = false
@@ -82,97 +96,90 @@ module OnnxRuntime
       allocator
     end
 
-    private def api_session_get_input_name(session, index, allocator)
+    # Get input name at index
+    private def api_get_input_name(session, index, allocator)
       name_ptr = Pointer(Pointer(UInt8)).malloc(1)
       api_call &.session_get_input_name.call(session, index, allocator, name_ptr)
       name_ptr
     end
 
+    # Get number of inputs
     private def api_get_input_count(session)
       count = 0_u64
       api_call &.session_get_input_count.call(session, pointerof(count))
       count
     end
 
-    private def api_session_get_input_type_info(session, index)
+    # Get input type info at index
+    private def api_get_input_type_info(session, index)
       type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
       api_call &.session_get_input_type_info.call(session, index, pointerof(type_info))
       type_info
     end
 
+    # Get number of outputs
     private def api_get_output_count(session)
       count = 0_u64
       api_call &.session_get_output_count.call(session, pointerof(count))
       count
     end
 
-    private def api_session_get_output_name(session, index, allocator)
+    # Get output name at index
+    private def api_get_output_name(session, index, allocator)
       name_ptr = Pointer(Pointer(UInt8)).malloc(1)
       api_call &.session_get_output_name.call(session, index, allocator, name_ptr)
       name_ptr
     end
 
-    private def api_session_get_output_type_info(session, index)
+    # Get output type info at index
+    private def api_get_output_type_info(session, index)
       type_info = Pointer(LibOnnxRuntime::OrtTypeInfo).null
       api_call &.session_get_output_type_info.call(session, index, pointerof(type_info))
       type_info
     end
 
+    # Load input tensor info
     private def load_inputs
-      inputs = Array(InputOutput).new
+      inputs = Array(TensorInfo).new
       count = api_get_input_count(@session)
       count.times do |i|
-        name_ptr = api_session_get_input_name(@session, i, @allocator)
+        name_ptr = api_get_input_name(@session, i, @allocator)
         name = String.new(name_ptr.value)
-        type_info = api_session_get_input_type_info(@session, i)
-        inputs << type_info_to_input_output(name, type_info)
+        type_info = api_get_input_type_info(@session, i)
+        inputs << TensorInfo.from_type_info(name, type_info, self)
         api.release_type_info.call(type_info)
       end
       inputs
     end
 
+    # Load output tensor info
     private def load_outputs
-      outputs = Array(InputOutput).new
+      outputs = Array(TensorInfo).new
       count = api_get_output_count(@session)
       count.times do |i|
-        name_ptr = api_session_get_output_name(@session, i, @allocator)
+        name_ptr = api_get_output_name(@session, i, @allocator)
         name = String.new(name_ptr.value)
-        type_info = api_session_get_output_type_info(@session, i)
-        outputs << type_info_to_input_output(name, type_info)
+        type_info = api_get_output_type_info(@session, i)
+        outputs << TensorInfo.from_type_info(name, type_info, self)
         api.release_type_info.call(type_info)
       end
       outputs
     end
 
-    def type_info_to_input_output(name, type_info)
-      onnx_type = api_get_onnx_type_from_type_info(type_info)
-
-      case onnx_type
-      when LibOnnxRuntime::OnnxType::TENSOR
-        tensor_info = api_cast_type_info_to_tensor_info(type_info)
-        element_type = api_get_tensor_element_type(tensor_info)
-        dims_count = api_get_dimensions_count(tensor_info)
-        dims = api_get_dimensions(tensor_info, dims_count)
-        InputOutput.new(name, LibOnnxRuntime::TensorElementDataType.new(element_type), dims)
-      else
-        raise "Unsupported ONNX type: #{onnx_type}"
-      end
-    end
-
-    def run(input_feed, output_names = nil, **run_options)
-      run_options_ptr = api_create_run_options
+    def run(input_feed, output_names = nil, run_options : RunOptions? = nil, **options)
+      run_options_ptr = run_options ? run_options.to_unsafe : api_create_run_options
       input_tensors = [] of Pointer(LibOnnxRuntime::OrtValue)
 
-      # Set run options if provided
-      if tag = run_options["tag"]?
+      # Set run options if provided via hash
+      if tag = options["tag"]?
         api_call(&.run_options_set_run_tag.call(run_options_ptr, tag.to_s))
       end
 
-      if level = run_options["log_severity_level"]?
+      if level = options["log_severity_level"]?
         api_call(&.run_options_set_run_log_severity_level.call(run_options_ptr, level.to_i))
       end
 
-      if level = run_options["log_verbosity_level"]?
+      if level = options["log_verbosity_level"]?
         api_call(&.run_options_set_run_log_verbosity_level.call(run_options_ptr, level.to_i))
       end
 
@@ -180,10 +187,11 @@ module OnnxRuntime
       input_names = [] of String
 
       # Check if custom shapes are provided
-      shapes = run_options["shape"]?.try &.as(Hash(String, Array(Int64)))
+      shapes = options["shape"]?.try &.as(Hash(String, Array(Int64)))
 
       input_feed.each do |name, data|
-        tensor = data_to_tensor(name, data, shapes[name]?)
+        shape = shapes.try &.[name]?
+        tensor = data_to_tensor(name, data, shape)
         input_tensors << tensor
         input_names << name
       end
@@ -213,7 +221,7 @@ module OnnxRuntime
       NamedTensors.new.tap do |result|
         output_names.each_with_index do |name, i|
           next unless tensor = output_tensors[i]
-          result[name] = extract_output_data(tensor)
+          result[name] = Tensor.extract_data(tensor, self)
           api.release_value.call(tensor)
         end
       end
@@ -249,30 +257,6 @@ module OnnxRuntime
       memory_info
     end
 
-    private def api_cast_type_info_to_tensor_info(type_info)
-      tensor_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
-      api_call &.cast_type_info_to_tensor_info.call(type_info, pointerof(tensor_info))
-      tensor_info
-    end
-
-    private def api_get_tensor_element_type(tensor_info)
-      element_type = LibOnnxRuntime::TensorElementDataType::FLOAT
-      api_call &.get_tensor_element_type.call(tensor_info, pointerof(element_type))
-      TensorElementDataType.new(element_type)
-    end
-
-    private def api_get_dimensions_count(tensor_info)
-      dims_count = 0_u64
-      api_call &.get_dimensions_count.call(tensor_info, pointerof(dims_count))
-      dims_count
-    end
-
-    private def api_get_dimensions(tensor_info, dims_count)
-      dims = Array(Int64).new(dims_count, 0_i64)
-      api_call &.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
-      dims
-    end
-
     private def api_get_tensor_mutable_data(tensor)
       data_ptr = Pointer(Void).null
       api_call &.get_tensor_mutable_data.call(tensor, pointerof(data_ptr))
@@ -285,304 +269,15 @@ module OnnxRuntime
       type_info
     end
 
-    private def api_get_onnx_type_from_type_info(type_info)
-      onnx_type = LibOnnxRuntime::OnnxType::TENSOR
-      api_call &.get_onnx_type_from_type_info.call(type_info, pointerof(onnx_type))
-      onnx_type
-    end
-
-    private def api_get_sparse_tensor_format(tensor)
-      format = LibOnnxRuntime::SparseFormat::UNDEFINED
-      api_call &.get_sparse_tensor_format.call(tensor, pointerof(format))
-      format
-    end
-
-    private def api_get_sparse_tensor_values_type_and_shape(tensor)
-      values_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
-      api_call &.get_sparse_tensor_values_type_and_shape.call(tensor, pointerof(values_info))
-      values_info
-    end
-
-    private def api_get_sparse_tensor_values(tensor)
-      values_ptr = Pointer(Void).null
-      api_call &.get_sparse_tensor_values.call(tensor, pointerof(values_ptr))
-      values_ptr
-    end
-
     private def data_to_tensor(name, data, shape)
       if data.is_a?(SparseTensorFloat32 | SparseTensorInt32 | SparseTensorInt64 | SparseTensorFloat64)
         data.to_ort_value(self)
       elsif shape && data.is_a?(Array)
         # Create tensor with custom shape
-        create_tensor(data, shape)
+        Tensor.create(data, shape, self)
       else
-        create_tensor(data)
+        Tensor.create(data, nil, self)
       end
-    end
-
-    # Extract data from the output tensor
-    def extract_output_data(tensor)
-      type_info = api_get_type_info(tensor)
-      onnx_type = api_get_onnx_type_from_type_info(type_info)
-
-      case onnx_type
-      when LibOnnxRuntime::OnnxType::TENSOR
-        # Handle dense tensor
-        extract_dense_tensor_data(tensor, type_info)
-      when LibOnnxRuntime::OnnxType::SPARSETENSOR
-        # Handle sparse tensor
-        extract_sparse_tensor_data(tensor)
-      else
-        raise "Unsupported ONNX type: #{onnx_type}"
-      end
-    ensure
-      api.release_type_info.call(type_info) if type_info
-    end
-
-    # Extract data from a dense tensor
-    private def extract_dense_tensor_data(tensor, type_info)
-      tensor_info = api_cast_type_info_to_tensor_info(type_info)
-      element_type = api_get_tensor_element_type(tensor_info)
-      dims_count = api_get_dimensions_count(tensor_info)
-      dims = api_get_dimensions(tensor_info, dims_count)
-      element_count = calculate_total(dims)
-      data_ptr = api_get_tensor_mutable_data(tensor)
-      data_ptr_to_data(data_ptr, element_type, element_count)
-    end
-
-    private def data_ptr_to_data(data_ptr, element_type, element_count)
-      case element_type
-      when .float?
-        Slice.new(data_ptr.as(Float32*), element_count)
-      when .int32?
-        Slice.new(data_ptr.as(Int32*), element_count)
-      when .int64?
-        Slice.new(data_ptr.as(Int64*), element_count)
-      when .double?
-        Slice.new(data_ptr.as(Float64*), element_count)
-      when .uint8?
-        Slice.new(data_ptr.as(UInt8*), element_count)
-      when .int8?
-        Slice.new(data_ptr.as(Int8*), element_count)
-      when .uint16?
-        Slice.new(data_ptr.as(UInt16*), element_count)
-      when .int16?
-        Slice.new(data_ptr.as(Int16*), element_count)
-      when .uint32?
-        Slice.new(data_ptr.as(UInt32*), element_count)
-      when .uint64?
-        Slice.new(data_ptr.as(UInt64*), element_count)
-      when .bool?
-        Slice.new(data_ptr.as(Bool*), element_count)
-      else
-        raise "Unsupported tensor element type: #{element_type}"
-      end
-        .to_a
-    end
-
-    private def extract_indices_format(tensor, format)
-      case format
-      when LibOnnxRuntime::SparseFormat::COO
-        {
-          coo_indices: extract_sparse_indices(tensor, LibOnnxRuntime::SparseIndicesFormat::COO_INDICES),
-        }
-      when LibOnnxRuntime::SparseFormat::CSRC
-        {
-          inner_indices: extract_sparse_indices(tensor, LibOnnxRuntime::SparseIndicesFormat::CSR_INNER_INDICES),
-          outer_indices: extract_sparse_indices(tensor, LibOnnxRuntime::SparseIndicesFormat::CSR_OUTER_INDICES),
-        }
-      when LibOnnxRuntime::SparseFormat::BLOCK_SPARSE
-        {
-          block_indices: extract_sparse_indices(tensor, LibOnnxRuntime::SparseIndicesFormat::BLOCK_SPARSE_INDICES),
-        }
-      else
-        raise "Unsupported sparse format: #{format}"
-      end
-        .to_h
-    end
-
-    # Extract data from a sparse tensor
-    private def extract_sparse_tensor_data(tensor)
-      # Get sparse tensor format
-      format = api_get_sparse_tensor_format(tensor)
-
-      # Get values type and shape
-      values_info = api_get_sparse_tensor_values_type_and_shape(tensor)
-
-      # Get element type
-      element_type = api_get_tensor_element_type(values_info)
-
-      # Get values shape
-      dims_count = api_get_dimensions_count(values_info)
-
-      values_shape = api_get_dimensions(values_info, dims_count)
-
-      # Get values data
-      data_ptr = api_get_sparse_tensor_values(tensor)
-
-      # Calculate total number of values
-      values_count = calculate_total(values_shape)
-
-      # Extract values based on element type
-      values = data_ptr_to_data(data_ptr, element_type, values_count)
-
-      # Extract indices based on format
-      indices = extract_indices_format(tensor, format)
-
-      # Get dense shape from the first output
-      dense_shape = @outputs.first.shape
-
-      # Create and return SparseTensor with the appropriate type
-      case values
-      when Array(Float32)
-        SparseTensor(Float32).new(format, values, indices, dense_shape)
-      when Array(Int32)
-        SparseTensor(Int32).new(format, values, indices, dense_shape)
-      when Array(Int64)
-        SparseTensor(Int64).new(format, values, indices, dense_shape)
-      when Array(Float64)
-        SparseTensor(Float64).new(format, values, indices, dense_shape)
-      else
-        raise "Unsupported sparse tensor value type: #{values.class}"
-      end
-    end
-
-    # Extract indices from a sparse tensor
-    private def extract_sparse_indices(tensor, indices_format)
-      indices_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
-
-      # Get indices type and shape
-      status = api.get_sparse_tensor_indices_type_shape.call(tensor, indices_format, pointerof(indices_info))
-      check_status(status)
-
-      # Get indices shape
-      dims_count = 0_u64
-      status = api.get_dimensions_count.call(indices_info, pointerof(dims_count))
-      check_status(status)
-
-      indices_shape = Array(Int64).new(dims_count, 0_i64)
-      status = api.get_dimensions.call(indices_info, indices_shape.to_unsafe, dims_count)
-      check_status(status)
-
-      # Get indices data
-      indices_count = 0_u64
-      indices_ptr = Pointer(Void).null
-      status = api.get_sparse_tensor_indices.call(tensor, indices_format, pointerof(indices_count), pointerof(indices_ptr))
-      check_status(status)
-
-      data_ptr = indices_ptr
-
-      # Calculate total number of indices
-      total_indices = calculate_total(indices_shape)
-
-      # Extract indices
-      if indices_format == LibOnnxRuntime::SparseIndicesFormat::BLOCK_SPARSE_INDICES
-        Slice.new(data_ptr.as(Int32*), total_indices).to_a
-      else
-        Slice.new(data_ptr.as(Int64*), total_indices).to_a
-      end
-    end
-
-    private def calculate_total(dims, initial_value = 1_i64)
-      # ameba:disable Lint/UselessAssign
-      dims.reduce(initial_value) { |acc, dim| acc *= dim }
-    end
-
-    private def create_tensor(data : Array(Float32), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::FLOAT, sizeof(Float32))
-    end
-
-    private def create_tensor(data : Array(Int32), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT32, sizeof(Int32))
-    end
-
-    private def create_tensor(data : Array(Int64), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT64, sizeof(Int64))
-    end
-
-    private def create_tensor(data : Array(Float64), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::DOUBLE, sizeof(Float64))
-    end
-
-    private def create_tensor(data : Array(UInt8), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT8, sizeof(UInt8))
-    end
-
-    private def create_tensor(data : Array(Int8), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT8, sizeof(Int8))
-    end
-
-    private def create_tensor(data : Array(UInt16), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT16, sizeof(UInt16))
-    end
-
-    private def create_tensor(data : Array(Int16), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::INT16, sizeof(Int16))
-    end
-
-    private def create_tensor(data : Array(UInt32), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT32, sizeof(UInt32))
-    end
-
-    private def create_tensor(data : Array(UInt64), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::UINT64, sizeof(UInt64))
-    end
-
-    private def create_tensor(data : Array(Bool), shape = nil)
-      create_tensor_with_data(data, shape, LibOnnxRuntime::TensorElementDataType::BOOL, sizeof(Bool))
-    end
-
-    private def create_tensor(data : Array(String), shape = nil)
-      create_string_tensor(data, shape, LibOnnxRuntime::TensorElementDataType::STRING)
-    end
-
-    # Create a string tensor, but quite ugly way
-    private def create_string_tensor(data, shape, element_type) : Pointer(LibOnnxRuntime::OrtValue)
-      shape = [data.size.to_i64, 1_i64] if shape.nil?
-      shape = shape.map { |val| val < 0 ? data.size.to_i64 : val }
-      tensor = Pointer(LibOnnxRuntime::OrtValue).null
-
-      api_call &.create_tensor_as_ort_value.call(
-        @allocator,
-        shape.to_unsafe,
-        shape.size.to_u64,
-        element_type,
-        pointerof(tensor)
-      )
-
-      cstrs = data.map(&.to_unsafe)
-      str_ptrs = Pointer(UInt8*).malloc(data.size)
-      data.each_with_index { |_, i| str_ptrs[i] = cstrs[i] }
-
-      api_call &.fill_string_tensor.call(
-        tensor,
-        str_ptrs,
-        data.size.to_u64
-      )
-      tensor
-    end
-
-    private def create_tensor(data, shape = nil)
-      raise "Unsupported data type: #{data.class}, #{data.inspect}, shape: #{shape.inspect}"
-    end
-
-    private def create_tensor_with_data(data, shape, element_type, element_size)
-      shape = [data.size.to_i64] if shape.nil?
-      tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      memory_info = api_create_cpu_memory_info
-
-      api_call &.create_tensor_with_data_as_ort_value.call(
-        memory_info,
-        data.to_unsafe.as(Void*),
-        (data.size * element_size).to_u64,
-        shape.to_unsafe,
-        shape.size.to_u64,
-        element_type,
-        pointerof(tensor)
-      )
-      tensor
-    ensure
-      api.release_memory_info.call(memory_info) if memory_info
     end
 
     # Make check_status public so it can be used by SparseTensor
@@ -603,6 +298,11 @@ module OnnxRuntime
     # Get the environment from the OrtEnvironment singleton
     private def env
       OrtEnvironment.instance.env
+    end
+
+    # Get model metadata
+    def metadata
+      ModelMetadata.from_session(self)
     end
 
     # Class method to explicitly release the environment

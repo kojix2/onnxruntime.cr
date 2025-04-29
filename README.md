@@ -45,17 +45,17 @@
 require "onnxruntime"
 
 # Load a model
-model = OnnxRuntime::Model.new("path/to/model.onnx")
+session = OnnxRuntime::InferenceSession.new("path/to/model.onnx")
 
 # Print model inputs and outputs
 puts "Inputs:"
-model.inputs.each do |input|
-  puts "  #{input[:name]}: #{input[:type]} #{input[:shape]}"
+session.inputs.each do |input|
+  puts "  #{input.name}: #{input.type} #{input.shape}"
 end
 
 puts "Outputs:"
-model.outputs.each do |output|
-  puts "  #{output[:name]}: #{output[:type]} #{output[:shape]}"
+session.outputs.each do |output|
+  puts "  #{output.name}: #{output.type} #{output.shape}"
 end
 
 # Prepare input data
@@ -64,12 +64,16 @@ input_data = {
 }
 
 # Run inference
-result = model.predict(input_data)
+result = session.run(input_data)
 
 # Process results
 result.each do |name, data|
   puts "#{name}: #{data}"
 end
+
+# Explicitly release resources
+session.release_session
+OnnxRuntime::InferenceSession.release_env
 ```
 
 ## MNIST Example
@@ -80,13 +84,13 @@ Download the MNIST model: [mnist-12.onnx](https://github.com/onnx/models/blob/ma
 require "onnxruntime"
 
 # Load the MNIST model
-model = OnnxRuntime::Model.new("mnist-12.onnx")
+session = OnnxRuntime::InferenceSession.new("mnist-12.onnx")
 
 # Create a dummy input (28x28 image draw 1)
 input_data = Array(Float32).new(28 * 28) { |i| (i % 14 == 0 ? 1.0 : 0.0).to_f32 }
 
 # Run inference
-result = model.predict({"Input3" => input_data}, ["Plus214_Output_0"], shape: {"Input3" => [1_i64, 1_i64, 28_i64, 28_i64]})
+result = session.run({"Input3" => input_data}, ["Plus214_Output_0"], shape: {"Input3" => [1_i64, 1_i64, 28_i64, 28_i64]})
 
 # Get the output probabilities
 probabilities = result["Plus214_Output_0"].as(Array(Float32))
@@ -96,7 +100,7 @@ predicted_digit = probabilities.index(probabilities.max)
 puts "Predicted digit: #{predicted_digit}"
 
 # Explicitly release resources
-model.release
+session.release_session
 OnnxRuntime::InferenceSession.release_env
 ```
 
@@ -105,12 +109,12 @@ OnnxRuntime::InferenceSession.release_env
 Currently, you must explicitly release resources when you're done with them:
 
 ```crystal
-# Create and use model
-model = OnnxRuntime::Model.new("path/to/model.onnx")
-result = model.predict(input_data)
+# Create and use session
+session = OnnxRuntime::InferenceSession.new("path/to/model.onnx")
+result = session.run(input_data)
 
 # When finished, explicitly release resources
-model.release
+session.release_session
 OnnxRuntime::InferenceSession.release_env
 ```
 
@@ -119,7 +123,7 @@ For long-running applications like web servers, consider setting up signal handl
 ```crystal
 Signal::INT.trap do
   puts "Shutting down..."
-  model.release
+  session.release_session
   OnnxRuntime::InferenceSession.release_env
   exit
 end
