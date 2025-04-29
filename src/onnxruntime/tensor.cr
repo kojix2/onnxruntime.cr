@@ -61,13 +61,13 @@ module OnnxRuntime
     private def self.create_with_data(data, shape, element_type, element_size, session)
       shape = [data.size.to_i64] if shape.nil?
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      
+
       # Get session and allocator
       if session.nil?
         # Session is required for creating tensors
         raise "Session is required for creating tensors"
       end
-      
+
       api = session.api
       allocator = session.allocator
       memory_info = create_cpu_memory_info(api)
@@ -81,7 +81,7 @@ module OnnxRuntime
         element_type,
         pointerof(tensor)
       )
-      
+
       session.check_status(status)
       tensor
     ensure
@@ -93,13 +93,13 @@ module OnnxRuntime
       shape = [data.size.to_i64, 1_i64] if shape.nil?
       shape = shape.map { |val| val < 0 ? data.size.to_i64 : val }
       tensor = Pointer(LibOnnxRuntime::OrtValue).null
-      
+
       # Get session and allocator
       if session.nil?
         # Session is required for creating tensors
         raise "Session is required for creating tensors"
       end
-      
+
       api = session.api
       allocator = session.allocator
 
@@ -110,7 +110,7 @@ module OnnxRuntime
         element_type,
         pointerof(tensor)
       )
-      
+
       session.check_status(status)
 
       cstrs = data.map(&.to_unsafe)
@@ -122,7 +122,7 @@ module OnnxRuntime
         str_ptrs,
         data.size.to_u64
       )
-      
+
       session.check_status(status)
       tensor
     end

@@ -30,7 +30,8 @@ describe OnnxRuntime::InferenceSession do
     input_data = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
 
     # Execute prediction (specifying 4-dimensional shape)
-    result = session.run({"Input3" => input_data})
+    shape = [1_i64, 1_i64, 28_i64, 28_i64]
+    result = session.run({"Input3" => input_data}, nil, nil, shape: {"Input3" => shape})
 
     # Result is a probability distribution for 10 classes (digits 0-9)
     result.should be_a(OnnxRuntime::NamedTensors)
@@ -49,12 +50,15 @@ describe OnnxRuntime::InferenceSession do
 
     # Float32 type input data
     input_float32 = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
-    result_float32 = session.run({"Input3" => input_float32})
+    shape = [1_i64, 1_i64, 28_i64, 28_i64]
+    result_float32 = session.run({"Input3" => input_float32}, nil, nil, shape: {"Input3" => shape})
     result_float32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
 
-    # Int32 type input data (automatically converted to Float32)
+    # Int32 type input data (manually converted to Float32)
     input_int32 = Array(Int32).new(1 * 1 * 28 * 28, 0)
-    result_int32 = session.run({"Input3" => input_int32})
+    input_float32_from_int32 = input_int32.map(&.to_f32)
+    shape = [1_i64, 1_i64, 28_i64, 28_i64]
+    result_int32 = session.run({"Input3" => input_float32_from_int32}, nil, nil, shape: {"Input3" => shape})
     result_int32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
   end
 

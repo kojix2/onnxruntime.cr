@@ -25,7 +25,7 @@ module OnnxRuntime
       @outputs = [] of TensorInfo
       @session_released = true
       @allocator_released = true
-      
+
       session_options_ptr = api_create_session_options
 
       # Set provider if provided
