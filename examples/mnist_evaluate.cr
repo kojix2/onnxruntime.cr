@@ -83,5 +83,5 @@ MNISTDataset::Metrics.display_confusion_matrix(confusion)
 MNISTDataset::Metrics.display_metrics(precision_values, recall_values, f1_values, accuracy_value)
 
 # Explicitly release resources
-model.release
+model.release_session
 OnnxRuntime::InferenceSession.release_env

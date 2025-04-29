@@ -25,8 +25,8 @@ module MNISTDataset
     property labels_url : String
 
     def initialize
-      @data_dir = "examples/data"
-      @model_path = "spec/fixtures/mnist.onnx"
+      @data_dir = "data"
+      @model_path = "../spec/fixtures/mnist.onnx"
       @images_file = "#{@data_dir}/t10k-images-idx3-ubyte"
       @labels_file = "#{@data_dir}/t10k-labels-idx1-ubyte"
       @images_gz = "#{@data_dir}/t10k-images-idx3-ubyte.gz"

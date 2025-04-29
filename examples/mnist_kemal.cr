@@ -4,7 +4,7 @@ require "json"
 
 # MNIST Web Application - Minimal Version
 MNIST_SIZE = 28
-MODEL_PATH = "spec/fixtures/mnist.onnx"
+MODEL_PATH = "../spec/fixtures/mnist.onnx"
 
 # HTML content
 MNIST_HTML = <<-HTML
