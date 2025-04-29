@@ -62,18 +62,38 @@
       
         <ul>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProvider" data-name="onnxruntime::cpuprovider">
+      <a href="OnnxRuntime/CpuProvider.html">CpuProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProviderOptions" data-name="onnxruntime::cpuprovideroptions">
+      <a href="OnnxRuntime/CpuProviderOptions.html">CpuProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProvider" data-name="onnxruntime::cudaprovider">
+      <a href="OnnxRuntime/CudaProvider.html">CudaProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProviderOptions" data-name="onnxruntime::cudaprovideroptions">
+      <a href="OnnxRuntime/CudaProviderOptions.html">CudaProviderOptions</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/InferenceSession" data-name="onnxruntime::inferencesession">
       <a href="OnnxRuntime/InferenceSession.html">InferenceSession</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/InputOutput" data-name="onnxruntime::inputoutput">
-      <a href="OnnxRuntime/InputOutput.html">InputOutput</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/IoBinding" data-name="onnxruntime::iobinding">
+      <a href="OnnxRuntime/IoBinding.html">IoBinding</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/Model" data-name="onnxruntime::model">
-      <a href="OnnxRuntime/Model.html">Model</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ModelMetadata" data-name="onnxruntime::modelmetadata">
+      <a href="OnnxRuntime/ModelMetadata.html">ModelMetadata</a>
       
     </li>
   
@@ -84,6 +104,21 @@
   
   <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Provider" data-name="onnxruntime::provider">
+      <a href="OnnxRuntime/Provider.html">Provider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ProviderOptions" data-name="onnxruntime::provideroptions">
+      <a href="OnnxRuntime/ProviderOptions.html">ProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/RunOptions" data-name="onnxruntime::runoptions">
+      <a href="OnnxRuntime/RunOptions.html">RunOptions</a>
       
     </li>
   
@@ -112,13 +147,23 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Tensor" data-name="onnxruntime::tensor">
+      <a href="OnnxRuntime/Tensor.html">Tensor</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/TensorElementDataType" data-name="onnxruntime::tensorelementdatatype">
       <a href="OnnxRuntime/TensorElementDataType.html">TensorElementDataType</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorType" data-name="onnxruntime::tensortype">
-      <a href="OnnxRuntime/TensorType.html">TensorType</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorInfo" data-name="onnxruntime::tensorinfo">
+      <a href="OnnxRuntime/TensorInfo.html">TensorInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TrainingSession" data-name="onnxruntime::trainingsession">
+      <a href="OnnxRuntime/TrainingSession.html">TrainingSession</a>
       
     </li>
   
@@ -179,17 +224,17 @@ export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.21.0</code></pre>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;onnxruntime&quot;</span>
 
 <span class="c"># Load a model</span>
-model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
+session <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
 
 <span class="c"># Print model inputs and outputs</span>
 puts <span class="s">&quot;Inputs:&quot;</span>
-model.inputs.each <span class="k">do</span> <span class="o">|</span>input<span class="o">|</span>
-  puts <span class="s">&quot;  </span><span class="i">#{</span>input[<span class="n">:name</span>]<span class="i">}</span><span class="s">: </span><span class="i">#{</span>input[<span class="n">:type</span>]<span class="i">}</span><span class="s"> </span><span class="i">#{</span>input[<span class="n">:shape</span>]<span class="i">}</span><span class="s">&quot;</span>
+session.inputs.each <span class="k">do</span> <span class="o">|</span>input<span class="o">|</span>
+  puts <span class="s">&quot;  </span><span class="i">#{</span>input.name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>input.<span class="k">type</span><span class="i">}</span><span class="s"> </span><span class="i">#{</span>input.shape<span class="i">}</span><span class="s">&quot;</span>
 <span class="k">end</span>
 
 puts <span class="s">&quot;Outputs:&quot;</span>
-model.outputs.each <span class="k">do</span> <span class="o">|</span>output<span class="o">|</span>
-  puts <span class="s">&quot;  </span><span class="i">#{</span>output[<span class="n">:name</span>]<span class="i">}</span><span class="s">: </span><span class="i">#{</span>output[<span class="n">:type</span>]<span class="i">}</span><span class="s"> </span><span class="i">#{</span>output[<span class="n">:shape</span>]<span class="i">}</span><span class="s">&quot;</span>
+session.outputs.each <span class="k">do</span> <span class="o">|</span>output<span class="o">|</span>
+  puts <span class="s">&quot;  </span><span class="i">#{</span>output.name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>output.<span class="k">type</span><span class="i">}</span><span class="s"> </span><span class="i">#{</span>output.shape<span class="i">}</span><span class="s">&quot;</span>
 <span class="k">end</span>
 
 <span class="c"># Prepare input data</span>
@@ -198,12 +243,16 @@ input_data <span class="o">=</span> {
 }
 
 <span class="c"># Run inference</span>
-result <span class="o">=</span> model.predict(input_data)
+result <span class="o">=</span> session.run(input_data)
 
 <span class="c"># Process results</span>
 result.each <span class="k">do</span> <span class="o">|</span>name, data<span class="o">|</span>
   puts <span class="s">&quot;</span><span class="i">#{</span>name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>data<span class="i">}</span><span class="s">&quot;</span>
-<span class="k">end</span></code></pre>
+<span class="k">end</span>
+
+<span class="c"># Explicitly release resources</span>
+session.release_session
+<span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
 <h2><a id="mnist-example" class="anchor" href="#mnist-example">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -213,13 +262,13 @@ result.each <span class="k">do</span> <span class="o">|</span>name, data<span cl
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;onnxruntime&quot;</span>
 
 <span class="c"># Load the MNIST model</span>
-model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;mnist-12.onnx&quot;</span>)
+session <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.new(<span class="s">&quot;mnist-12.onnx&quot;</span>)
 
 <span class="c"># Create a dummy input (28x28 image draw 1)</span>
 input_data <span class="o">=</span> <span class="t">Array</span>(<span class="t">Float32</span>).new(<span class="n">28</span> <span class="o">*</span> <span class="n">28</span>) { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">%</span> <span class="n">14</span> <span class="o">==</span> <span class="n">0</span> ? <span class="n">1.0</span> : <span class="n">0.0</span>).to_f32 }
 
 <span class="c"># Run inference</span>
-result <span class="o">=</span> model.predict({<span class="s">&quot;Input3&quot;</span> <span class="o">=&gt;</span> input_data}, [<span class="s">&quot;Plus214_Output_0&quot;</span>], shape: {<span class="s">&quot;Input3&quot;</span> <span class="o">=&gt;</span> [<span class="n">1_i64</span>, <span class="n">1_i64</span>, <span class="n">28_i64</span>, <span class="n">28_i64</span>]})
+result <span class="o">=</span> session.run({<span class="s">&quot;Input3&quot;</span> <span class="o">=&gt;</span> input_data}, [<span class="s">&quot;Plus214_Output_0&quot;</span>], shape: {<span class="s">&quot;Input3&quot;</span> <span class="o">=&gt;</span> [<span class="n">1_i64</span>, <span class="n">1_i64</span>, <span class="n">28_i64</span>, <span class="n">28_i64</span>]})
 
 <span class="c"># Get the output probabilities</span>
 probabilities <span class="o">=</span> result[<span class="s">&quot;Plus214_Output_0&quot;</span>].<span class="k">as</span>(<span class="t">Array</span>(<span class="t">Float32</span>))
@@ -229,7 +278,7 @@ predicted_digit <span class="o">=</span> probabilities.index(probabilities.max)
 puts <span class="s">&quot;Predicted digit: </span><span class="i">#{</span>predicted_digit<span class="i">}</span><span class="s">&quot;</span>
 
 <span class="c"># Explicitly release resources</span>
-model.release
+session.release_session
 <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
 <h2><a id="memory-management" class="anchor" href="#memory-management">
   <svg class="octicon-link" aria-hidden="true">
@@ -237,17 +286,17 @@ model.release
   </svg>
 </a>Memory Management</h2>
 <p>Currently, you must explicitly release resources when you're done with them:</p>
-<pre><code class="language-crystal"><span class="c"># Create and use model</span>
-model <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">Model</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
-result <span class="o">=</span> model.predict(input_data)
+<pre><code class="language-crystal"><span class="c"># Create and use session</span>
+session <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
+result <span class="o">=</span> session.run(input_data)
 
 <span class="c"># When finished, explicitly release resources</span>
-model.release
+session.release_session
 <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
 <p>For long-running applications like web servers, consider setting up signal handlers to ensure resources are properly released on shutdown:</p>
 <pre><code class="language-crystal"><span class="t">Signal</span><span class="t">::</span><span class="t">INT</span>.trap <span class="k">do</span>
   puts <span class="s">&quot;Shutting down...&quot;</span>
-  model.release
+  session.release_session
   <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env
   exit
 <span class="k">end</span></code></pre>

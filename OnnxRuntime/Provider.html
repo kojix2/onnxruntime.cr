@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::InputOutput - onnxruntime main</title>
+  <title>OnnxRuntime::Provider - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -62,18 +62,38 @@
       
         <ul>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProvider" data-name="onnxruntime::cpuprovider">
+      <a href="../OnnxRuntime/CpuProvider.html">CpuProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProviderOptions" data-name="onnxruntime::cpuprovideroptions">
+      <a href="../OnnxRuntime/CpuProviderOptions.html">CpuProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProvider" data-name="onnxruntime::cudaprovider">
+      <a href="../OnnxRuntime/CudaProvider.html">CudaProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProviderOptions" data-name="onnxruntime::cudaprovideroptions">
+      <a href="../OnnxRuntime/CudaProviderOptions.html">CudaProviderOptions</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/InferenceSession" data-name="onnxruntime::inferencesession">
       <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/InputOutput" data-name="onnxruntime::inputoutput">
-      <a href="../OnnxRuntime/InputOutput.html">InputOutput</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/IoBinding" data-name="onnxruntime::iobinding">
+      <a href="../OnnxRuntime/IoBinding.html">IoBinding</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/Model" data-name="onnxruntime::model">
-      <a href="../OnnxRuntime/Model.html">Model</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ModelMetadata" data-name="onnxruntime::modelmetadata">
+      <a href="../OnnxRuntime/ModelMetadata.html">ModelMetadata</a>
       
     </li>
   
@@ -84,6 +104,21 @@
   
   <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
+      
+    </li>
+  
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/Provider" data-name="onnxruntime::provider">
+      <a href="../OnnxRuntime/Provider.html">Provider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ProviderOptions" data-name="onnxruntime::provideroptions">
+      <a href="../OnnxRuntime/ProviderOptions.html">ProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/RunOptions" data-name="onnxruntime::runoptions">
+      <a href="../OnnxRuntime/RunOptions.html">RunOptions</a>
       
     </li>
   
@@ -112,13 +147,23 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Tensor" data-name="onnxruntime::tensor">
+      <a href="../OnnxRuntime/Tensor.html">Tensor</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/TensorElementDataType" data-name="onnxruntime::tensorelementdatatype">
       <a href="../OnnxRuntime/TensorElementDataType.html">TensorElementDataType</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorType" data-name="onnxruntime::tensortype">
-      <a href="../OnnxRuntime/TensorType.html">TensorType</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorInfo" data-name="onnxruntime::tensorinfo">
+      <a href="../OnnxRuntime/TensorInfo.html">TensorInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TrainingSession" data-name="onnxruntime::trainingsession">
+      <a href="../OnnxRuntime/TrainingSession.html">TrainingSession</a>
       
     </li>
   
@@ -137,13 +182,27 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
-  </span> OnnxRuntime::<wbr>InputOutput
+    abstract class
+  </span> OnnxRuntime::<wbr>Provider
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/InputOutput.html">OnnxRuntime::InputOutput</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/Provider.html">OnnxRuntime::Provider</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Abstract base class for execution providers</p>
 
 
 
@@ -155,8 +214,21 @@
 
 
 
-
-
+  <h2>
+    <a id="direct-known-subclasses" class="anchor" href="#direct-known-subclasses">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Direct Known Subclasses
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="../OnnxRuntime/CpuProvider.html">OnnxRuntime::CpuProvider</a></li>
+    
+      <li class="other-type"><a href="../OnnxRuntime/CudaProvider.html">OnnxRuntime::CudaProvider</a></li>
+    
+  </ul>
 
 
 
@@ -173,8 +245,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L2" target="_blank">
-        onnxruntime/inference_session.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L3" target="_blank">
+        onnxruntime/provider.cr
       </a>
     
     <br/>
@@ -185,23 +257,6 @@
 
 
   
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#new%28name%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%29-class-method" class="signature"><strong>.new</strong>(name : String, type : OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape : Array(Int64))</a>
-        
-      </li>
-    
-  </ul>
-
 
   
 
@@ -221,15 +276,14 @@
       <li class="entry-summary">
         <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
         
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#shape%3AArray%28Int64%29-instance-method" class="signature"><strong>#shape</strong> : Array(Int64)</a>
+          <div class="summary"><p>Get the provider name</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#type%3ALibOnnxRuntime%3A%3ATensorElementDataType-instance-method" class="signature"><strong>#type</strong> : LibOnnxRuntime::TensorElementDataType</a>
+        <a href="#options%3AProviderOptions%7CNil-instance-method" class="signature"><strong>#options</strong> : ProviderOptions | Nil</a>
+        
+          <div class="summary"><p>Get the provider options</p></div>
         
       </li>
     
@@ -268,32 +322,6 @@
   </div>
 
   
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(name:String,type:OnnxRuntime::LibOnnxRuntime::TensorElementDataType,shape:Array(Int64))-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(name : String, type : OnnxRuntime::LibOnnxRuntime::TensorElementDataType, shape : Array(Int64))
-
-        <a class="method-permalink" href="#new%28name%3AString%2Ctype%3AOnnxRuntime%3A%3ALibOnnxRuntime%3A%3ATensorElementDataType%2Cshape%3AArray%28Int64%29%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L7" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
   
 
@@ -311,48 +339,42 @@
   
     <div class="entry-detail" id="name:String-instance-method">
       <div class="signature">
-        
+        abstract 
         def <strong>name</strong> : String
 
         <a class="method-permalink" href="#name%3AString-instance-method">#</a>
       </div>
       
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L3" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="shape:Array(Int64)-instance-method">
-      <div class="signature">
-        
-        def <strong>shape</strong> : Array(Int64)
-
-        <a class="method-permalink" href="#shape%3AArray%28Int64%29-instance-method">#</a>
-      </div>
+        <div class="doc">
+          
+          <p>Get the provider name</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L5" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="type:LibOnnxRuntime::TensorElementDataType-instance-method">
+    <div class="entry-detail" id="options:ProviderOptions|Nil-instance-method">
       <div class="signature">
-        
-        def <strong>type</strong> : LibOnnxRuntime::TensorElementDataType
+        abstract 
+        def <strong>options</strong> : <a href="../OnnxRuntime/ProviderOptions.html">ProviderOptions</a> | Nil
 
-        <a class="method-permalink" href="#type%3ALibOnnxRuntime%3A%3ATensorElementDataType-instance-method">#</a>
+        <a class="method-permalink" href="#options%3AProviderOptions%7CNil-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Get the provider options</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>

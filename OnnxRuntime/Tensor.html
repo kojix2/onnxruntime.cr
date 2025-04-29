@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.15.1">
+<meta name="crystal_docs.project_version" content="main">
+<meta name="crystal_docs.project_name" content="onnxruntime">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="onnxruntime">
+  <title>OnnxRuntime::Tensor - onnxruntime main</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          onnxruntime
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="onnxruntime/OnnxRuntime" data-name="onnxruntime">
+      <a href="../OnnxRuntime.html">OnnxRuntime</a>
+      
+        <ul>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProvider" data-name="onnxruntime::cpuprovider">
+      <a href="../OnnxRuntime/CpuProvider.html">CpuProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProviderOptions" data-name="onnxruntime::cpuprovideroptions">
+      <a href="../OnnxRuntime/CpuProviderOptions.html">CpuProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProvider" data-name="onnxruntime::cudaprovider">
+      <a href="../OnnxRuntime/CudaProvider.html">CudaProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProviderOptions" data-name="onnxruntime::cudaprovideroptions">
+      <a href="../OnnxRuntime/CudaProviderOptions.html">CudaProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/InferenceSession" data-name="onnxruntime::inferencesession">
+      <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/IoBinding" data-name="onnxruntime::iobinding">
+      <a href="../OnnxRuntime/IoBinding.html">IoBinding</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ModelMetadata" data-name="onnxruntime::modelmetadata">
+      <a href="../OnnxRuntime/ModelMetadata.html">ModelMetadata</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/NamedTensors" data-name="onnxruntime::namedtensors">
+      <a href="../OnnxRuntime/NamedTensors.html">NamedTensors</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+      <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Provider" data-name="onnxruntime::provider">
+      <a href="../OnnxRuntime/Provider.html">Provider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ProviderOptions" data-name="onnxruntime::provideroptions">
+      <a href="../OnnxRuntime/ProviderOptions.html">ProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/RunOptions" data-name="onnxruntime::runoptions">
+      <a href="../OnnxRuntime/RunOptions.html">RunOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensor" data-name="onnxruntime::sparsetensor(t)">
+      <a href="../OnnxRuntime/SparseTensor.html">SparseTensor</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat32" data-name="onnxruntime::sparsetensorfloat32">
+      <a href="../OnnxRuntime/SparseTensorFloat32.html">SparseTensorFloat32</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
+      <a href="../OnnxRuntime/SparseTensorFloat64.html">SparseTensorFloat64</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt32" data-name="onnxruntime::sparsetensorint32">
+      <a href="../OnnxRuntime/SparseTensorInt32.html">SparseTensorInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorInt64" data-name="onnxruntime::sparsetensorint64">
+      <a href="../OnnxRuntime/SparseTensorInt64.html">SparseTensorInt64</a>
+      
+    </li>
+  
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/Tensor" data-name="onnxruntime::tensor">
+      <a href="../OnnxRuntime/Tensor.html">Tensor</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorElementDataType" data-name="onnxruntime::tensorelementdatatype">
+      <a href="../OnnxRuntime/TensorElementDataType.html">TensorElementDataType</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorInfo" data-name="onnxruntime::tensorinfo">
+      <a href="../OnnxRuntime/TensorInfo.html">TensorInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TrainingSession" data-name="onnxruntime::trainingsession">
+      <a href="../OnnxRuntime/TrainingSession.html">TrainingSession</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> OnnxRuntime::<wbr>Tensor
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/Tensor.html">OnnxRuntime::Tensor</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Tensor class provides high-level API for working with dense tensors in ONNX Runtime.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L6" target="_blank">
+        onnxruntime/tensor.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  
+
+  
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Float32%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Float32), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+          <div class="summary"><p>Creates a tensor from various data types</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Int32%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Int32), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Int64%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Int64), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Float64%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Float64), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28UInt8%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(UInt8), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Int8%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Int8), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28UInt16%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(UInt16), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Int16%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Int16), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28UInt32%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(UInt32), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28UInt64%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(UInt64), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28Bool%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(Bool), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%3AArray%28String%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data : Array(String), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28data%2Cshape%3Dnil%2Csession%3Dnil%29-class-method" class="signature"><strong>.create</strong>(data, shape = <span class="n">nil</span>, session = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#extract_data%28tensor%2Csession%29-class-method" class="signature"><strong>.extract_data</strong>(tensor, session)</a>
+        
+          <div class="summary"><p>Extract data from a tensor</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+
+
+  <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+
+  
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="create(data:Array(Float32),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Float32), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Float32%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a tensor from various data types</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(Int32),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Int32), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Int32%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(Int64),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Int64), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Int64%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L16" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(Float64),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Float64), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Float64%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L20" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(UInt8),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(UInt8), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28UInt8%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(Int8),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Int8), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Int8%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(UInt16),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(UInt16), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28UInt16%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(Int16),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Int16), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Int16%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L36" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(UInt32),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(UInt32), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28UInt32%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L40" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(UInt64),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(UInt64), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28UInt64%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L44" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(Bool),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(Bool), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28Bool%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data:Array(String),shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data : Array(String), shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%3AArray%28String%29%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L52" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(data,shape=nil,session=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>create</strong>(data, shape = <span class="n">nil</span>, session = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#create%28data%2Cshape%3Dnil%2Csession%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L56" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="extract_data(tensor,session)-class-method">
+      <div class="signature">
+        
+        def self.<strong>extract_data</strong>(tensor, session)
+
+        <a class="method-permalink" href="#extract_data%28tensor%2Csession%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Extract data from a tensor</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/tensor.cr#L154" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+
+
+</div>
+
+</body>
+</html>

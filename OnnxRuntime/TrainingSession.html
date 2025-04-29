@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::OrtEnvironment - onnxruntime main</title>
+  <title>OnnxRuntime::TrainingSession - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -102,7 +102,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
       
     </li>
@@ -162,7 +162,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/TrainingSession" data-name="onnxruntime::trainingsession">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/TrainingSession" data-name="onnxruntime::trainingsession">
       <a href="../OnnxRuntime/TrainingSession.html">TrainingSession</a>
       
     </li>
@@ -183,12 +183,12 @@
 
   <span class="kind">
     class
-  </span> OnnxRuntime::<wbr>OrtEnvironment
+  </span> OnnxRuntime::<wbr>TrainingSession
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/OrtEnvironment.html">OnnxRuntime::OrtEnvironment</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/TrainingSession.html">OnnxRuntime::TrainingSession</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -202,8 +202,8 @@
     Overview
   </h2>
 
-  <p>OrtEnvironment is a singleton class that manages the ONNX Runtime environment.
-It ensures that only one environment exists per process and provides thread-safe access.</p>
+  <p>TrainingSession class provides high-level API for training ONNX models.
+This is a placeholder for future implementation when ONNX Runtime training API is supported.</p>
 
 
 
@@ -230,8 +230,8 @@ It ensures that only one environment exists per process and provides thread-safe
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L4" target="_blank">
-        onnxruntime/ort_environment.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L4" target="_blank">
+        onnxruntime/training_session.cr
       </a>
     
     <br/>
@@ -242,27 +242,27 @@ It ensures that only one environment exists per process and provides thread-safe
 
 
   
-
-  
   <h2>
-    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+    <a id="constructors" class="anchor" href="#constructors">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Class Method Summary
+    Constructors
   </h2>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#instance-class-method" class="signature"><strong>.instance</strong></a>
+        <a href="#new%28env%3AOrtEnvironment%2Cmodel_path%3AString%2C%2A%2Aoptions%29-class-method" class="signature"><strong>.new</strong>(env : OrtEnvironment, model_path : String, **options)</a>
         
-          <div class="summary"><p>Get the singleton instance of OrtEnvironment</p></div>
+          <div class="summary"><p>Creates a new TrainingSession instance.</p></div>
         
       </li>
     
   </ul>
 
+
+  
 
   
 
@@ -278,30 +278,44 @@ It ensures that only one environment exists per process and provides thread-safe
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
+        <a href="#eval_step%28input_feed%29-instance-method" class="signature"><strong>#eval_step</strong>(input_feed)</a>
         
-          <div class="summary"><p>Get the API</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#env-instance-method" class="signature"><strong>#env</strong></a>
-        
-          <div class="summary"><p>Get the environment pointer</p></div>
+          <div class="summary"><p>Evaluate the model</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
+        <a href="#learning_rate%3D%28rate%3AFloat64%29-instance-method" class="signature"><strong>#learning_rate=</strong>(rate : Float64)</a>
         
-          <div class="summary"><p>Release the environment in a thread-safe manner</p></div>
+          <div class="summary"><p>Set learning rate</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#released%3F%3ABool-instance-method" class="signature"><strong>#released?</strong> : Bool</a>
+        <a href="#load_checkpoint%28checkpoint_path%3AString%29-instance-method" class="signature"><strong>#load_checkpoint</strong>(checkpoint_path : String)</a>
         
-          <div class="summary"><p>Check if the environment has been released</p></div>
+          <div class="summary"><p>Load a checkpoint</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#optimizer_state-instance-method" class="signature"><strong>#optimizer_state</strong></a>
+        
+          <div class="summary"><p>Get optimizer state</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#save_checkpoint%28checkpoint_path%3AString%29-instance-method" class="signature"><strong>#save_checkpoint</strong>(checkpoint_path : String)</a>
+        
+          <div class="summary"><p>Save the trained model</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#train_step%28input_feed%29-instance-method" class="signature"><strong>#train_step</strong>(input_feed)</a>
+        
+          <div class="summary"><p>Train the model for one step</p></div>
         
       </li>
     
@@ -340,39 +354,39 @@ It ensures that only one environment exists per process and provides thread-safe
   </div>
 
   
-
-  
   <h2>
-    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Class Method Detail
+    Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="instance-class-method">
+    <div class="entry-detail" id="new(env:OrtEnvironment,model_path:String,**options)-class-method">
       <div class="signature">
         
-        def self.<strong>instance</strong>
+        def self.<strong>new</strong>(env : <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>, model_path : String, **options)
 
-        <a class="method-permalink" href="#instance-class-method">#</a>
+        <a class="method-permalink" href="#new%28env%3AOrtEnvironment%2Cmodel_path%3AString%2C%2A%2Aoptions%29-class-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the singleton instance of OrtEnvironment</p>
+          <p>Creates a new TrainingSession instance.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
   
 
+
+  
 
   
 
@@ -386,86 +400,128 @@ It ensures that only one environment exists per process and provides thread-safe
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="api-instance-method">
+    <div class="entry-detail" id="eval_step(input_feed)-instance-method">
       <div class="signature">
         
-        def <strong>api</strong>
+        def <strong>eval_step</strong>(input_feed)
 
-        <a class="method-permalink" href="#api-instance-method">#</a>
+        <a class="method-permalink" href="#eval_step%28input_feed%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the API</p>
+          <p>Evaluate the model</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="env-instance-method">
+    <div class="entry-detail" id="learning_rate=(rate:Float64)-instance-method">
       <div class="signature">
         
-        def <strong>env</strong>
+        def <strong>learning_rate=</strong>(rate : Float64)
 
-        <a class="method-permalink" href="#env-instance-method">#</a>
+        <a class="method-permalink" href="#learning_rate%3D%28rate%3AFloat64%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the environment pointer</p>
+          <p>Set learning rate</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L36" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="release-instance-method">
+    <div class="entry-detail" id="load_checkpoint(checkpoint_path:String)-instance-method">
       <div class="signature">
         
-        def <strong>release</strong>
+        def <strong>load_checkpoint</strong>(checkpoint_path : String)
 
-        <a class="method-permalink" href="#release-instance-method">#</a>
+        <a class="method-permalink" href="#load_checkpoint%28checkpoint_path%3AString%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Release the environment in a thread-safe manner</p>
+          <p>Load a checkpoint</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="released?:Bool-instance-method">
+    <div class="entry-detail" id="optimizer_state-instance-method">
       <div class="signature">
         
-        def <strong>released?</strong> : Bool
+        def <strong>optimizer_state</strong>
 
-        <a class="method-permalink" href="#released%3F%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#optimizer_state-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Check if the environment has been released</p>
+          <p>Get optimizer state</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L31" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="save_checkpoint(checkpoint_path:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>save_checkpoint</strong>(checkpoint_path : String)
+
+        <a class="method-permalink" href="#save_checkpoint%28checkpoint_path%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Save the trained model</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L21" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="train_step(input_feed)-instance-method">
+      <div class="signature">
+        
+        def <strong>train_step</strong>(input_feed)
+
+        <a class="method-permalink" href="#train_step%28input_feed%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Train the model for one step</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/training_session.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>

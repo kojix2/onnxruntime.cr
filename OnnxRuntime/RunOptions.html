@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::OrtEnvironment - onnxruntime main</title>
+  <title>OnnxRuntime::RunOptions - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -102,7 +102,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
       
     </li>
@@ -117,7 +117,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/RunOptions" data-name="onnxruntime::runoptions">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/RunOptions" data-name="onnxruntime::runoptions">
       <a href="../OnnxRuntime/RunOptions.html">RunOptions</a>
       
     </li>
@@ -183,12 +183,12 @@
 
   <span class="kind">
     class
-  </span> OnnxRuntime::<wbr>OrtEnvironment
+  </span> OnnxRuntime::<wbr>RunOptions
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/OrtEnvironment.html">OnnxRuntime::OrtEnvironment</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/RunOptions.html">OnnxRuntime::RunOptions</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -202,8 +202,7 @@
     Overview
   </h2>
 
-  <p>OrtEnvironment is a singleton class that manages the ONNX Runtime environment.
-It ensures that only one environment exists per process and provides thread-safe access.</p>
+  <p>RunOptions class provides options for inference execution.</p>
 
 
 
@@ -230,8 +229,8 @@ It ensures that only one environment exists per process and provides thread-safe
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L4" target="_blank">
-        onnxruntime/ort_environment.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L3" target="_blank">
+        onnxruntime/run_options.cr
       </a>
     
     <br/>
@@ -242,27 +241,27 @@ It ensures that only one environment exists per process and provides thread-safe
 
 
   
-
-  
   <h2>
-    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+    <a id="constructors" class="anchor" href="#constructors">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Class Method Summary
+    Constructors
   </h2>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#instance-class-method" class="signature"><strong>.instance</strong></a>
+        <a href="#new%28session%3AInferenceSession%29-class-method" class="signature"><strong>.new</strong>(session : InferenceSession)</a>
         
-          <div class="summary"><p>Get the singleton instance of OrtEnvironment</p></div>
+          <div class="summary"><p>Creates a new RunOptions instance.</p></div>
         
       </li>
     
   </ul>
 
+
+  
 
   
 
@@ -278,30 +277,51 @@ It ensures that only one environment exists per process and provides thread-safe
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
         
-          <div class="summary"><p>Get the API</p></div>
+          <div class="summary"><p>Finalizer to release resources</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#env-instance-method" class="signature"><strong>#env</strong></a>
+        <a href="#log_severity_level%3D%28level%3AInt32%29-instance-method" class="signature"><strong>#log_severity_level=</strong>(level : Int32)</a>
         
-          <div class="summary"><p>Get the environment pointer</p></div>
+          <div class="summary"><p>Set run log severity level</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#log_verbosity_level%3D%28level%3AInt32%29-instance-method" class="signature"><strong>#log_verbosity_level=</strong>(level : Int32)</a>
+        
+          <div class="summary"><p>Set run log verbosity level</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
         
-          <div class="summary"><p>Release the environment in a thread-safe manner</p></div>
+          <div class="summary"><p>Explicitly release resources</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#released%3F%3ABool-instance-method" class="signature"><strong>#released?</strong> : Bool</a>
+        <a href="#tag%3D%28tag%3AString%29-instance-method" class="signature"><strong>#tag=</strong>(tag : String)</a>
         
-          <div class="summary"><p>Check if the environment has been released</p></div>
+          <div class="summary"><p>Set run tag</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#terminate-instance-method" class="signature"><strong>#terminate</strong></a>
+        
+          <div class="summary"><p>Set terminate flag</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_unsafe%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtRunOptions%29-instance-method" class="signature"><strong>#to_unsafe</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtRunOptions)</a>
+        
+          <div class="summary"><p>Get the underlying OrtRunOptions pointer</p></div>
         
       </li>
     
@@ -340,39 +360,39 @@ It ensures that only one environment exists per process and provides thread-safe
   </div>
 
   
-
-  
   <h2>
-    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Class Method Detail
+    Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="instance-class-method">
+    <div class="entry-detail" id="new(session:InferenceSession)-class-method">
       <div class="signature">
         
-        def self.<strong>instance</strong>
+        def self.<strong>new</strong>(session : <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>)
 
-        <a class="method-permalink" href="#instance-class-method">#</a>
+        <a class="method-permalink" href="#new%28session%3AInferenceSession%29-class-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the singleton instance of OrtEnvironment</p>
+          <p>Creates a new RunOptions instance.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
   
 
+
+  
 
   
 
@@ -386,44 +406,65 @@ It ensures that only one environment exists per process and provides thread-safe
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="api-instance-method">
+    <div class="entry-detail" id="finalize-instance-method">
       <div class="signature">
         
-        def <strong>api</strong>
+        def <strong>finalize</strong>
 
-        <a class="method-permalink" href="#api-instance-method">#</a>
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the API</p>
+          <p>Finalizer to release resources</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="env-instance-method">
+    <div class="entry-detail" id="log_severity_level=(level:Int32)-instance-method">
       <div class="signature">
         
-        def <strong>env</strong>
+        def <strong>log_severity_level=</strong>(level : Int32)
 
-        <a class="method-permalink" href="#env-instance-method">#</a>
+        <a class="method-permalink" href="#log_severity_level%3D%28level%3AInt32%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the environment pointer</p>
+          <p>Set run log severity level</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L33" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="log_verbosity_level=(level:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>log_verbosity_level=</strong>(level : Int32)
+
+        <a class="method-permalink" href="#log_verbosity_level%3D%28level%3AInt32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Set run log verbosity level</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -438,34 +479,76 @@ It ensures that only one environment exists per process and provides thread-safe
       
         <div class="doc">
           
-          <p>Release the environment in a thread-safe manner</p>
+          <p>Explicitly release resources</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L19" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="released?:Bool-instance-method">
+    <div class="entry-detail" id="tag=(tag:String)-instance-method">
       <div class="signature">
         
-        def <strong>released?</strong> : Bool
+        def <strong>tag=</strong>(tag : String)
 
-        <a class="method-permalink" href="#released%3F%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#tag%3D%28tag%3AString%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Check if the environment has been released</p>
+          <p>Set run tag</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L26" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="terminate-instance-method">
+      <div class="signature">
+        
+        def <strong>terminate</strong>
+
+        <a class="method-permalink" href="#terminate-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Set terminate flag</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_unsafe:Pointer(OnnxRuntime::LibOnnxRuntime::OrtRunOptions)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_unsafe</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtRunOptions)
+
+        <a class="method-permalink" href="#to_unsafe%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtRunOptions%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the underlying OrtRunOptions pointer</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/run_options.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::OrtEnvironment - onnxruntime main</title>
+  <title>OnnxRuntime::IoBinding - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -87,7 +87,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/IoBinding" data-name="onnxruntime::iobinding">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/IoBinding" data-name="onnxruntime::iobinding">
       <a href="../OnnxRuntime/IoBinding.html">IoBinding</a>
       
     </li>
@@ -102,7 +102,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
       
     </li>
@@ -183,12 +183,12 @@
 
   <span class="kind">
     class
-  </span> OnnxRuntime::<wbr>OrtEnvironment
+  </span> OnnxRuntime::<wbr>IoBinding
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/OrtEnvironment.html">OnnxRuntime::OrtEnvironment</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/IoBinding.html">OnnxRuntime::IoBinding</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -202,8 +202,8 @@
     Overview
   </h2>
 
-  <p>OrtEnvironment is a singleton class that manages the ONNX Runtime environment.
-It ensures that only one environment exists per process and provides thread-safe access.</p>
+  <p>IoBinding class provides zero-copy inference and advanced input/output binding.
+This is a placeholder for future implementation.</p>
 
 
 
@@ -230,8 +230,8 @@ It ensures that only one environment exists per process and provides thread-safe
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L4" target="_blank">
-        onnxruntime/ort_environment.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L4" target="_blank">
+        onnxruntime/io_binding.cr
       </a>
     
     <br/>
@@ -242,27 +242,27 @@ It ensures that only one environment exists per process and provides thread-safe
 
 
   
-
-  
   <h2>
-    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+    <a id="constructors" class="anchor" href="#constructors">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Class Method Summary
+    Constructors
   </h2>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#instance-class-method" class="signature"><strong>.instance</strong></a>
+        <a href="#new%28session%3AInferenceSession%29-class-method" class="signature"><strong>.new</strong>(session : InferenceSession)</a>
         
-          <div class="summary"><p>Get the singleton instance of OrtEnvironment</p></div>
+          <div class="summary"><p>Creates a new IoBinding instance.</p></div>
         
       </li>
     
   </ul>
 
+
+  
 
   
 
@@ -278,30 +278,37 @@ It ensures that only one environment exists per process and provides thread-safe
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
+        <a href="#bind_input%28name%3AString%2Ctensor_ptr%3APointer%28LibOnnxRuntime%3A%3AOrtValue%29%29-instance-method" class="signature"><strong>#bind_input</strong>(name : String, tensor_ptr : Pointer(LibOnnxRuntime::OrtValue))</a>
         
-          <div class="summary"><p>Get the API</p></div>
+          <div class="summary"><p>Bind input to a tensor</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#env-instance-method" class="signature"><strong>#env</strong></a>
+        <a href="#bind_output%28name%3AString%2Ctensor_ptr%3APointer%28LibOnnxRuntime%3A%3AOrtValue%29%29-instance-method" class="signature"><strong>#bind_output</strong>(name : String, tensor_ptr : Pointer(LibOnnxRuntime::OrtValue))</a>
         
-          <div class="summary"><p>Get the environment pointer</p></div>
+          <div class="summary"><p>Bind output to a tensor</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+          <div class="summary"><p>Finalizer to release resources</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
         
-          <div class="summary"><p>Release the environment in a thread-safe manner</p></div>
+          <div class="summary"><p>Explicitly release resources</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#released%3F%3ABool-instance-method" class="signature"><strong>#released?</strong> : Bool</a>
+        <a href="#to_unsafe%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtIoBinding%29-instance-method" class="signature"><strong>#to_unsafe</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtIoBinding)</a>
         
-          <div class="summary"><p>Check if the environment has been released</p></div>
+          <div class="summary"><p>Get the underlying OrtIoBinding pointer</p></div>
         
       </li>
     
@@ -340,39 +347,39 @@ It ensures that only one environment exists per process and provides thread-safe
   </div>
 
   
-
-  
   <h2>
-    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Class Method Detail
+    Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="instance-class-method">
+    <div class="entry-detail" id="new(session:InferenceSession)-class-method">
       <div class="signature">
         
-        def self.<strong>instance</strong>
+        def self.<strong>new</strong>(session : <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>)
 
-        <a class="method-permalink" href="#instance-class-method">#</a>
+        <a class="method-permalink" href="#new%28session%3AInferenceSession%29-class-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the singleton instance of OrtEnvironment</p>
+          <p>Creates a new IoBinding instance.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
 
+
+  
 
   
 
@@ -386,44 +393,65 @@ It ensures that only one environment exists per process and provides thread-safe
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="api-instance-method">
+    <div class="entry-detail" id="bind_input(name:String,tensor_ptr:Pointer(LibOnnxRuntime::OrtValue))-instance-method">
       <div class="signature">
         
-        def <strong>api</strong>
+        def <strong>bind_input</strong>(name : String, tensor_ptr : Pointer(LibOnnxRuntime::OrtValue))
 
-        <a class="method-permalink" href="#api-instance-method">#</a>
+        <a class="method-permalink" href="#bind_input%28name%3AString%2Ctensor_ptr%3APointer%28LibOnnxRuntime%3A%3AOrtValue%29%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the API</p>
+          <p>Bind input to a tensor</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L28" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="env-instance-method">
+    <div class="entry-detail" id="bind_output(name:String,tensor_ptr:Pointer(LibOnnxRuntime::OrtValue))-instance-method">
       <div class="signature">
         
-        def <strong>env</strong>
+        def <strong>bind_output</strong>(name : String, tensor_ptr : Pointer(LibOnnxRuntime::OrtValue))
 
-        <a class="method-permalink" href="#env-instance-method">#</a>
+        <a class="method-permalink" href="#bind_output%28name%3AString%2Ctensor_ptr%3APointer%28LibOnnxRuntime%3A%3AOrtValue%29%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the environment pointer</p>
+          <p>Bind output to a tensor</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L35" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Finalizer to release resources</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -438,34 +466,34 @@ It ensures that only one environment exists per process and provides thread-safe
       
         <div class="doc">
           
-          <p>Release the environment in a thread-safe manner</p>
+          <p>Explicitly release resources</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="released?:Bool-instance-method">
+    <div class="entry-detail" id="to_unsafe:Pointer(OnnxRuntime::LibOnnxRuntime::OrtIoBinding)-instance-method">
       <div class="signature">
         
-        def <strong>released?</strong> : Bool
+        def <strong>to_unsafe</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtIoBinding)
 
-        <a class="method-permalink" href="#released%3F%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#to_unsafe%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtIoBinding%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Check if the environment has been released</p>
+          <p>Get the underlying OrtIoBinding pointer</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/io_binding.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::SparseTensorFloat64 - onnxruntime main</title>
+  <title>OnnxRuntime::CudaProvider - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -72,7 +72,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProvider" data-name="onnxruntime::cudaprovider">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/CudaProvider" data-name="onnxruntime::cudaprovider">
       <a href="../OnnxRuntime/CudaProvider.html">CudaProvider</a>
       
     </li>
@@ -132,7 +132,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
       <a href="../OnnxRuntime/SparseTensorFloat64.html">SparseTensorFloat64</a>
       
     </li>
@@ -182,26 +182,29 @@
 <h1 class="type-name">
 
   <span class="kind">
-    alias
-  </span> OnnxRuntime::<wbr>SparseTensorFloat64
+    class
+  </span> OnnxRuntime::<wbr>CudaProvider
 
 </h1>
 
 
-
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/CudaProvider.html">OnnxRuntime::CudaProvider</a></li><li class="superclass"><a href="../OnnxRuntime/Provider.html">OnnxRuntime::Provider</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
 
   <h2>
-    <a id="alias-definition" class="anchor" href="#alias-definition">
+    <a id="overview" class="anchor" href="#overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Alias Definition
+    Overview
   </h2>
-  <code><a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(Float64)</a></code>
+
+  <p>CUDA execution provider</p>
+
+
 
 
 
@@ -226,8 +229,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/sparse_tensor.cr#L6" target="_blank">
-        onnxruntime/sparse_tensor.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L48" target="_blank">
+        onnxruntime/provider.cr
       </a>
     
     <br/>
@@ -238,25 +241,207 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28options%3ACudaProviderOptions%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(options : CudaProviderOptions | Nil = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
+        
+          <div class="summary"><p>Get the provider name</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#options%3AProviderOptions%7CNil-instance-method" class="signature"><strong>#options</strong> : ProviderOptions | Nil</a>
+        
+          <div class="summary"><p>Get the provider options</p></div>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
     
+      
+
+  <h3>Instance methods inherited from class <code><a href="../OnnxRuntime/Provider.html">OnnxRuntime::Provider</a></code></h3>
+  
+  
+    <a href="../OnnxRuntime/Provider.html#name%3AString-instance-method" class="tooltip">
+      <span>name : String</span>
+    name</a>, 
+    
+  
+    <a href="../OnnxRuntime/Provider.html#options%3AProviderOptions%7CNil-instance-method" class="tooltip">
+      <span>options : ProviderOptions | Nil</span>
+    options</a>
+    
+  
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(options:CudaProviderOptions|Nil=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(options : <a href="../OnnxRuntime/CudaProviderOptions.html">CudaProviderOptions</a> | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#new%28options%3ACudaProviderOptions%7CNil%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L49" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : String
+
+        <a class="method-permalink" href="#name%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class <a href="../OnnxRuntime/Provider.html">OnnxRuntime::Provider</a>
+            </div>
+          
+          <p>Get the provider name</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L52" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="options:ProviderOptions|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>options</strong> : <a href="../OnnxRuntime/ProviderOptions.html">ProviderOptions</a> | Nil
+
+        <a class="method-permalink" href="#options%3AProviderOptions%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class <a href="../OnnxRuntime/Provider.html">OnnxRuntime::Provider</a>
+            </div>
+          
+          <p>Get the provider options</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L56" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>

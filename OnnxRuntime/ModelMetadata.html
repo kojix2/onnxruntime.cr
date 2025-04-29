@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::OrtEnvironment - onnxruntime main</title>
+  <title>OnnxRuntime::ModelMetadata - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -92,7 +92,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/ModelMetadata" data-name="onnxruntime::modelmetadata">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/ModelMetadata" data-name="onnxruntime::modelmetadata">
       <a href="../OnnxRuntime/ModelMetadata.html">ModelMetadata</a>
       
     </li>
@@ -102,7 +102,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
       
     </li>
@@ -183,12 +183,12 @@
 
   <span class="kind">
     class
-  </span> OnnxRuntime::<wbr>OrtEnvironment
+  </span> OnnxRuntime::<wbr>ModelMetadata
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/OrtEnvironment.html">OnnxRuntime::OrtEnvironment</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/ModelMetadata.html">OnnxRuntime::ModelMetadata</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -202,8 +202,7 @@
     Overview
   </h2>
 
-  <p>OrtEnvironment is a singleton class that manages the ONNX Runtime environment.
-It ensures that only one environment exists per process and provides thread-safe access.</p>
+  <p>ModelMetadata class provides access to ONNX model metadata.</p>
 
 
 
@@ -230,8 +229,8 @@ It ensures that only one environment exists per process and provides thread-safe
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L4" target="_blank">
-        onnxruntime/ort_environment.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L3" target="_blank">
+        onnxruntime/model_metadata.cr
       </a>
     
     <br/>
@@ -255,9 +254,9 @@ It ensures that only one environment exists per process and provides thread-safe
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#instance-class-method" class="signature"><strong>.instance</strong></a>
+        <a href="#from_session%28session%3AInferenceSession%29-class-method" class="signature"><strong>.from_session</strong>(session : InferenceSession)</a>
         
-          <div class="summary"><p>Get the singleton instance of OrtEnvironment</p></div>
+          <div class="summary"><p>Creates a new ModelMetadata instance from a session.</p></div>
         
       </li>
     
@@ -278,30 +277,37 @@ It ensures that only one environment exists per process and provides thread-safe
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
-        
-          <div class="summary"><p>Get the API</p></div>
+        <a href="#custom_metadata_map%3AHash%28String%2CString%29-instance-method" class="signature"><strong>#custom_metadata_map</strong> : Hash(String, String)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#env-instance-method" class="signature"><strong>#env</strong></a>
-        
-          <div class="summary"><p>Get the environment pointer</p></div>
+        <a href="#description%3AString-instance-method" class="signature"><strong>#description</strong> : String</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
-        
-          <div class="summary"><p>Release the environment in a thread-safe manner</p></div>
+        <a href="#domain%3AString-instance-method" class="signature"><strong>#domain</strong> : String</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#released%3F%3ABool-instance-method" class="signature"><strong>#released?</strong> : Bool</a>
+        <a href="#graph_description%3AString-instance-method" class="signature"><strong>#graph_description</strong> : String</a>
         
-          <div class="summary"><p>Check if the environment has been released</p></div>
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#graph_name%3AString-instance-method" class="signature"><strong>#graph_name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#producer_name%3AString-instance-method" class="signature"><strong>#producer_name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#version%3AInt64-instance-method" class="signature"><strong>#version</strong> : Int64</a>
         
       </li>
     
@@ -351,23 +357,23 @@ It ensures that only one environment exists per process and provides thread-safe
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="instance-class-method">
+    <div class="entry-detail" id="from_session(session:InferenceSession)-class-method">
       <div class="signature">
         
-        def self.<strong>instance</strong>
+        def self.<strong>from_session</strong>(session : <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>)
 
-        <a class="method-permalink" href="#instance-class-method">#</a>
+        <a class="method-permalink" href="#from_session%28session%3AInferenceSession%29-class-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get the singleton instance of OrtEnvironment</p>
+          <p>Creates a new ModelMetadata instance from a session.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -386,86 +392,114 @@ It ensures that only one environment exists per process and provides thread-safe
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="api-instance-method">
+    <div class="entry-detail" id="custom_metadata_map:Hash(String,String)-instance-method">
       <div class="signature">
         
-        def <strong>api</strong>
+        def <strong>custom_metadata_map</strong> : Hash(String, String)
 
-        <a class="method-permalink" href="#api-instance-method">#</a>
+        <a class="method-permalink" href="#custom_metadata_map%3AHash%28String%2CString%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Get the API</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="env-instance-method">
+    <div class="entry-detail" id="description:String-instance-method">
       <div class="signature">
         
-        def <strong>env</strong>
+        def <strong>description</strong> : String
 
-        <a class="method-permalink" href="#env-instance-method">#</a>
+        <a class="method-permalink" href="#description%3AString-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Get the environment pointer</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="release-instance-method">
+    <div class="entry-detail" id="domain:String-instance-method">
       <div class="signature">
         
-        def <strong>release</strong>
+        def <strong>domain</strong> : String
 
-        <a class="method-permalink" href="#release-instance-method">#</a>
+        <a class="method-permalink" href="#domain%3AString-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Release the environment in a thread-safe manner</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="released?:Bool-instance-method">
+    <div class="entry-detail" id="graph_description:String-instance-method">
       <div class="signature">
         
-        def <strong>released?</strong> : Bool
+        def <strong>graph_description</strong> : String
 
-        <a class="method-permalink" href="#released%3F%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#graph_description%3AString-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Check if the environment has been released</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/ort_environment.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="graph_name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>graph_name</strong> : String
+
+        <a class="method-permalink" href="#graph_name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L5" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="producer_name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>producer_name</strong> : String
+
+        <a class="method-permalink" href="#producer_name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="version:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>version</strong> : Int64
+
+        <a class="method-permalink" href="#version%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/model_metadata.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>

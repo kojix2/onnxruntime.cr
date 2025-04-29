@@ -62,18 +62,38 @@
       
         <ul>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProvider" data-name="onnxruntime::cpuprovider">
+      <a href="../OnnxRuntime/CpuProvider.html">CpuProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CpuProviderOptions" data-name="onnxruntime::cpuprovideroptions">
+      <a href="../OnnxRuntime/CpuProviderOptions.html">CpuProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProvider" data-name="onnxruntime::cudaprovider">
+      <a href="../OnnxRuntime/CudaProvider.html">CudaProvider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProviderOptions" data-name="onnxruntime::cudaprovideroptions">
+      <a href="../OnnxRuntime/CudaProviderOptions.html">CudaProviderOptions</a>
+      
+    </li>
+  
   <li class=" current" data-id="onnxruntime/OnnxRuntime/InferenceSession" data-name="onnxruntime::inferencesession">
       <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/InputOutput" data-name="onnxruntime::inputoutput">
-      <a href="../OnnxRuntime/InputOutput.html">InputOutput</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/IoBinding" data-name="onnxruntime::iobinding">
+      <a href="../OnnxRuntime/IoBinding.html">IoBinding</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/Model" data-name="onnxruntime::model">
-      <a href="../OnnxRuntime/Model.html">Model</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ModelMetadata" data-name="onnxruntime::modelmetadata">
+      <a href="../OnnxRuntime/ModelMetadata.html">ModelMetadata</a>
       
     </li>
   
@@ -84,6 +104,21 @@
   
   <li class=" " data-id="onnxruntime/OnnxRuntime/OrtEnvironment" data-name="onnxruntime::ortenvironment">
       <a href="../OnnxRuntime/OrtEnvironment.html">OrtEnvironment</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Provider" data-name="onnxruntime::provider">
+      <a href="../OnnxRuntime/Provider.html">Provider</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/ProviderOptions" data-name="onnxruntime::provideroptions">
+      <a href="../OnnxRuntime/ProviderOptions.html">ProviderOptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/RunOptions" data-name="onnxruntime::runoptions">
+      <a href="../OnnxRuntime/RunOptions.html">RunOptions</a>
       
     </li>
   
@@ -112,13 +147,23 @@
       
     </li>
   
+  <li class=" " data-id="onnxruntime/OnnxRuntime/Tensor" data-name="onnxruntime::tensor">
+      <a href="../OnnxRuntime/Tensor.html">Tensor</a>
+      
+    </li>
+  
   <li class=" " data-id="onnxruntime/OnnxRuntime/TensorElementDataType" data-name="onnxruntime::tensorelementdatatype">
       <a href="../OnnxRuntime/TensorElementDataType.html">TensorElementDataType</a>
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorType" data-name="onnxruntime::tensortype">
-      <a href="../OnnxRuntime/TensorType.html">TensorType</a>
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TensorInfo" data-name="onnxruntime::tensorinfo">
+      <a href="../OnnxRuntime/TensorInfo.html">TensorInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="onnxruntime/OnnxRuntime/TrainingSession" data-name="onnxruntime::trainingsession">
+      <a href="../OnnxRuntime/TrainingSession.html">TrainingSession</a>
       
     </li>
   
@@ -173,7 +218,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L11" target="_blank">
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L2" target="_blank">
         onnxruntime/inference_session.cr
       </a>
     
@@ -196,7 +241,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28path_or_bytes%2C%2A%2Asession_options%29-class-method" class="signature"><strong>.new</strong>(path_or_bytes, **session_options)</a>
+        <a href="#new%28path_or_bytes%2Cprovider%3AProvider%7CNil%3Dnil%2C%2A%2Asession_options%29-class-method" class="signature"><strong>.new</strong>(path_or_bytes, provider : Provider | Nil = <span class="n">nil</span>, **session_options)</a>
         
       </li>
     
@@ -255,13 +300,6 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#extract_output_data%28tensor%29-instance-method" class="signature"><strong>#extract_output_data</strong>(tensor)</a>
-        
-          <div class="summary"><p>Extract data from the output tensor</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
         <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
         
           <div class="summary"><p>Finalizer only releases session-specific resources Environment is managed separately and should be released explicitly by the user</p></div>
@@ -269,12 +307,19 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#inputs%3AArray%28InputOutput%29-instance-method" class="signature"><strong>#inputs</strong> : Array(InputOutput)</a>
+        <a href="#inputs%3AArray%28TensorInfo%29-instance-method" class="signature"><strong>#inputs</strong> : Array(TensorInfo)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#outputs%3AArray%28InputOutput%29-instance-method" class="signature"><strong>#outputs</strong> : Array(InputOutput)</a>
+        <a href="#metadata-instance-method" class="signature"><strong>#metadata</strong></a>
+        
+          <div class="summary"><p>Get model metadata</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#outputs%3AArray%28TensorInfo%29-instance-method" class="signature"><strong>#outputs</strong> : Array(TensorInfo)</a>
         
       </li>
     
@@ -293,7 +338,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#run%28input_feed%2Coutput_names%3Dnil%2C%2A%2Arun_options%29-instance-method" class="signature"><strong>#run</strong>(input_feed, output_names = <span class="n">nil</span>, **run_options)</a>
+        <a href="#run%28input_feed%2Coutput_names%3Dnil%2Crun_options%3ARunOptions%7CNil%3Dnil%2C%2A%2Aoptions%29-instance-method" class="signature"><strong>#run</strong>(input_feed, output_names = <span class="n">nil</span>, run_options : RunOptions | Nil = <span class="n">nil</span>, **options)</a>
         
       </li>
     
@@ -301,11 +346,6 @@
         <a href="#session%3APointer%28LibOnnxRuntime%3A%3AOrtSession%29-instance-method" class="signature"><strong>#session</strong> : Pointer(LibOnnxRuntime::OrtSession)</a>
         
           <div class="summary"><p>Use OrtEnvironment singleton for environment management</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#type_info_to_input_output%28name%2Ctype_info%29-instance-method" class="signature"><strong>#type_info_to_input_output</strong>(name, type_info)</a>
         
       </li>
     
@@ -353,18 +393,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(path_or_bytes,**session_options)-class-method">
+    <div class="entry-detail" id="new(path_or_bytes,provider:Provider|Nil=nil,**session_options)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(path_or_bytes, **session_options)
+        def self.<strong>new</strong>(path_or_bytes, provider : <a href="../OnnxRuntime/Provider.html">Provider</a> | Nil = <span class="n">nil</span>, **session_options)
 
-        <a class="method-permalink" href="#new%28path_or_bytes%2C%2A%2Asession_options%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28path_or_bytes%2Cprovider%3AProvider%7CNil%3Dnil%2C%2A%2Asession_options%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -398,7 +438,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L610" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L310" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -428,7 +468,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L5" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -449,7 +489,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L589" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L284" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -465,28 +505,7 @@ This method is now a wrapper around OrtEnvironment.instance.release</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L23" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="extract_output_data(tensor)-instance-method">
-      <div class="signature">
-        
-        def <strong>extract_output_data</strong>(tensor)
-
-        <a class="method-permalink" href="#extract_output_data%28tensor%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Extract data from the output tensor</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L324" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -508,39 +527,60 @@ Environment is managed separately and should be released explicitly by the user<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L61" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="inputs:Array(InputOutput)-instance-method">
+    <div class="entry-detail" id="inputs:Array(TensorInfo)-instance-method">
       <div class="signature">
         
-        def <strong>inputs</strong> : Array(<a href="../OnnxRuntime/InputOutput.html">InputOutput</a>)
+        def <strong>inputs</strong> : Array(<a href="../OnnxRuntime/TensorInfo.html">TensorInfo</a>)
 
-        <a class="method-permalink" href="#inputs%3AArray%28InputOutput%29-instance-method">#</a>
+        <a class="method-permalink" href="#inputs%3AArray%28TensorInfo%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="outputs:Array(InputOutput)-instance-method">
+    <div class="entry-detail" id="metadata-instance-method">
       <div class="signature">
         
-        def <strong>outputs</strong> : Array(<a href="../OnnxRuntime/InputOutput.html">InputOutput</a>)
+        def <strong>metadata</strong>
 
-        <a class="method-permalink" href="#outputs%3AArray%28InputOutput%29-instance-method">#</a>
+        <a class="method-permalink" href="#metadata-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get model metadata</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L304" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="outputs:Array(TensorInfo)-instance-method">
+      <div class="signature">
+        
+        def <strong>outputs</strong> : Array(<a href="../OnnxRuntime/TensorInfo.html">TensorInfo</a>)
+
+        <a class="method-permalink" href="#outputs%3AArray%28TensorInfo%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -562,7 +602,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L62" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L76" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -583,23 +623,23 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L68" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="run(input_feed,output_names=nil,**run_options)-instance-method">
+    <div class="entry-detail" id="run(input_feed,output_names=nil,run_options:RunOptions|Nil=nil,**options)-instance-method">
       <div class="signature">
         
-        def <strong>run</strong>(input_feed, output_names = <span class="n">nil</span>, **run_options)
+        def <strong>run</strong>(input_feed, output_names = <span class="n">nil</span>, run_options : <a href="../OnnxRuntime/RunOptions.html">RunOptions</a> | Nil = <span class="n">nil</span>, **options)
 
-        <a class="method-permalink" href="#run%28input_feed%2Coutput_names%3Dnil%2C%2A%2Arun_options%29-instance-method">#</a>
+        <a class="method-permalink" href="#run%28input_feed%2Coutput_names%3Dnil%2Crun_options%3ARunOptions%7CNil%3Dnil%2C%2A%2Aoptions%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L169" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -620,23 +660,7 @@ Note: Default allocator may not need to be released, so commented out</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L13" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="type_info_to_input_output(name,type_info)-instance-method">
-      <div class="signature">
-        
-        def <strong>type_info_to_input_output</strong>(name, type_info)
-
-        <a class="method-permalink" href="#type_info_to_input_output%28name%2Ctype_info%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/d9a4d593a8f0b74c98b8ba40895610450d1a9020/src/onnxruntime/inference_session.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/inference_session.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>

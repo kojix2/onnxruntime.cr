@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="onnxruntime">
-  <title>OnnxRuntime::SparseTensorFloat64 - onnxruntime main</title>
+  <title>OnnxRuntime::CudaProviderOptions - onnxruntime main</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -77,7 +77,7 @@
       
     </li>
   
-  <li class=" " data-id="onnxruntime/OnnxRuntime/CudaProviderOptions" data-name="onnxruntime::cudaprovideroptions">
+  <li class=" current" data-id="onnxruntime/OnnxRuntime/CudaProviderOptions" data-name="onnxruntime::cudaprovideroptions">
       <a href="../OnnxRuntime/CudaProviderOptions.html">CudaProviderOptions</a>
       
     </li>
@@ -132,7 +132,7 @@
       
     </li>
   
-  <li class=" current" data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
+  <li class=" " data-id="onnxruntime/OnnxRuntime/SparseTensorFloat64" data-name="onnxruntime::sparsetensorfloat64">
       <a href="../OnnxRuntime/SparseTensorFloat64.html">SparseTensorFloat64</a>
       
     </li>
@@ -182,26 +182,29 @@
 <h1 class="type-name">
 
   <span class="kind">
-    alias
-  </span> OnnxRuntime::<wbr>SparseTensorFloat64
+    class
+  </span> OnnxRuntime::<wbr>CudaProviderOptions
 
 </h1>
 
 
-
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../OnnxRuntime/CudaProviderOptions.html">OnnxRuntime::CudaProviderOptions</a></li><li class="superclass"><a href="../OnnxRuntime/ProviderOptions.html">OnnxRuntime::ProviderOptions</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
 
   <h2>
-    <a id="alias-definition" class="anchor" href="#alias-definition">
+    <a id="overview" class="anchor" href="#overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Alias Definition
+    Overview
   </h2>
-  <code><a href="../OnnxRuntime/SparseTensor.html">OnnxRuntime::SparseTensor(Float64)</a></code>
+
+  <p>CUDA provider options</p>
+
+
 
 
 
@@ -226,8 +229,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/sparse_tensor.cr#L6" target="_blank">
-        onnxruntime/sparse_tensor.cr
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L62" target="_blank">
+        onnxruntime/provider.cr
       </a>
     
     <br/>
@@ -238,25 +241,222 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28session%3AInferenceSession%2Cdevice_id%3D0%2Cgpu_mem_limit%3D0_u64%2Carena_extend_strategy%3D0%2Ccudnn_conv_algo_search%3D0%2Cdo_copy_in_default_stream%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(session : InferenceSession, device_id = <span class="n">0</span>, gpu_mem_limit = <span class="n">0_u64</span>, arena_extend_strategy = <span class="n">0</span>, cudnn_conv_algo_search = <span class="n">0</span>, do_copy_in_default_stream = <span class="n">true</span>)</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+          <div class="summary"><p>Finalizer to release resources</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
+        
+          <div class="summary"><p>Explicitly release resources</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_unsafe%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtCUDAProviderOptionsV2%29-instance-method" class="signature"><strong>#to_unsafe</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtCUDAProviderOptionsV2)</a>
+        
+          <div class="summary"><p>Get the underlying OrtCUDAProviderOptionsV2 pointer</p></div>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
     
+      
+
+  <h3>Instance methods inherited from class <code><a href="../OnnxRuntime/ProviderOptions.html">OnnxRuntime::ProviderOptions</a></code></h3>
+  
+  
+    <a href="../OnnxRuntime/ProviderOptions.html#to_unsafe-instance-method" class="tooltip">
+      <span>to_unsafe</span>
+    to_unsafe</a>
+    
+  
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(session:InferenceSession,device_id=0,gpu_mem_limit=0_u64,arena_extend_strategy=0,cudnn_conv_algo_search=0,do_copy_in_default_stream=true)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(session : <a href="../OnnxRuntime/InferenceSession.html">InferenceSession</a>, device_id = <span class="n">0</span>, gpu_mem_limit = <span class="n">0_u64</span>, arena_extend_strategy = <span class="n">0</span>, cudnn_conv_algo_search = <span class="n">0</span>, do_copy_in_default_stream = <span class="n">true</span>)
+
+        <a class="method-permalink" href="#new%28session%3AInferenceSession%2Cdevice_id%3D0%2Cgpu_mem_limit%3D0_u64%2Carena_extend_strategy%3D0%2Ccudnn_conv_algo_search%3D0%2Cdo_copy_in_default_stream%3Dtrue%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L66" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Finalizer to release resources</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L78" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="release-instance-method">
+      <div class="signature">
+        
+        def <strong>release</strong>
+
+        <a class="method-permalink" href="#release-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Explicitly release resources</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L83" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_unsafe:Pointer(OnnxRuntime::LibOnnxRuntime::OrtCUDAProviderOptionsV2)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_unsafe</strong> : Pointer(OnnxRuntime::LibOnnxRuntime::OrtCUDAProviderOptionsV2)
+
+        <a class="method-permalink" href="#to_unsafe%3APointer%28OnnxRuntime%3A%3ALibOnnxRuntime%3A%3AOrtCUDAProviderOptionsV2%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the underlying OrtCUDAProviderOptionsV2 pointer</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/42450edab22fe1be1be8f7a70a15ba7c2e2dcdb0/src/onnxruntime/provider.cr#L90" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>
