@@ -191,7 +191,7 @@ HTML
 
 # Load model
 puts "Loading MNIST model from #{MODEL_PATH}"
-model = OnnxRuntime::Model.new(MODEL_PATH)
+session = OnnxRuntime::InferenceSession.new(MODEL_PATH)
 
 # Create HTTP server
 server = HTTP::Server.new do |context|
@@ -215,7 +215,7 @@ server = HTTP::Server.new do |context|
       end
 
       # Make prediction
-      result = model.predict(
+      result = session.run(
         {"Input3" => pixel_data},
         nil,
         shape: {"Input3" => [1_i64, 1_i64, MNIST_SIZE.to_i64, MNIST_SIZE.to_i64]}
@@ -248,7 +248,7 @@ end
 Signal::INT.trap do
   puts "\nShutting down server..."
   # Explicitly release resources
-  model.release
+  session.release_session
   OnnxRuntime::InferenceSession.release_env
   puts "Resources released, exiting."
   exit

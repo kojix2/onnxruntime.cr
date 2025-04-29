@@ -51,7 +51,7 @@ if model_path.empty?
 end
 
 begin
-  model = OnnxRuntime::Model.new(model_path)
+  session = OnnxRuntime::InferenceSession.new(model_path)
 rescue ex
   STDERR.puts "ERROR: Failed to load model: #{ex.message}"
   exit(1)
@@ -73,7 +73,7 @@ private def preprocess(text : String)
   {words, chars, tokens}
 end
 
-def predict_w(model, context : String, query : String)
+def predict_w(session, context : String, query : String)
   cw, cc, _context_tokens = preprocess(context)
   qw, qc, _ = preprocess(query)
   inputs = {
@@ -89,7 +89,8 @@ def predict_w(model, context : String, query : String)
     "query_word"   => [qw.size.to_i64, 1_i64],
     "query_char"   => [qc.size.to_i64 // 16, 1_i64, 1_i64, 16_i64],
   }
-  answer = model.predict(inputs, nil, shape: shape)
+  # Use session.run instead of model.predict
+  answer = session.run(inputs, nil, shape: shape)
 
   cw.map(&.first)[
     answer["start_pos"].as(Array(Int32)).first..answer["end_pos"].as(Array(Int32)).first,
@@ -99,9 +100,9 @@ end
 
 puts "Context: #{context}"
 puts "Query: #{query}"
-answer = predict_w(model, context, query)
+answer = predict_w(session, context, query)
 # Answer: john von neumann
 puts "Answer: #{answer}"
 
-model.release
+session.release_session
 OnnxRuntime::InferenceSession.release_env

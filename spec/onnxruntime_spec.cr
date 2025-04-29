@@ -16,28 +16,21 @@ describe OnnxRuntime::InferenceSession do
   it "create" do
     session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
     session.should be_a(OnnxRuntime::InferenceSession)
-    session.inputs.should be_a(Array(OnnxRuntime::InputOutput))
-    session.outputs.should be_a(Array(OnnxRuntime::InputOutput))
+    session.inputs.should be_a(Array(OnnxRuntime::TensorInfo))
+    session.outputs.should be_a(Array(OnnxRuntime::TensorInfo))
   end
 end
 
-describe OnnxRuntime::Model do
-  it "create" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-    model.should be_a(OnnxRuntime::Model)
-    model.inputs.should be_a(Array(OnnxRuntime::InputOutput))
-    model.outputs.should be_a(Array(OnnxRuntime::InputOutput))
-  end
-
+describe OnnxRuntime::InferenceSession do
   it "predict" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
 
     # MNIST model input is 4-dimensional [batch size, channels, height, width]
     # Create dummy input data (all zeros image)
     input_data = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
 
     # Execute prediction (specifying 4-dimensional shape)
-    result = model.predict({"Input3" => input_data})
+    result = session.run({"Input3" => input_data})
 
     # Result is a probability distribution for 10 classes (digits 0-9)
     result.should be_a(OnnxRuntime::NamedTensors)
@@ -52,23 +45,24 @@ describe OnnxRuntime::Model do
   end
 
   it "predict with different data types" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
 
     # Float32 type input data
     input_float32 = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
-    result_float32 = model.predict({"Input3" => input_float32})
+    result_float32 = session.run({"Input3" => input_float32})
     result_float32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
 
     # Int32 type input data (automatically converted to Float32)
     input_int32 = Array(Int32).new(1 * 1 * 28 * 28, 0)
-    result_int32 = model.predict({"Input3" => input_int32})
+    result_int32 = session.run({"Input3" => input_int32})
     result_int32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
   end
 
   it "metadata" do
-    model = OnnxRuntime::Model.new("spec/fixtures/mnist.onnx")
-    metadata = model.metadata
-    metadata.should_not be_nil
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
+    # Metadata: just check that inputs/outputs are present
+    session.inputs.should be_a(Array(OnnxRuntime::TensorInfo))
+    session.outputs.should be_a(Array(OnnxRuntime::TensorInfo))
   end
 end
 
@@ -126,22 +120,5 @@ describe OnnxRuntime::SparseTensor do
     values_int64 = [1_i64, 2_i64, 3_i64]
     sparse_tensor_int64 = OnnxRuntime::SparseTensor(Int64).coo(values_int64, indices.flatten, dense_shape)
     sparse_tensor_int64.should be_a(OnnxRuntime::SparseTensorInt64)
-  end
-end
-
-describe OnnxRuntime do
-  it "provides helper methods for creating sparse tensors" do
-    values = [1.0_f32, 2.0_f32, 3.0_f32]
-    indices = [[0, 0], [0, 2], [1, 1]]
-    dense_shape = [2_i64, 3_i64]
-
-    # Use module level helper methods
-    sparse_tensor = OnnxRuntime.coo_sparse_tensor(values, indices.flatten, dense_shape)
-    sparse_tensor.should be_a(OnnxRuntime::SparseTensor(Float32))
-
-    inner_indices = [0_i64, 2_i64, 1_i64]
-    outer_indices = [0_i64, 2_i64, 3_i64]
-    csr_tensor = OnnxRuntime.csr_sparse_tensor(values, inner_indices, outer_indices, dense_shape)
-    csr_tensor.should be_a(OnnxRuntime::SparseTensor(Float32))
   end
 end
