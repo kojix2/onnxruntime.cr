@@ -23,7 +23,7 @@ jobs:
             onnxruntime_dir: onnxruntime-osx-universal2-1.21.0
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
