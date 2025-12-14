@@ -23,8 +23,9 @@ jobs:
             onnxruntime_dir: onnxruntime-osx-universal2-1.21.0
             download_runtime: true
           - os: windows
+            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-win-x64-1.22.0.zip
             onnxruntime_dir: onnxruntime-win-x64-1.22.0
-            download_runtime: false
+            download_runtime: true
 
     steps:
       - uses: actions/checkout@v6
@@ -35,11 +36,20 @@ jobs:
         with:
           crystal: latest
 
-      - name: Download onnxruntime
-        if: ${{ matrix.download_runtime }}
+      - name: Download onnxruntime (Linux/macOS)
+        if: ${{ matrix.download_runtime && matrix.os != 'windows' }}
         run: |
           wget ${{ matrix.onnxruntime_url }}
           tar -xvzf $(basename ${{ matrix.onnxruntime_url }})
+
+      - name: Download onnxruntime (Windows)
+        if: ${{ matrix.os == 'windows' }}
+        shell: pwsh
+        run: |
+          $url = "${{ matrix.onnxruntime_url }}"
+          $archive = Split-Path $url -Leaf
+          Invoke-WebRequest -Uri $url -OutFile $archive
+          Expand-Archive -Path $archive -DestinationPath . -Force
 
       - name: Configure runtime path (non-Windows)
         if: ${{ matrix.os != 'windows' }}
