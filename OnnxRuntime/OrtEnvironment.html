@@ -193,18 +193,6 @@
 
 
 
-  <h2>
-    <a id="overview" class="anchor" href="#overview">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Overview
-  </h2>
-
-  <p>OrtEnvironment is a singleton class that manages the ONNX Runtime environment.
-It ensures that only one environment exists per process and provides thread-safe access.</p>
-
 
 
 
@@ -230,7 +218,7 @@ It ensures that only one environment exists per process and provides thread-safe
   </h2>
   
     
-      <a href="https://github.com/kojix2/onnxruntime.cr/blob/b416eb2506df7782e7cf84da1db109f4f34a7757/src/onnxruntime/ort_environment.cr#L4" target="_blank">
+      <a href="https://github.com/kojix2/onnxruntime.cr/blob/af1b0343448e53ce06474f2429f2c007337cbc8e/src/onnxruntime/ort_environment.cr#L2" target="_blank">
         onnxruntime/ort_environment.cr
       </a>
     
@@ -257,8 +245,6 @@ It ensures that only one environment exists per process and provides thread-safe
       <li class="entry-summary">
         <a href="#instance-class-method" class="signature"><strong>.instance</strong></a>
         
-          <div class="summary"><p>Get the singleton instance of OrtEnvironment</p></div>
-        
       </li>
     
   </ul>
@@ -280,28 +266,20 @@ It ensures that only one environment exists per process and provides thread-safe
       <li class="entry-summary">
         <a href="#api-instance-method" class="signature"><strong>#api</strong></a>
         
-          <div class="summary"><p>Get the API</p></div>
-        
       </li>
     
       <li class="entry-summary">
         <a href="#env-instance-method" class="signature"><strong>#env</strong></a>
-        
-          <div class="summary"><p>Get the environment pointer</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#release-instance-method" class="signature"><strong>#release</strong></a>
         
-          <div class="summary"><p>Release the environment in a thread-safe manner</p></div>
-        
       </li>
     
       <li class="entry-summary">
         <a href="#released%3F%3ABool-instance-method" class="signature"><strong>#released?</strong> : Bool</a>
-        
-          <div class="summary"><p>Check if the environment has been released</p></div>
         
       </li>
     
@@ -359,15 +337,10 @@ It ensures that only one environment exists per process and provides thread-safe
         <a class="method-permalink" href="#instance-class-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>Get the singleton instance of OrtEnvironment</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/b416eb2506df7782e7cf84da1db109f4f34a7757/src/onnxruntime/ort_environment.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/af1b0343448e53ce06474f2429f2c007337cbc8e/src/onnxruntime/ort_environment.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -394,15 +367,10 @@ It ensures that only one environment exists per process and provides thread-safe
         <a class="method-permalink" href="#api-instance-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>Get the API</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/b416eb2506df7782e7cf84da1db109f4f34a7757/src/onnxruntime/ort_environment.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/af1b0343448e53ce06474f2429f2c007337cbc8e/src/onnxruntime/ort_environment.cr#L48" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -415,15 +383,10 @@ It ensures that only one environment exists per process and provides thread-safe
         <a class="method-permalink" href="#env-instance-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>Get the environment pointer</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/b416eb2506df7782e7cf84da1db109f4f34a7757/src/onnxruntime/ort_environment.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/af1b0343448e53ce06474f2429f2c007337cbc8e/src/onnxruntime/ort_environment.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -436,15 +399,10 @@ It ensures that only one environment exists per process and provides thread-safe
         <a class="method-permalink" href="#release-instance-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>Release the environment in a thread-safe manner</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/b416eb2506df7782e7cf84da1db109f4f34a7757/src/onnxruntime/ort_environment.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/af1b0343448e53ce06474f2429f2c007337cbc8e/src/onnxruntime/ort_environment.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -457,15 +415,10 @@ It ensures that only one environment exists per process and provides thread-safe
         <a class="method-permalink" href="#released%3F%3ABool-instance-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>Check if the environment has been released</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/b416eb2506df7782e7cf84da1db109f4f34a7757/src/onnxruntime/ort_environment.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/onnxruntime.cr/blob/af1b0343448e53ce06474f2429f2c007337cbc8e/src/onnxruntime/ort_environment.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
