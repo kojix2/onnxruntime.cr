@@ -98,9 +98,17 @@ module OnnxRuntime
 
     # Get input name at index
     private def api_get_input_name(session, index, allocator)
-      name_ptr = Pointer(Pointer(UInt8)).malloc(1)
-      api_call &.session_get_input_name.call(session, index, allocator, name_ptr)
-      name_ptr
+      name_ptr = Pointer(UInt8).null
+      api_call &.session_get_input_name.call(session, index, allocator, pointerof(name_ptr))
+
+      begin
+        name_ptr.null? ? "" : String.new(name_ptr)
+      ensure
+        unless name_ptr.null?
+          status = api.allocator_free.call(allocator, name_ptr.as(Void*))
+          check_status(status)
+        end
+      end
     end
 
     # Get number of inputs
@@ -126,9 +134,17 @@ module OnnxRuntime
 
     # Get output name at index
     private def api_get_output_name(session, index, allocator)
-      name_ptr = Pointer(Pointer(UInt8)).malloc(1)
-      api_call &.session_get_output_name.call(session, index, allocator, name_ptr)
-      name_ptr
+      name_ptr = Pointer(UInt8).null
+      api_call &.session_get_output_name.call(session, index, allocator, pointerof(name_ptr))
+
+      begin
+        name_ptr.null? ? "" : String.new(name_ptr)
+      ensure
+        unless name_ptr.null?
+          status = api.allocator_free.call(allocator, name_ptr.as(Void*))
+          check_status(status)
+        end
+      end
     end
 
     # Get output type info at index
@@ -143,8 +159,7 @@ module OnnxRuntime
       inputs = Array(TensorInfo).new
       count = api_get_input_count(@session)
       count.times do |i|
-        name_ptr = api_get_input_name(@session, i, @allocator)
-        name = String.new(name_ptr.value)
+        name = api_get_input_name(@session, i, @allocator)
         type_info = api_get_input_type_info(@session, i)
         inputs << TensorInfo.from_type_info(name, type_info, self)
         api.release_type_info.call(type_info)
@@ -157,8 +172,7 @@ module OnnxRuntime
       outputs = Array(TensorInfo).new
       count = api_get_output_count(@session)
       count.times do |i|
-        name_ptr = api_get_output_name(@session, i, @allocator)
-        name = String.new(name_ptr.value)
+        name = api_get_output_name(@session, i, @allocator)
         type_info = api_get_output_type_info(@session, i)
         outputs << TensorInfo.from_type_info(name, type_info, self)
         api.release_type_info.call(type_info)
