@@ -242,10 +242,12 @@ module OnnxRuntime
         output_names.each_with_index do |name, i|
           next unless tensor = output_tensors[i]
           result[name] = Tensor.extract_data(tensor, self)
-          api.release_value.call(tensor)
         end
       end
     ensure
+      # Release output tensors that were allocated by the run() call
+      output_tensors.each { |tensor| api.release_value.call(tensor) if tensor } if output_tensors
+
       # Clean up - only release if we created it
       api.release_run_options.call(run_options_ptr) if owned_run_options && run_options_ptr
 
