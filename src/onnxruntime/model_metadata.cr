@@ -64,8 +64,8 @@ module OnnxRuntime
 
     # Helper method to get metadata string using API function
     private def self.get_metadata_string(api, metadata, allocator, session, &)
-      value_ptr = Pointer(Pointer(UInt8)).malloc(1)
-      status = yield metadata, allocator, value_ptr
+      value_ptr = Pointer(UInt8).null
+      status = yield metadata, allocator, pointerof(value_ptr)
 
       # If the status indicates an error, return empty string
       if !status.null?
@@ -73,20 +73,26 @@ module OnnxRuntime
         return ""
       end
 
-      value = value_ptr.value.null? ? "" : String.new(value_ptr.value)
-      value
+      begin
+        value_ptr.null? ? "" : String.new(value_ptr)
+      ensure
+        unless value_ptr.null?
+          free_status = api.allocator_free.call(allocator, value_ptr.as(Void*))
+          session.check_status(free_status)
+        end
+      end
     end
 
     # Helper method to get string from metadata
     private def self.get_string_from_metadata(api, metadata, key, session)
       allocator = session.allocator
-      value_ptr = Pointer(Pointer(UInt8)).malloc(1)
+      value_ptr = Pointer(UInt8).null
 
       status = api.model_metadata_lookup_custom_metadata_map.call(
         metadata,
         key.to_unsafe,
         allocator,
-        value_ptr
+        pointerof(value_ptr)
       )
 
       # If key doesn't exist, return empty string
@@ -95,8 +101,14 @@ module OnnxRuntime
         return ""
       end
 
-      value = value_ptr.value.null? ? "" : String.new(value_ptr.value)
-      value
+      begin
+        value_ptr.null? ? "" : String.new(value_ptr)
+      ensure
+        unless value_ptr.null?
+          free_status = api.allocator_free.call(allocator, value_ptr.as(Void*))
+          session.check_status(free_status)
+        end
+      end
     end
 
     # Helper method to get int64 from metadata
@@ -111,13 +123,13 @@ module OnnxRuntime
     private def self.get_custom_metadata_map(api, metadata, session)
       allocator = session.allocator
       keys_count = 0_u64
-      keys = Pointer(Pointer(Pointer(UInt8))).malloc(1)
+      keys = Pointer(Pointer(UInt8)).null
 
       # Get custom metadata keys count
       status = api.model_metadata_get_custom_metadata_map_keys.call(
         metadata,
         allocator,
-        keys,
+        pointerof(keys),
         pointerof(keys_count)
       )
       session.check_status(status)
@@ -126,13 +138,24 @@ module OnnxRuntime
       custom_metadata = {} of String => String
 
       # Get custom metadata values
-      if keys_count > 0
-        keys_array = keys.value
+      if keys_count > 0 && !keys.null?
+        keys_array = keys
         keys_count.times do |i|
-          key = String.new(keys_array[i])
+          key_ptr = keys_array[i]
+          key = key_ptr.null? ? "" : String.new(key_ptr)
           value = get_string_from_metadata(api, metadata, key, session)
           custom_metadata[key] = value
+
+          unless key_ptr.null?
+            free_status = api.allocator_free.call(allocator, key_ptr.as(Void*))
+            session.check_status(free_status)
+          end
         end
+      end
+
+      unless keys.null?
+        free_keys_status = api.allocator_free.call(allocator, keys.as(Void*))
+        session.check_status(free_keys_status)
       end
 
       custom_metadata
