@@ -19,31 +19,27 @@ module OnnxRuntime
 
       case onnx_type
       when LibOnnxRuntime::OnnxType::TENSOR
-        # Cast to tensor info
+        # Cast to tensor info (owned by type_info, so don't release separately)
         tensor_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
         status = api.cast_type_info_to_tensor_info.call(type_info, pointerof(tensor_info))
         session.check_status(status)
 
-        begin
-          # Get element type
-          element_type = LibOnnxRuntime::TensorElementDataType::FLOAT
-          status = api.get_tensor_element_type.call(tensor_info, pointerof(element_type))
-          session.check_status(status)
+        # Get element type
+        element_type = LibOnnxRuntime::TensorElementDataType::FLOAT
+        status = api.get_tensor_element_type.call(tensor_info, pointerof(element_type))
+        session.check_status(status)
 
-          # Get dimensions count
-          dims_count = 0_u64
-          status = api.get_dimensions_count.call(tensor_info, pointerof(dims_count))
-          session.check_status(status)
+        # Get dimensions count
+        dims_count = 0_u64
+        status = api.get_dimensions_count.call(tensor_info, pointerof(dims_count))
+        session.check_status(status)
 
-          # Get dimensions
-          dims = Array(Int64).new(dims_count, 0_i64)
-          status = api.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
-          session.check_status(status)
+        # Get dimensions
+        dims = Array(Int64).new(dims_count, 0_i64)
+        status = api.get_dimensions.call(tensor_info, dims.to_unsafe, dims_count)
+        session.check_status(status)
 
-          new(name, LibOnnxRuntime::TensorElementDataType.new(element_type), dims)
-        ensure
-          api.release_tensor_type_and_shape_info.call(tensor_info) unless tensor_info.null?
-        end
+        new(name, LibOnnxRuntime::TensorElementDataType.new(element_type), dims)
       else
         raise "Unsupported ONNX type: #{onnx_type}"
       end

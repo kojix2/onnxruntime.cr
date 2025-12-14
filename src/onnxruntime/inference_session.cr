@@ -101,14 +101,7 @@ module OnnxRuntime
       name_ptr = Pointer(UInt8).null
       api_call &.session_get_input_name.call(session, index, allocator, pointerof(name_ptr))
 
-      begin
-        name_ptr.null? ? "" : String.new(name_ptr)
-      ensure
-        unless name_ptr.null?
-          status = api.allocator_free.call(allocator, name_ptr.as(Void*))
-          check_status(status)
-        end
-      end
+      name_ptr.null? ? "" : copy_and_free_allocator_string(name_ptr, allocator)
     end
 
     # Get number of inputs
@@ -137,13 +130,24 @@ module OnnxRuntime
       name_ptr = Pointer(UInt8).null
       api_call &.session_get_output_name.call(session, index, allocator, pointerof(name_ptr))
 
-      begin
-        name_ptr.null? ? "" : String.new(name_ptr)
-      ensure
-        unless name_ptr.null?
-          status = api.allocator_free.call(allocator, name_ptr.as(Void*))
-          check_status(status)
-        end
+      name_ptr.null? ? "" : copy_and_free_allocator_string(name_ptr, allocator)
+    end
+
+    # Copy allocator-owned ORT strings into managed Crystal strings and release the original buffer.
+    private def copy_and_free_allocator_string(ptr, allocator)
+      name = copy_c_string(ptr)
+      api_call &.allocator_free.call(allocator, ptr.as(Void*))
+      name
+    end
+
+    private def copy_c_string(ptr)
+      length = LibC.strlen(ptr.as(LibC::Char*))
+      raise "ORT string is too large to copy" if length > Int32::MAX
+      bytesize = length.to_i32
+
+      String.new(bytesize) do |buffer|
+        buffer.copy_from(ptr, bytesize)
+        {bytesize, bytesize}
       end
     end
 

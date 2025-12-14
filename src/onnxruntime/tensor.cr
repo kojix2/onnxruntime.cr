@@ -185,17 +185,13 @@ module OnnxRuntime
 
       tensor_info = cast_type_info_to_tensor_info(type_info, session)
 
-      begin
-        element_type = get_tensor_element_type(tensor_info, session)
-        dims_count = get_dimensions_count(tensor_info, session)
-        dims = get_dimensions(tensor_info, dims_count, session)
-        element_count = calculate_total(dims)
-        data_ptr = get_tensor_mutable_data(tensor, session)
+      element_type = get_tensor_element_type(tensor_info, session)
+      dims_count = get_dimensions_count(tensor_info, session)
+      dims = get_dimensions(tensor_info, dims_count, session)
+      element_count = calculate_total(dims)
+      data_ptr = get_tensor_mutable_data(tensor, session)
 
-        data_ptr_to_data(data_ptr, element_type, element_count)
-      ensure
-        api.release_tensor_type_and_shape_info.call(tensor_info) unless tensor_info.null?
-      end
+      data_ptr_to_data(data_ptr, element_type, element_count)
     end
 
     # Convert data pointer to Crystal array
