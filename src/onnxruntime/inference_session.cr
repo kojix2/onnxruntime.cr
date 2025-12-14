@@ -167,6 +167,8 @@ module OnnxRuntime
     end
 
     def run(input_feed, output_names = nil, run_options : RunOptions? = nil, **options)
+      # Track if we created run_options_ptr locally
+      owned_run_options = run_options.nil?
       run_options_ptr = run_options ? run_options.to_unsafe : api_create_run_options
       input_tensors = [] of Pointer(LibOnnxRuntime::OrtValue)
 
@@ -226,8 +228,8 @@ module OnnxRuntime
         end
       end
     ensure
-      # Clean up
-      api.release_run_options.call(run_options_ptr) if run_options_ptr
+      # Clean up - only release if we created it
+      api.release_run_options.call(run_options_ptr) if owned_run_options && run_options_ptr
 
       # Release input tensors
       input_tensors.each { |tensor| api.release_value.call(tensor) if tensor } if input_tensors
