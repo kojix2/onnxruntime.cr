@@ -62,6 +62,31 @@ describe OnnxRuntime::InferenceSession do
     result_int32["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
   end
 
+  it "predict with explicit output selection" do
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
+
+    input_data = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
+    shape = [1_i64, 1_i64, 28_i64, 28_i64]
+    outputs = ["Plus214_Output_0"]
+
+    result = session.run({"Input3" => input_data}, outputs, nil, shape: {"Input3" => shape})
+
+    result.keys.should eq(outputs)
+    result["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
+  end
+
+  it "predict twice sequentially" do
+    session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
+
+    input_data = Array(Float32).new(1 * 1 * 28 * 28, 0.0_f32)
+    shape = [1_i64, 1_i64, 28_i64, 28_i64]
+
+    2.times do
+      result = session.run({"Input3" => input_data}, nil, nil, shape: {"Input3" => shape})
+      result["Plus214_Output_0"].is_a?(Array(Float32)).should be_true
+    end
+  end
+
   it "metadata" do
     session = OnnxRuntime::InferenceSession.new("spec/fixtures/mnist.onnx")
     # Metadata: just check that inputs/outputs are present
