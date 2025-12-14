@@ -114,16 +114,23 @@ module OnnxRuntime
       session.check_status(status)
 
       cstrs = data.map(&.to_unsafe)
-      str_ptrs = Pointer(UInt8*).malloc(data.size)
-      data.each_with_index { |_, i| str_ptrs[i] = cstrs[i] }
+      str_ptrs = Pointer(UInt8*).null
 
-      status = api.fill_string_tensor.call(
-        tensor,
-        str_ptrs,
-        data.size.to_u64
-      )
+      begin
+        str_ptrs = Pointer(UInt8*).malloc(data.size)
+        data.each_with_index { |_, i| str_ptrs[i] = cstrs[i] }
 
-      session.check_status(status)
+        status = api.fill_string_tensor.call(
+          tensor,
+          str_ptrs,
+          data.size.to_u64
+        )
+
+        session.check_status(status)
+      ensure
+        LibC.free(str_ptrs.as(Void*)) unless str_ptrs.null?
+      end
+
       tensor
     end
 
@@ -177,13 +184,18 @@ module OnnxRuntime
       api = session.api
 
       tensor_info = cast_type_info_to_tensor_info(type_info, session)
-      element_type = get_tensor_element_type(tensor_info, session)
-      dims_count = get_dimensions_count(tensor_info, session)
-      dims = get_dimensions(tensor_info, dims_count, session)
-      element_count = calculate_total(dims)
-      data_ptr = get_tensor_mutable_data(tensor, session)
 
-      data_ptr_to_data(data_ptr, element_type, element_count)
+      begin
+        element_type = get_tensor_element_type(tensor_info, session)
+        dims_count = get_dimensions_count(tensor_info, session)
+        dims = get_dimensions(tensor_info, dims_count, session)
+        element_count = calculate_total(dims)
+        data_ptr = get_tensor_mutable_data(tensor, session)
+
+        data_ptr_to_data(data_ptr, element_type, element_count)
+      ensure
+        api.release_tensor_type_and_shape_info.call(tensor_info) unless tensor_info.null?
+      end
     end
 
     # Convert data pointer to Crystal array
@@ -282,40 +294,44 @@ module OnnxRuntime
       # Get values type and shape
       values_info = get_sparse_tensor_values_type_and_shape(tensor, session)
 
-      # Get element type
-      element_type = get_tensor_element_type(values_info, session)
+      begin
+        # Get element type
+        element_type = get_tensor_element_type(values_info, session)
 
-      # Get values shape
-      dims_count = get_dimensions_count(values_info, session)
-      values_shape = get_dimensions(values_info, dims_count, session)
+        # Get values shape
+        dims_count = get_dimensions_count(values_info, session)
+        values_shape = get_dimensions(values_info, dims_count, session)
 
-      # Get values data
-      data_ptr = get_sparse_tensor_values(tensor, session)
+        # Get values data
+        data_ptr = get_sparse_tensor_values(tensor, session)
 
-      # Calculate total number of values
-      values_count = calculate_total(values_shape)
+        # Calculate total number of values
+        values_count = calculate_total(values_shape)
 
-      # Extract values based on element type
-      values = data_ptr_to_data(data_ptr, element_type, values_count)
+        # Extract values based on element type
+        values = data_ptr_to_data(data_ptr, element_type, values_count)
 
-      # Extract indices based on format
-      indices = extract_indices_format(tensor, format, session)
+        # Extract indices based on format
+        indices = extract_indices_format(tensor, format, session)
 
-      # Get dense shape from the first output
-      dense_shape = session.outputs.first.shape
+        # Get dense shape from the first output
+        dense_shape = session.outputs.first.shape
 
-      # Create and return SparseTensor with the appropriate type
-      case values
-      when Array(Float32)
-        SparseTensor(Float32).new(format, values, indices, dense_shape)
-      when Array(Int32)
-        SparseTensor(Int32).new(format, values, indices, dense_shape)
-      when Array(Int64)
-        SparseTensor(Int64).new(format, values, indices, dense_shape)
-      when Array(Float64)
-        SparseTensor(Float64).new(format, values, indices, dense_shape)
-      else
-        raise "Unsupported sparse tensor value type: #{values.class}"
+        # Create and return SparseTensor with the appropriate type
+        case values
+        when Array(Float32)
+          SparseTensor(Float32).new(format, values, indices, dense_shape)
+        when Array(Int32)
+          SparseTensor(Int32).new(format, values, indices, dense_shape)
+        when Array(Int64)
+          SparseTensor(Int64).new(format, values, indices, dense_shape)
+        when Array(Float64)
+          SparseTensor(Float64).new(format, values, indices, dense_shape)
+        else
+          raise "Unsupported sparse tensor value type: #{values.class}"
+        end
+      ensure
+        api.release_tensor_type_and_shape_info.call(values_info) unless values_info.null?
       end
     end
 
@@ -365,35 +381,39 @@ module OnnxRuntime
       api = session.api
       indices_info = Pointer(LibOnnxRuntime::OrtTensorTypeAndShapeInfo).null
 
-      # Get indices type and shape
-      status = api.get_sparse_tensor_indices_type_shape.call(tensor, indices_format, pointerof(indices_info))
-      session.check_status(status)
+      begin
+        # Get indices type and shape
+        status = api.get_sparse_tensor_indices_type_shape.call(tensor, indices_format, pointerof(indices_info))
+        session.check_status(status)
 
-      # Get indices shape
-      dims_count = 0_u64
-      status = api.get_dimensions_count.call(indices_info, pointerof(dims_count))
-      session.check_status(status)
+        # Get indices shape
+        dims_count = 0_u64
+        status = api.get_dimensions_count.call(indices_info, pointerof(dims_count))
+        session.check_status(status)
 
-      indices_shape = Array(Int64).new(dims_count, 0_i64)
-      status = api.get_dimensions.call(indices_info, indices_shape.to_unsafe, dims_count)
-      session.check_status(status)
+        indices_shape = Array(Int64).new(dims_count, 0_i64)
+        status = api.get_dimensions.call(indices_info, indices_shape.to_unsafe, dims_count)
+        session.check_status(status)
 
-      # Get indices data
-      indices_count = 0_u64
-      indices_ptr = Pointer(Void).null
-      status = api.get_sparse_tensor_indices.call(tensor, indices_format, pointerof(indices_count), pointerof(indices_ptr))
-      session.check_status(status)
+        # Get indices data
+        indices_count = 0_u64
+        indices_ptr = Pointer(Void).null
+        status = api.get_sparse_tensor_indices.call(tensor, indices_format, pointerof(indices_count), pointerof(indices_ptr))
+        session.check_status(status)
 
-      data_ptr = indices_ptr
+        data_ptr = indices_ptr
 
-      # Calculate total number of indices
-      total_indices = calculate_total(indices_shape)
+        # Calculate total number of indices
+        total_indices = calculate_total(indices_shape)
 
-      # Extract indices
-      if indices_format == LibOnnxRuntime::SparseIndicesFormat::BLOCK_SPARSE_INDICES
-        Slice.new(data_ptr.as(Int32*), total_indices).to_a
-      else
-        Slice.new(data_ptr.as(Int64*), total_indices).to_a
+        # Extract indices
+        if indices_format == LibOnnxRuntime::SparseIndicesFormat::BLOCK_SPARSE_INDICES
+          Slice.new(data_ptr.as(Int32*), total_indices).to_a
+        else
+          Slice.new(data_ptr.as(Int64*), total_indices).to_a
+        end
+      ensure
+        api.release_tensor_type_and_shape_info.call(indices_info) unless indices_info.null?
       end
     end
   end
