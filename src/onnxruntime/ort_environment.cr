@@ -1,6 +1,4 @@
 module OnnxRuntime
-  # OrtEnvironment is a singleton class that manages the ONNX Runtime environment.
-  # It ensures that only one environment exists per process and provides thread-safe access.
   class OrtEnvironment
     @@instance : OrtEnvironment?
     @@mutex = Mutex.new
@@ -9,32 +7,27 @@ module OnnxRuntime
     @released = false
     @release_in_progress = false
 
-    # Get the singleton instance of OrtEnvironment
     def self.instance
       @@mutex.synchronize do
         @@instance ||= new
       end
     end
 
-    # Private constructor to enforce singleton pattern
     private def initialize
       @env = create_env
       @released = false
       @release_in_progress = false
     end
 
-    # Get the environment pointer
     def env
       raise "Environment has been released" if @released
       @env
     end
 
-    # Check if the environment has been released
     def released?
       @released
     end
 
-    # Release the environment in a thread-safe manner
     def release
       return if @released
 
@@ -52,7 +45,6 @@ module OnnxRuntime
       end
     end
 
-    # Get the API
     def api
       OnnxRuntime::LibOnnxRuntime
         .OrtGetApiBase.value
@@ -61,19 +53,17 @@ module OnnxRuntime
         .value
     end
 
-    # Create a new environment
     private def create_env
       env = Pointer(LibOnnxRuntime::OrtEnv).null
       status = api.create_env.call(
         OnnxRuntime::LibOnnxRuntime::LoggingLevel::ERROR,
-        "onnxruntime.cr".to_unsafe,
+        ort_env_string("onnxruntime.cr"),
         pointerof(env)
       )
       check_status(status)
       env
     end
 
-    # Check the status and raise an error if needed
     private def check_status(status)
       return if status.null?
 
@@ -82,6 +72,15 @@ module OnnxRuntime
       api.release_status.call(status)
 
       raise "ONNXRuntime Error: #{error_message} (#{error_code})"
+    end
+
+    private def ort_env_string(str : String)
+      {% if flag?(:win32) %}
+        utf16 = str.to_utf16
+        utf16.to_unsafe.as(OnnxRuntime::LibOnnxRuntime::ORTCHAR_T*)
+      {% else %}
+        str.to_unsafe
+      {% end %}
     end
   end
 end

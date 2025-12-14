@@ -1,5 +1,5 @@
 module OnnxRuntime
-  {% if env("ONNXRUNTIME_DIR") %}
+  {% if env("ONNXRUNTIME_DIR") && !flag?(:win32) %}
     @[Link(ldflags: "-L `echo $ONNXRUNTIME_DIR/lib` -lonnxruntime -Wl,-rpath,`echo $ONNXRUNTIME_DIR/lib`")]
   {% else %}
     @[Link("onnxruntime")]
@@ -7,7 +7,6 @@ module OnnxRuntime
   lib LibOnnxRuntime
     ORT_API_VERSION = 21_u32
 
-    # Define ORTCHAR_T based on platform
     {% if flag?(:win32) %}
       alias ORTCHAR_T = LibC::WCHAR
     {% else %}
@@ -256,39 +255,35 @@ module OnnxRuntime
       get_error_code : (OrtStatus* -> OrtErrorCode)
       get_error_message : (OrtStatus* -> LibC::Char*)
 
-      # OrtEnv
-      create_env : (OrtLoggingLevel, LibC::Char*, OrtEnv** -> OrtStatus*)
-      create_env_with_custom_logger : (OrtLoggingFunction, Void*, OrtLoggingLevel, LibC::Char*, OrtEnv** -> OrtStatus*)
+      create_env : (OrtLoggingLevel, ORTCHAR_T*, OrtEnv** -> OrtStatus*)
+      create_env_with_custom_logger : (OrtLoggingFunction, Void*, OrtLoggingLevel, ORTCHAR_T*, OrtEnv** -> OrtStatus*)
       enable_telemetry_events : (OrtEnv* -> OrtStatus*)
       disable_telemetry_events : (OrtEnv* -> OrtStatus*)
 
-      # OrtSession
-      create_session : (OrtEnv*, LibC::Char*, OrtSessionOptions*, OrtSession** -> OrtStatus*)
+      create_session : (OrtEnv*, ORTCHAR_T*, OrtSessionOptions*, OrtSession** -> OrtStatus*)
       create_session_from_array : (OrtEnv*, Void*, LibC::SizeT, OrtSessionOptions*, OrtSession** -> OrtStatus*)
       run : (OrtSession*, OrtRunOptions*, LibC::Char**, OrtValue**, LibC::SizeT, LibC::Char**, LibC::SizeT, OrtValue** -> OrtStatus*)
 
-      # OrtSessionOptions
       create_session_options : (OrtSessionOptions** -> OrtStatus*)
-      set_optimized_model_file_path : (OrtSessionOptions*, LibC::Char* -> OrtStatus*)
+      set_optimized_model_file_path : (OrtSessionOptions*, ORTCHAR_T* -> OrtStatus*)
       clone_session_options : (OrtSessionOptions*, OrtSessionOptions** -> OrtStatus*)
       set_session_execution_mode : (OrtSessionOptions*, ExecutionMode -> OrtStatus*)
-      enable_profiling : (OrtSessionOptions*, LibC::Char* -> OrtStatus*)
+      enable_profiling : (OrtSessionOptions*, ORTCHAR_T* -> OrtStatus*)
       disable_profiling : (OrtSessionOptions* -> OrtStatus*)
       enable_mem_pattern : (OrtSessionOptions* -> OrtStatus*)
       disable_mem_pattern : (OrtSessionOptions* -> OrtStatus*)
       enable_cpu_mem_arena : (OrtSessionOptions* -> OrtStatus*)
       disable_cpu_mem_arena : (OrtSessionOptions* -> OrtStatus*)
-      set_session_log_id : (OrtSessionOptions*, LibC::Char* -> OrtStatus*)
+      set_session_log_id : (OrtSessionOptions*, ORTCHAR_T* -> OrtStatus*)
       set_session_log_verbosity_level : (OrtSessionOptions*, Int32 -> OrtStatus*)
       set_session_log_severity_level : (OrtSessionOptions*, Int32 -> OrtStatus*)
       set_session_graph_optimization_level : (OrtSessionOptions*, GraphOptimizationLevel -> OrtStatus*)
       set_intra_op_num_threads : (OrtSessionOptions*, Int32 -> OrtStatus*)
       set_inter_op_num_threads : (OrtSessionOptions*, Int32 -> OrtStatus*)
-      # OrtCustomOpDomain
       create_custom_op_domain : (LibC::Char*, OrtCustomOpDomain** -> OrtStatus*)
       custom_op_domain_add : (OrtCustomOpDomain*, OrtCustomOp* -> OrtStatus*)
       add_custom_op_domain : (OrtSessionOptions*, OrtCustomOpDomain* -> OrtStatus*)
-      register_custom_ops_library : (OrtSessionOptions*, LibC::Char*, Void** -> OrtStatus*)
+      register_custom_ops_library : (OrtSessionOptions*, ORTCHAR_T*, Void** -> OrtStatus*)
 
       # OrtSession
       session_get_input_count : (OrtSession*, LibC::SizeT* -> OrtStatus*)

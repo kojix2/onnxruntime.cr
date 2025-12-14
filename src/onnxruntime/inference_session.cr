@@ -82,7 +82,7 @@ module OnnxRuntime
     private def load_session(path_or_bytes, session_options)
       session = Pointer(LibOnnxRuntime::OrtSession).null
       status = if path_or_bytes.is_a?(String)
-                 api.create_session.call(env, ort_string(path_or_bytes), session_options, pointerof(session))
+                 api.create_session.call(env, ort_path_string(path_or_bytes), session_options, pointerof(session))
                else
                  api.create_session_from_array.call(env, path_or_bytes.to_unsafe, path_or_bytes.size, session_options, pointerof(session))
                end
@@ -311,6 +311,15 @@ module OnnxRuntime
       api.release_status.call(status)
 
       raise "ONNXRuntime Error: #{error_message} (#{error_code})"
+    end
+
+    private def ort_path_string(str : String)
+      {% if flag?(:win32) %}
+        utf16 = str.to_utf16
+        utf16.to_unsafe.as(OnnxRuntime::LibOnnxRuntime::ORTCHAR_T*)
+      {% else %}
+        str.to_unsafe
+      {% end %}
     end
 
     private def ort_string(str)

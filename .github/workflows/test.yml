@@ -3,8 +3,7 @@ name: build
 on:
   push:
   pull_request:
-  schedule:
-    - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,14 +12,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu", "macos"]
+        os: ["ubuntu", "macos", "windows"]
         include:
           - os: ubuntu
             onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-linux-x64-1.21.0.tgz
             onnxruntime_dir: onnxruntime-linux-x64-1.21.0
+            download_runtime: true
           - os: macos
             onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-universal2-1.21.0.tgz
             onnxruntime_dir: onnxruntime-osx-universal2-1.21.0
+            download_runtime: true
+          - os: windows
+            onnxruntime_dir: onnxruntime-win-x64-1.22.0
+            download_runtime: false
 
     steps:
       - uses: actions/checkout@v6
@@ -32,23 +36,37 @@ jobs:
           crystal: latest
 
       - name: Download onnxruntime
+        if: ${{ matrix.download_runtime }}
         run: |
           wget ${{ matrix.onnxruntime_url }}
           tar -xvzf $(basename ${{ matrix.onnxruntime_url }})
+
+      - name: Configure runtime path (non-Windows)
+        if: ${{ matrix.os != 'windows' }}
+        run: echo "ONNXRUNTIME_DIR=${{ github.workspace }}/${{ matrix.onnxruntime_dir }}" >> $GITHUB_ENV
+
+      - name: Configure runtime path (Windows)
+        if: ${{ matrix.os == 'windows' }}
+        shell: pwsh
+        run: |
+          $runtime = Join-Path $PWD '${{ matrix.onnxruntime_dir }}'
+          if (-not (Test-Path $runtime)) {
+            throw "Missing ONNX Runtime bundle at $runtime"
+          }
+          $libDir = Join-Path $runtime 'lib'
+          "ONNXRUNTIME_DIR=$runtime" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "LIB=$libDir;$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "PATH=$libDir;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Install dependencies
         run: shards install --without-development --release
 
       - name: Test
-        env:
-          ONNXRUNTIME_DIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
         run: |
           echo "Using ONNX Runtime at: $ONNXRUNTIME_DIR"
           crystal spec
 
       - name: Test with verbose output
         if: failure()
-        env:
-          ONNXRUNTIME_DIR: ${{ github.workspace }}/${{ matrix.onnxruntime_dir }}
         run: |
           crystal spec -v
