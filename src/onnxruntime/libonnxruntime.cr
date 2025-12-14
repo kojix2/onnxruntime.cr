@@ -9,7 +9,7 @@ module OnnxRuntime
 
     # Define ORTCHAR_T based on platform
     {% if flag?(:win32) %}
-      alias ORTCHAR_T = LibC::WChar
+      alias ORTCHAR_T = LibC::WCHAR
     {% else %}
       alias ORTCHAR_T = LibC::Char
     {% end %}
