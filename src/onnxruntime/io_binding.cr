@@ -26,14 +26,14 @@ module OnnxRuntime
 
     # Bind input to a tensor
     def bind_input(name : String, tensor_ptr : Pointer(LibOnnxRuntime::OrtValue))
-      status = @api.binding_bind_input.call(@io_binding, name, tensor_ptr)
+      status = @api.bind_input.call(@io_binding, name, tensor_ptr)
       check_status(status)
       self
     end
 
     # Bind output to a tensor
     def bind_output(name : String, tensor_ptr : Pointer(LibOnnxRuntime::OrtValue))
-      status = @api.binding_bind_output.call(@io_binding, name, tensor_ptr)
+      status = @api.bind_output.call(@io_binding, name, tensor_ptr)
       check_status(status)
       self
     end
