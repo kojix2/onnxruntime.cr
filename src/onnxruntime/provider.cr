@@ -60,6 +60,7 @@ module OnnxRuntime
 
   # CUDA provider options
   class CudaProviderOptions < ProviderOptions
+    @api : LibOnnxRuntime::Api
     @options : Pointer(LibOnnxRuntime::OrtCUDAProviderOptionsV2)
     @released = false
 
