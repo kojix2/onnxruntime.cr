@@ -12,11 +12,14 @@ module OnnxRuntime
     protected getter api : LibOnnxRuntime::Api { create_api }
 
     def create_api
-      LibOnnxRuntime
-        .OrtGetApiBase.value
-        .get_api
-        .call(OnnxRuntime::LibOnnxRuntime::ORT_API_VERSION)
-        .value
+      api_base = LibOnnxRuntime.OrtGetApiBase
+      raise "Failed to get ONNX Runtime API base" if api_base.null?
+
+      api_ptr = api_base.value.get_api.call(OnnxRuntime::LibOnnxRuntime::ORT_API_VERSION)
+      return api_ptr.value unless api_ptr.null?
+
+      version = String.new(api_base.value.get_version_string.call)
+      raise "Requested API version #{OnnxRuntime::LibOnnxRuntime::ORT_API_VERSION} is not available. Loaded ONNX Runtime version: #{version}"
     end
 
     def initialize(path_or_bytes, provider : Provider? = nil, **session_options)

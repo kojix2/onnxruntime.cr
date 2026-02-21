@@ -577,4 +577,5 @@ module OnnxRuntime
 
     fun OrtGetApiBase : ApiBase*
   end
+
 end
