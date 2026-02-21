@@ -72,7 +72,7 @@ module OnnxRuntime
       begin
         yield session
       ensure
-        session.release_session
+        session.release
         release_env if release_env
       end
     end

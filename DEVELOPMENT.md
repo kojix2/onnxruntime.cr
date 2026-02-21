@@ -23,7 +23,7 @@ This library provides Crystal bindings to the ONNX Runtime C API. Proper memory 
   ```crystal
   session = OnnxRuntime::InferenceSession.new("model.onnx")
   result = session.run(input_data)
-  session.release_session
+  session.release
   OnnxRuntime::InferenceSession.release_env
   ```
 
@@ -45,8 +45,8 @@ ONNX Runtime requires a global environment (`OrtEnv`) that must outlive all sess
   # Use sessions for inference...
   
   # On shutdown: release sessions first, then environment
-  session1.release_session
-  session2.release_session
+  session1.release
+  session2.release
   
   # Release shared environment last
   OnnxRuntime::InferenceSession.release_env
@@ -181,8 +181,8 @@ end
 2. Release environment last
 
 ```crystal
-session1.release_session
-session2.release_session
+session1.release
+session2.release
 OnnxRuntime::InferenceSession.release_env  # Must be last
 ```
 
