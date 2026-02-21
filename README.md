@@ -11,26 +11,60 @@
 
    Download and install the ONNX Runtime from the [official releases](https://github.com/microsoft/onnxruntime/releases).
 
+   **Option A: System-wide installation (Recommended)**
+
    For Linux:
 
    ```bash
-   # Example for Linux
-  VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
-  VERSION=${VERSION_TAG#v}
-  wget https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-linux-x64-$VERSION.tgz
-  tar -xzf onnxruntime-linux-x64-$VERSION.tgz
-  export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-$VERSION
+   VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
+   VERSION=${VERSION_TAG#v}
+   wget https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-linux-x64-$VERSION.tgz
+   tar -xzf onnxruntime-linux-x64-$VERSION.tgz
+   
+   # Install to system directories
+   sudo cp onnxruntime-linux-x64-$VERSION/lib/* /usr/local/lib/
+   sudo cp -r onnxruntime-linux-x64-$VERSION/include/* /usr/local/include/
+   sudo ldconfig
    ```
 
    For macOS:
 
    ```bash
-   # Example for macOS (arm64)
-  VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
-  VERSION=${VERSION_TAG#v}
-  curl -L https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-osx-arm64-$VERSION.tgz -o onnxruntime-osx-arm64-$VERSION.tgz
-  tar -xzf onnxruntime-osx-arm64-$VERSION.tgz
-  export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-$VERSION
+   VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
+   VERSION=${VERSION_TAG#v}
+   curl -L https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-osx-arm64-$VERSION.tgz -o onnxruntime-osx-arm64-$VERSION.tgz
+   tar -xzf onnxruntime-osx-arm64-$VERSION.tgz
+   
+   # Install to system directories
+   sudo cp onnxruntime-osx-arm64-$VERSION/lib/* /usr/local/lib/
+   sudo cp -r onnxruntime-osx-arm64-$VERSION/include/* /usr/local/include/
+   ```
+
+   **Option B: Using local installation**
+
+   If you prefer not to install system-wide, set library paths:
+
+   ```bash
+   # Download and extract as above, then:
+   export LIBRARY_PATH=/path/to/onnxruntime-linux-x64-$VERSION/lib:$LIBRARY_PATH  # For build time
+   export LD_LIBRARY_PATH=/path/to/onnxruntime-linux-x64-$VERSION/lib:$LD_LIBRARY_PATH  # For runtime
+   
+   # Build and run your Crystal program
+   crystal build your_program.cr
+   ./your_program
+   ```
+
+   Alternatively, use `--link-flags`:
+
+   ```bash
+   # Set path variable for convenience
+   ORT_LIB=/path/to/onnxruntime-linux-x64-$VERSION/lib
+   
+   # Build with embedded rpath
+   crystal build your_program.cr --link-flags="-L$ORT_LIB -Wl,-rpath,$ORT_LIB"
+   
+   # Run without LD_LIBRARY_PATH
+   ./your_program
    ```
 
 2. Add the dependency to your `shard.yml`:

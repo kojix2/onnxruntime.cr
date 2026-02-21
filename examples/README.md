@@ -8,12 +8,31 @@ To run these examples, you need Crystal, the ONNX Runtime library, and the requi
 - Crystal language is installed
 - ONNX Runtime library is installed  
   e.g. [ONNX Runtime Release](https://github.com/microsoft/onnxruntime/releases)
-- Set the environment variable `ONNXRUNTIME_DIR`  
-  Example:
+  
+  Install system-wide (recommended):
   ```sh
   VERSION_TAG=$(cat ../ONNXRUNTIME_VERSION)
   VERSION=${VERSION_TAG#v}
-  export ONNXRUNTIME_DIR="/home/kojix2/Cpp/onnxruntime-linux-x64-$VERSION"
+  wget https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-linux-x64-$VERSION.tgz
+  tar -xzf onnxruntime-linux-x64-$VERSION.tgz
+  sudo cp onnxruntime-linux-x64-$VERSION/lib/* /usr/local/lib/
+  sudo cp -r onnxruntime-linux-x64-$VERSION/include/* /usr/local/include/
+  sudo ldconfig
+  ```
+  
+  Or use local installation with library paths:
+  ```sh
+  # For building
+  export LIBRARY_PATH=/path/to/onnxruntime-linux-x64-$VERSION/lib:$LIBRARY_PATH
+  
+  # For running
+  export LD_LIBRARY_PATH=/path/to/onnxruntime-linux-x64-$VERSION/lib:$LD_LIBRARY_PATH
+  ```
+  
+  Or use `--link-flags` when building:
+  ```sh
+  ORT_LIB=/path/to/onnxruntime-linux-x64-$VERSION/lib
+  crystal build example.cr --link-flags="-L$ORT_LIB -Wl,-rpath,$ORT_LIB"
   ```
 
 ## List of Examples

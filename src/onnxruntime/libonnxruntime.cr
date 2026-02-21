@@ -1,9 +1,5 @@
 module OnnxRuntime
-  {% if env("ONNXRUNTIME_DIR") && !flag?(:win32) %}
-    @[Link(ldflags: "-L `echo $ONNXRUNTIME_DIR/lib` -lonnxruntime -Wl,-rpath,`echo $ONNXRUNTIME_DIR/lib`")]
-  {% else %}
-    @[Link("onnxruntime")]
-  {% end %}
+  @[Link("onnxruntime")]
   lib LibOnnxRuntime
     ORT_API_VERSION = 24_u32
 
@@ -99,7 +95,7 @@ module OnnxRuntime
     alias OrtLoggingLevel = LoggingLevel
 
     enum ErrorCode
-      OK                = 0
+      OK                         = 0
       FAIL
       INVALID_ARGUMENT
       NO_SUCHFILE
@@ -191,7 +187,7 @@ module OnnxRuntime
 
     # This matches OrtDevice::MemoryType values
     enum DeviceMemoryType
-      DEFAULT = 0
+      DEFAULT         = 0
       HOST_ACCESSIBLE = 5
     end
 
@@ -221,11 +217,11 @@ module OnnxRuntime
     alias OrtExecutionProviderDevicePolicy = ExecutionProviderDevicePolicy
 
     enum DeviceEpIncompatibilityReason
-      NONE = 0
+      NONE                = 0
       DRIVER_INCOMPATIBLE = 1 << 0
       DEVICE_INCOMPATIBLE = 1 << 1
-      MISSING_DEPENDENCY = 1 << 2
-      UNKNOWN = 1 << 31
+      MISSING_DEPENDENCY  = 1 << 2
+      UNKNOWN             = 1 << 31
     end
 
     # For C API compatibility
@@ -247,7 +243,7 @@ module OnnxRuntime
     # External memory handle type for importing GPU resources
     enum ExternalMemoryHandleType
       D3D12_RESOURCE = 0
-      D3D12_HEAP = 1
+      D3D12_HEAP     = 1
     end
 
     # For C API compatibility
@@ -262,7 +258,7 @@ module OnnxRuntime
     alias OrtExternalSemaphoreType = ExternalSemaphoreType
 
     enum CompiledModelCompatibility
-      EP_NOT_APPLICABLE = 0
+      EP_NOT_APPLICABLE                 = 0
       EP_SUPPORTED_OPTIMAL
       EP_SUPPORTED_PREFER_RECOMPILATION
       EP_UNSUPPORTED
@@ -272,8 +268,8 @@ module OnnxRuntime
     alias OrtCompiledModelCompatibility = CompiledModelCompatibility
 
     enum CompileApiFlags
-      NONE = 0
-      ERROR_IF_NO_NODES_COMPILED = 1 << 0
+      NONE                        = 0
+      ERROR_IF_NO_NODES_COMPILED  = 1 << 0
       ERROR_IF_OUTPUT_FILE_EXISTS = 1 << 1
     end
 
@@ -301,7 +297,6 @@ module OnnxRuntime
       rank : LibC::SizeT
       offset_bytes : LibC::SizeT
     end
-
 
     # Runtime classes
     type OrtEnv = Void
@@ -1054,5 +1049,4 @@ module OnnxRuntime
 
     fun OrtGetApiBase : ApiBase*
   end
-
 end

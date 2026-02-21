@@ -66,17 +66,15 @@ jobs:
           tar -xvzf "$(basename "$ORT_URL")"
 
 
-      - name: Configure runtime path (non-Windows)
-        if: ${{ matrix.os != 'windows' }}
-        run: echo "ONNXRUNTIME_DIR=${{ github.workspace }}/$ORT_RUNTIME_DIR" >> $GITHUB_ENV
-
-
       - name: Install dependencies
         run: shards install --without-development --release
 
       - name: Test
+        if: ${{ matrix.os != 'windows' }}
         run: |
-          echo "Using ONNX Runtime at: $ONNXRUNTIME_DIR"
+          export LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LIBRARY_PATH"
+          export LD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LD_LIBRARY_PATH"
+          echo "Using ONNX Runtime at: ${{ github.workspace }}/$ORT_RUNTIME_DIR"
           crystal spec
 
       - name: Test with verbose output
