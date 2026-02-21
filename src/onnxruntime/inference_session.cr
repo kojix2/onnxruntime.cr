@@ -59,6 +59,24 @@ module OnnxRuntime
       api.release_session_options.call(session_options_ptr) if session_options_ptr
     end
 
+    # Block-based API for RAII-style session management.
+    #
+    # Example:
+    #   InferenceSession.open("model.onnx") do |session|
+    #     session.run({"input" => [1.0_f32]})
+    #   end
+    #
+    # Set `release_env: true` to also release the global environment when the block exits.
+    def self.open(path_or_bytes, provider : Provider? = nil, release_env : Bool = false, **session_options, &)
+      session = new(path_or_bytes, provider, **session_options)
+      begin
+        yield session
+      ensure
+        session.release_session
+        release_env if release_env
+      end
+    end
+
     # Finalizer only releases session-specific resources
     # Environment is managed separately and should be released explicitly by the user
     def finalize
