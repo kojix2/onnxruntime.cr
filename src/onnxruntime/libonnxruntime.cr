@@ -476,8 +476,8 @@ module OnnxRuntime
       get_error_code : (OrtStatus* -> OrtErrorCode)
       get_error_message : (OrtStatus* -> LibC::Char*)
 
-      create_env : (OrtLoggingLevel, LibC::Char*, OrtEnv** -> OrtStatus*)
-      create_env_with_custom_logger : (OrtLoggingFunction, Void*, OrtLoggingLevel, LibC::Char*, OrtEnv** -> OrtStatus*)
+      create_env : (OrtLoggingLevel, ORTCHAR_T*, OrtEnv** -> OrtStatus*)
+      create_env_with_custom_logger : (OrtLoggingFunction, Void*, OrtLoggingLevel, ORTCHAR_T*, OrtEnv** -> OrtStatus*)
       enable_telemetry_events : (OrtEnv* -> OrtStatus*)
       disable_telemetry_events : (OrtEnv* -> OrtStatus*)
 
@@ -616,7 +616,7 @@ module OnnxRuntime
       model_metadata_get_version : (OrtModelMetadata*, Int64* -> OrtStatus*)
       release_model_metadata : (OrtModelMetadata* -> Void)
 
-      create_env_with_global_thread_pools : (OrtLoggingLevel, LibC::Char*, OrtThreadingOptions*, OrtEnv** -> OrtStatus*)
+      create_env_with_global_thread_pools : (OrtLoggingLevel, ORTCHAR_T*, OrtThreadingOptions*, OrtEnv** -> OrtStatus*)
       disable_per_session_threads : (OrtSessionOptions* -> OrtStatus*)
 
       create_threading_options : (OrtThreadingOptions** -> OrtStatus*)
@@ -662,7 +662,7 @@ module OnnxRuntime
 
       add_initializer : (OrtSessionOptions*, LibC::Char*, OrtValue* -> OrtStatus*)
 
-      create_env_with_custom_logger_and_global_thread_pools : (OrtLoggingFunction, Void*, OrtLoggingLevel, LibC::Char*, OrtThreadingOptions*, OrtEnv** -> OrtStatus*)
+      create_env_with_custom_logger_and_global_thread_pools : (OrtLoggingFunction, Void*, OrtLoggingLevel, ORTCHAR_T*, OrtThreadingOptions*, OrtEnv** -> OrtStatus*)
 
       session_options_append_execution_provider_cuda : (OrtSessionOptions*, OrtCUDAProviderOptions* -> OrtStatus*)
       session_options_append_execution_provider_rocm : (OrtSessionOptions*, OrtROCMProviderOptions* -> OrtStatus*)
