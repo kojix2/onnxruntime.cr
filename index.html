@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.17.1">
+<meta name="generator" content="Crystal Docs 1.18.2">
 <meta name="crystal_docs.project_version" content="main">
 <meta name="crystal_docs.project_name" content="onnxruntime">
 
@@ -196,16 +196,21 @@
 <p>Install ONNX Runtime</p>
 <p>Download and install the ONNX Runtime from the <a href="https://github.com/microsoft/onnxruntime/releases">official releases</a>.</p>
 <p>For Linux:</p>
-<pre><code class="language-bash"># Example for Linux
-wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-linux-x64-1.21.0.tgz
-tar -xzf onnxruntime-linux-x64-1.21.0.tgz
-export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.21.0</code></pre>
-<p>For macOS:</p>
-<pre><code class="language-bash"># Example for macOS (arm64)
-curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-arm64-1.21.0.tgz -o onnxruntime-osx-arm64-1.21.0.tgz
-tar -xzf onnxruntime-osx-arm64-1.21.0.tgz
-export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.21.0</code></pre>
+<pre><code class="language-bash"># Example for Linux</code></pre>
 </li>
+</ol>
+<p>wget https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-linux-x64-1.24.2.tgz
+tar -xzf onnxruntime-linux-x64-1.24.2.tgz
+export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.24.2</p>
+<pre><code class="language-crystal">
+For macOS:
+
+```bash
+# Example for macOS (arm64)
+curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-osx-arm64-1.24.2.tgz -o onnxruntime-osx-arm64-1.24.2.tgz
+tar -xzf onnxruntime-osx-arm64-1.24.2.tgz
+export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.24.2</code></pre>
+<ol start="2">
 <li>
 <p>Add the dependency to your <code>shard.yml</code>:</p>
 <pre><code class="language-yaml">dependencies:
