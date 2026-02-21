@@ -3,6 +3,8 @@
 Place C headers and other files in this directory for the AI (and humans) to reference while coding.
 
 ```sh
-wget https://raw.githubusercontent.com/microsoft/onnxruntime/v1.21.0/include/onnxruntime/core/session/onnxruntime_c_api.h
+bash assets/download_headers.sh
 ```
+
+The script reads the tag from `ONNXRUNTIME_VERSION` (for example `v1.24.2`) and downloads the corresponding header from the official ONNX Runtime repository.
 

@@ -11,7 +11,7 @@ To run these examples, you need Crystal, the ONNX Runtime library, and the requi
 - Set the environment variable `ONNXRUNTIME_DIR`  
   Example:
   ```sh
-  export ONNXRUNTIME_DIR="/home/kojix2/Cpp/onnxruntime-linux-x64-1.21.0"
+  export ONNXRUNTIME_DIR="/home/kojix2/Cpp/onnxruntime-linux-x64-1.24.2"
   ```
 
 ## List of Examples

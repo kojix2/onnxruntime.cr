@@ -15,18 +15,18 @@
 
    ```bash
    # Example for Linux
-   wget https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-linux-x64-1.21.0.tgz
-   tar -xzf onnxruntime-linux-x64-1.21.0.tgz
-   export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.21.0
+  wget https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-linux-x64-1.24.2.tgz
+  tar -xzf onnxruntime-linux-x64-1.24.2.tgz
+  export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.24.2
    ```
 
    For macOS:
 
    ```bash
    # Example for macOS (arm64)
-   curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.21.0/onnxruntime-osx-arm64-1.21.0.tgz -o onnxruntime-osx-arm64-1.21.0.tgz
-   tar -xzf onnxruntime-osx-arm64-1.21.0.tgz
-   export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.21.0
+  curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-osx-arm64-1.24.2.tgz -o onnxruntime-osx-arm64-1.24.2.tgz
+  tar -xzf onnxruntime-osx-arm64-1.24.2.tgz
+  export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.24.2
    ```
 
 2. Add the dependency to your `shard.yml`:

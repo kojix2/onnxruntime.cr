@@ -5,7 +5,7 @@ module OnnxRuntime
     @[Link("onnxruntime")]
   {% end %}
   lib LibOnnxRuntime
-    ORT_API_VERSION = 21_u32
+    ORT_API_VERSION = 24_u32
 
     {% if flag?(:win32) %}
       alias ORTCHAR_T = LibC::WCHAR
