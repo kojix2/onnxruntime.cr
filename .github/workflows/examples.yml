@@ -1,0 +1,108 @@
+name: examples
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      ort_version_tag:
+        description: "Override ONNX Runtime version tag (e.g. v1.24.2)"
+        required: false
+        default: ""
+
+jobs:
+  examples:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    env:
+      ORT_VERSION_TAG: ${{ inputs.ort_version_tag }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu", "macos"]
+        include:
+          - os: ubuntu
+            ort_platform: linux-x64
+            archive_ext: tgz
+          - os: macos
+            ort_platform: osx-arm64
+            archive_ext: tgz
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Cache Crystal (non-Windows)
+        if: ${{ matrix.os != 'windows' }}
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cache/crystal
+            ~/.cache/shards
+          key: ${{ runner.os }}-crystal-${{ hashFiles('**/shard.lock') }}
+
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Resolve ONNX Runtime version (non-Windows)
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          if [ -z "$ORT_VERSION_TAG" ]; then
+            ORT_VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
+          fi
+          ORT_VERSION="${ORT_VERSION_TAG#v}"
+          echo "ORT_VERSION_TAG=$ORT_VERSION_TAG" >> $GITHUB_ENV
+          echo "ORT_VERSION=$ORT_VERSION" >> $GITHUB_ENV
+          echo "ORT_RUNTIME_DIR=onnxruntime-${{ matrix.ort_platform }}-$ORT_VERSION" >> $GITHUB_ENV
+          echo "ORT_URL=https://github.com/microsoft/onnxruntime/releases/download/$ORT_VERSION_TAG/onnxruntime-${{ matrix.ort_platform }}-$ORT_VERSION.${{ matrix.archive_ext }}" >> $GITHUB_ENV
+
+      - name: Download onnxruntime (Linux/macOS)
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          ORT_ARCHIVE="$(basename "$ORT_URL")"
+          curl -L "$ORT_URL" -o "$ORT_ARCHIVE"
+          tar -xvzf "$ORT_ARCHIVE"
+
+      - name: Install dependencies
+        run: shards install --without-development --release
+
+      - name: Install dependencies (examples)
+        run: |
+          cd examples
+          shards install --without-development --release
+
+      - name: Build examples
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          export LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LIBRARY_PATH"
+          if [ "${{ matrix.os }}" = "macos" ]; then
+            export DYLD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$DYLD_LIBRARY_PATH"
+          else
+            export LD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LD_LIBRARY_PATH"
+          fi
+          echo "Using ONNX Runtime at: ${{ github.workspace }}/$ORT_RUNTIME_DIR"
+          
+          # Build examples
+          for example in examples/*.cr; do
+            echo "Building $example..."
+            crystal build "$example" --link-flags="-Wl,-rpath,${{ github.workspace }}/$ORT_RUNTIME_DIR/lib" || exit 1
+          done
+          
+          echo "All examples built successfully!"
+
+      - name: Build examples with verbose output
+        if: failure()
+        run: |
+          export LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LIBRARY_PATH"
+          if [ "${{ matrix.os }}" = "macos" ]; then
+            export DYLD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$DYLD_LIBRARY_PATH"
+          else
+            export LD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LD_LIBRARY_PATH"
+          fi
+          
+          for example in examples/*.cr; do
+            echo "Building $example with verbose output..."
+            crystal build "$example" -v --link-flags="-Wl,-rpath,${{ github.workspace }}/$ORT_RUNTIME_DIR/lib"
+          done
