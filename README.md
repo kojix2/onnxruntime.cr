@@ -48,36 +48,32 @@
 ```crystal
 require "onnxruntime"
 
-# Load a model
-session = OnnxRuntime::InferenceSession.new("path/to/model.onnx")
+# Recommended: RAII block style
+OnnxRuntime::InferenceSession.open("path/to/model.onnx", release_env: true) do |session|
+  # Print model inputs and outputs
+  puts "Inputs:"
+  session.inputs.each do |input|
+    puts "  #{input.name}: #{input.type} #{input.shape}"
+  end
 
-# Print model inputs and outputs
-puts "Inputs:"
-session.inputs.each do |input|
-  puts "  #{input.name}: #{input.type} #{input.shape}"
+  puts "Outputs:"
+  session.outputs.each do |output|
+    puts "  #{output.name}: #{output.type} #{output.shape}"
+  end
+
+  # Prepare input data
+  input_data = {
+    "input_name" => [1.0_f32, 2.0_f32, 3.0_f32]
+  }
+
+  # Run inference
+  result = session.run(input_data)
+
+  # Process results
+  result.each do |name, data|
+    puts "#{name}: #{data}"
+  end
 end
-
-puts "Outputs:"
-session.outputs.each do |output|
-  puts "  #{output.name}: #{output.type} #{output.shape}"
-end
-
-# Prepare input data
-input_data = {
-  "input_name" => [1.0_f32, 2.0_f32, 3.0_f32]
-}
-
-# Run inference
-result = session.run(input_data)
-
-# Process results
-result.each do |name, data|
-  puts "#{name}: #{data}"
-end
-
-# Explicitly release resources
-session.release_session
-OnnxRuntime::InferenceSession.release_env
 ```
 
 ## MNIST Example
@@ -110,7 +106,18 @@ OnnxRuntime::InferenceSession.release_env
 
 ## Memory Management
 
-Currently, you must explicitly release resources when you're done with them:
+You can use either explicit release or block-based RAII.
+
+Recommended for short scripts: block-based RAII
+
+```crystal
+OnnxRuntime::InferenceSession.open("path/to/model.onnx", release_env: true) do |session|
+  result = session.run(input_data)
+  # session is always released, even if an error is raised
+end
+```
+
+Explicit release (useful for long-running apps):
 
 ```crystal
 # Create and use session
@@ -122,7 +129,7 @@ session.release_session
 OnnxRuntime::InferenceSession.release_env
 ```
 
-For long-running applications like web servers, consider setting up signal handlers to ensure resources are properly released on shutdown:
+For long-running applications like web servers, use explicit release with signal handlers:
 
 ```crystal
 Signal::INT.trap do

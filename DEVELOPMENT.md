@@ -11,6 +11,22 @@ This library provides Crystal bindings to the ONNX Runtime C API. Proper memory 
 - **Track Release State**: Use `@resource_released` flags to prevent releasing the same resource twice
 - **Exception Safety**: Use `begin/ensure` blocks to guarantee cleanup even when exceptions occur
 
+### Recommended API Styles
+
+- **RAII block style (recommended for short-lived workloads)**:
+  ```crystal
+  OnnxRuntime::InferenceSession.open("model.onnx", release_env: true) do |session|
+    result = session.run(input_data)
+  end
+  ```
+- **Explicit lifecycle style (recommended for long-running services)**:
+  ```crystal
+  session = OnnxRuntime::InferenceSession.new("model.onnx")
+  result = session.run(input_data)
+  session.release_session
+  OnnxRuntime::InferenceSession.release_env
+  ```
+
 ## Environment Management
 
 ONNX Runtime requires a global environment (`OrtEnv`) that must outlive all sessions. This library manages it using a singleton pattern.
@@ -36,6 +52,8 @@ ONNX Runtime requires a global environment (`OrtEnv`) that must outlive all sess
   OnnxRuntime::InferenceSession.release_env
   ```
 
+- **RAII Option**: `InferenceSession.open(..., release_env: true)` can release environment automatically at block exit.
+
 ### Why Manual Release?
 
 Previous attempts to use Crystal's `finalize` for automatic cleanup caused crashes on macOS:
@@ -59,6 +77,7 @@ This appears to be caused by undefined finalization order in multi-threaded cont
 
 - **Creation**: C API via `api.create_session` or `api.create_session_from_array`
 - **Release**: `api.release_session` (called by `InferenceSession#release_session`)
+- **RAII Helper**: `InferenceSession.open` guarantees `release_session` in an `ensure` block
 - **Tracking**: `@session_released` flag prevents double-free
 - **Lifetime**: Created per model, released before environment
 
