@@ -40,6 +40,11 @@ module OnnxRuntime
       # Int4 types were introduced in ONNX 1.16
       UINT4 # maps to a pair of packed uint4 values (size == 1 byte)
       INT4  # maps to a pair of packed int4 values (size == 1 byte)
+      # Float4 types were introduced in ONNX 1.18
+      FLOAT4E2M1 # maps to a pair of packed float4 values (size == 1 byte)
+      # Int2 types were introduced in ONNX 1.20
+      UINT2 # maps to 4 packed uint2 values (size == 1 byte)
+      INT2  # maps to 4 packed int2 values (size == 1 byte)
     end
 
     # For C API compatibility
@@ -106,6 +111,9 @@ module OnnxRuntime
       NOT_IMPLEMENTED
       INVALID_GRAPH
       EP_FAIL
+      MODEL_LOAD_CANCELED
+      MODEL_REQUIRES_COMPILATION
+      NOT_FOUND
     end
 
     # For C API compatibility
@@ -119,6 +127,8 @@ module OnnxRuntime
       FLOATS
       STRING
       STRINGS
+      GRAPH
+      TENSOR
     end
 
     # For C API compatibility
@@ -128,6 +138,7 @@ module OnnxRuntime
       DISABLE_ALL     =  0
       ENABLE_BASIC    =  1
       ENABLE_EXTENDED =  2
+      ENABLE_LAYOUT   =  3
       ENABLE_ALL      = 99
     end
 
@@ -150,9 +161,10 @@ module OnnxRuntime
     alias OrtLanguageProjection = LanguageProjection
 
     enum AllocatorType
-      INVALID = -1
-      DEVICE  =  0
-      ARENA   =  1
+      INVALID   = -1
+      DEVICE    =  0
+      ARENA     =  1
+      READ_ONLY =  2
     end
 
     # For C API compatibility
@@ -174,7 +186,50 @@ module OnnxRuntime
       CPU  = 0
       GPU
       FPGA
+      NPU
     end
+
+    # This matches OrtDevice::MemoryType values
+    enum DeviceMemoryType
+      DEFAULT = 0
+      HOST_ACCESSIBLE = 5
+    end
+
+    # For C API compatibility
+    alias OrtDeviceMemoryType = DeviceMemoryType
+
+    enum HardwareDeviceType
+      CPU
+      GPU
+      NPU
+    end
+
+    # For C API compatibility
+    alias OrtHardwareDeviceType = HardwareDeviceType
+
+    enum ExecutionProviderDevicePolicy
+      DEFAULT
+      PREFER_CPU
+      PREFER_NPU
+      PREFER_GPU
+      MAX_PERFORMANCE
+      MAX_EFFICIENCY
+      MIN_OVERALL_POWER
+    end
+
+    # For C API compatibility
+    alias OrtExecutionProviderDevicePolicy = ExecutionProviderDevicePolicy
+
+    enum DeviceEpIncompatibilityReason
+      NONE = 0
+      DRIVER_INCOMPATIBLE = 1 << 0
+      DEVICE_INCOMPATIBLE = 1 << 1
+      MISSING_DEPENDENCY = 1 << 2
+      UNKNOWN = 1 << 31
+    end
+
+    # For C API compatibility
+    alias OrtDeviceEpIncompatibilityReason = DeviceEpIncompatibilityReason
 
     # For C API compatibility
     alias OrtMemoryInfoDeviceType = MemoryInfoDeviceType
@@ -188,6 +243,56 @@ module OnnxRuntime
 
     # For C API compatibility
     alias OrtCudnnConvAlgoSearch = CudnnConvAlgoSearch
+
+    # External memory handle type for importing GPU resources
+    enum ExternalMemoryHandleType
+      D3D12_RESOURCE = 0
+      D3D12_HEAP = 1
+    end
+
+    # For C API compatibility
+    alias OrtExternalMemoryHandleType = ExternalMemoryHandleType
+
+    # External semaphore type for GPU synchronization
+    enum ExternalSemaphoreType
+      D3D12_FENCE = 0
+    end
+
+    # For C API compatibility
+    alias OrtExternalSemaphoreType = ExternalSemaphoreType
+
+    enum CompiledModelCompatibility
+      EP_NOT_APPLICABLE = 0
+      EP_SUPPORTED_OPTIMAL
+      EP_SUPPORTED_PREFER_RECOMPILATION
+      EP_UNSUPPORTED
+    end
+
+    # For C API compatibility
+    alias OrtCompiledModelCompatibility = CompiledModelCompatibility
+
+    struct ExternalMemoryDescriptor
+      version : UInt32
+      handle_type : OrtExternalMemoryHandleType
+      native_handle : Void*
+      size_bytes : LibC::SizeT
+      offset_bytes : LibC::SizeT
+    end
+
+    struct ExternalSemaphoreDescriptor
+      version : UInt32
+      type : OrtExternalSemaphoreType
+      native_handle : Void*
+    end
+
+    struct ExternalTensorDescriptor
+      version : UInt32
+      element_type : ONNXTensorElementDataType
+      shape : Int64*
+      rank : LibC::SizeT
+      offset_bytes : LibC::SizeT
+    end
+
 
     # Runtime classes
     type OrtEnv = Void
@@ -218,6 +323,22 @@ module OnnxRuntime
     type OrtLogger = Void
     type OrtShapeInferContext = Void
     type OrtLoraAdapter = Void
+    type OrtValueInfo = Void
+    type OrtNode = Void
+    type OrtGraph = Void
+    type OrtModel = Void
+    type OrtModelCompilationOptions = Void
+    type OrtHardwareDevice = Void
+    type OrtEpDevice = Void
+    type OrtKeyValuePairs = Void
+    type OrtSyncStream = Void
+    type OrtExternalInitializerInfo = Void
+    type OrtExternalResourceImporter = Void
+    type OrtExternalMemoryHandle = Void
+    type OrtExternalSemaphoreHandle = Void
+    type OrtDeviceEpIncompatibilityDetails = Void
+    type OrtEpAssignedSubgraph = Void
+    type OrtEpAssignedNode = Void
     type OrtKernelInfo = Void
     type OrtKernelContext = Void
     type OrtCustomOp = Void
@@ -235,6 +356,16 @@ module OnnxRuntime
 
     # Logging function
     alias OrtLoggingFunction = (Void*, OrtLoggingLevel, LibC::Char*, LibC::Char*, LibC::Char*, LibC::Char* -> Void)
+
+    struct EnvCreationOptions
+      version : UInt32
+      logging_severity_level : Int32
+      log_id : LibC::Char*
+      custom_logging_function : OrtLoggingFunction
+      custom_logging_param : Void*
+      threading_options : OrtThreadingOptions*
+      config_entries : OrtKeyValuePairs*
+    end
 
     # Thread work loop function
     alias OrtThreadWorkerFn = (Void* -> Void)
