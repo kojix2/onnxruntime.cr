@@ -100,7 +100,7 @@ predicted_digit = probabilities.index(probabilities.max)
 puts "Predicted digit: #{predicted_digit}"
 
 # Explicitly release resources
-session.release_session
+session.release
 OnnxRuntime::InferenceSession.release_env
 ```
 
@@ -125,16 +125,18 @@ session = OnnxRuntime::InferenceSession.new("path/to/model.onnx")
 result = session.run(input_data)
 
 # When finished, explicitly release resources
-session.release_session
+session.release
 OnnxRuntime::InferenceSession.release_env
 ```
+
+`release_session` remains available for backward compatibility.
 
 For long-running applications like web servers, use explicit release with signal handlers:
 
 ```crystal
 Signal::INT.trap do
   puts "Shutting down..."
-  session.release_session
+  session.release
   OnnxRuntime::InferenceSession.release_env
   exit
 end

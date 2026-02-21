@@ -92,6 +92,12 @@ module OnnxRuntime
       @session_released = true
     end
 
+    # Unified lifecycle API
+    # Alias for release_session (kept for API consistency with other wrapper classes)
+    def release
+      release_session
+    end
+
     # Method to explicitly release the allocator
     # Note: Default allocator may not need to be released, so commented out
     def release_allocator

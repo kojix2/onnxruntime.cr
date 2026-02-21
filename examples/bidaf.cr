@@ -104,5 +104,5 @@ answer = predict_w(session, context, query)
 # Answer: john von neumann
 puts "Answer: #{answer}"
 
-session.release_session
+session.release
 OnnxRuntime::InferenceSession.release_env

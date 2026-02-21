@@ -248,7 +248,7 @@ end
 Signal::INT.trap do
   puts "\nShutting down server..."
   # Explicitly release resources
-  session.release_session
+  session.release
   OnnxRuntime::InferenceSession.release_env
   puts "Resources released, exiting."
   exit

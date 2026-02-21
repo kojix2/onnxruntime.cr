@@ -76,7 +76,7 @@ This appears to be caused by undefined finalization order in multi-threaded cont
 ### OrtSession (Inference Session)
 
 - **Creation**: C API via `api.create_session` or `api.create_session_from_array`
-- **Release**: `api.release_session` (called by `InferenceSession#release_session`)
+- **Release**: `api.release_session` (called by `InferenceSession#release` / `InferenceSession#release_session`)
 - **RAII Helper**: `InferenceSession.open` guarantees `release_session` in an `ensure` block
 - **Tracking**: `@session_released` flag prevents double-free
 - **Lifetime**: Created per model, released before environment
