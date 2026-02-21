@@ -73,9 +73,14 @@ jobs:
         if: ${{ matrix.os != 'windows' }}
         run: |
           export LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LIBRARY_PATH"
-          export LD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LD_LIBRARY_PATH"
+          if [ "${{ matrix.os }}" = "macos" ]; then
+            export DYLD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$DYLD_LIBRARY_PATH"
+            export CRYSTAL_LIBRARY_RPATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib"
+          else
+            export LD_LIBRARY_PATH="${{ github.workspace }}/$ORT_RUNTIME_DIR/lib:$LD_LIBRARY_PATH"
+          fi
           echo "Using ONNX Runtime at: ${{ github.workspace }}/$ORT_RUNTIME_DIR"
-          crystal spec
+          crystal spec --link-flags="-Wl,-rpath,${{ github.workspace }}/$ORT_RUNTIME_DIR/lib"
 
       - name: Test with verbose output
         if: failure()
