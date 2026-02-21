@@ -283,7 +283,7 @@ predicted_digit <span class="o">=</span> probabilities.index(probabilities.max)
 puts <span class="s">&quot;Predicted digit: </span><span class="i">#{</span>predicted_digit<span class="i">}</span><span class="s">&quot;</span>
 
 <span class="c"># Explicitly release resources</span>
-session.release_session
+session.release
 <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
 <h2><a id="memory-management" class="anchor" href="#memory-management">
   <svg class="octicon-link" aria-hidden="true">
@@ -302,12 +302,13 @@ session <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="
 result <span class="o">=</span> session.run(input_data)
 
 <span class="c"># When finished, explicitly release resources</span>
-session.release_session
+session.release
 <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
+<p><code>release_session</code> remains available for backward compatibility.</p>
 <p>For long-running applications like web servers, use explicit release with signal handlers:</p>
 <pre><code class="language-crystal"><span class="t">Signal</span><span class="t">::</span><span class="t">INT</span>.trap <span class="k">do</span>
   puts <span class="s">&quot;Shutting down...&quot;</span>
-  session.release_session
+  session.release
   <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env
   exit
 <span class="k">end</span></code></pre>
