@@ -25,7 +25,7 @@ jobs:
           submodules: true
 
       - name: Cache Crystal (Windows)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~\AppData\Local\crystal
