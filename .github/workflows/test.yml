@@ -137,7 +137,7 @@ jobs:
           $libDir = Join-Path $runtime 'lib'
           $binDir = Join-Path $runtime 'bin'
           $specExe = Join-Path $PWD 'spec_windows.exe'
-          crystal spec -o $specExe
+          crystal build spec/onnxruntime_spec.cr -o $specExe
           $ortDll = Join-Path $libDir 'onnxruntime.dll'
           if (Test-Path $ortDll) {
             Copy-Item -Path $ortDll -Destination (Join-Path $PWD 'onnxruntime.dll') -Force
@@ -167,7 +167,7 @@ jobs:
           $libDir = Join-Path $runtime 'lib'
           $binDir = Join-Path $runtime 'bin'
           $specExe = Join-Path $PWD 'spec_windows_verbose.exe'
-          crystal spec -v -o $specExe
+          crystal build spec/onnxruntime_spec.cr -o $specExe
           $ortDll = Join-Path $libDir 'onnxruntime.dll'
           if (Test-Path $ortDll) {
             Copy-Item -Path $ortDll -Destination (Join-Path $PWD 'onnxruntime.dll') -Force
@@ -182,4 +182,4 @@ jobs:
             $env:PATH = "$PWD;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
           }
           where.exe onnxruntime.dll
-          & $specExe
+          & $specExe -v
