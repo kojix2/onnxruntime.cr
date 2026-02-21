@@ -9,23 +9,22 @@ jobs:
   build:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
+    env:
+      ORT_VERSION_TAG: ${{ vars.ONNXRUNTIME_VERSION }}
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu", "macos", "windows"]
         include:
           - os: ubuntu
-            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-linux-x64-1.24.2.tgz
-            onnxruntime_dir: onnxruntime-linux-x64-1.24.2
-            download_runtime: true
+            ort_platform: linux-x64
+            archive_ext: tgz
           - os: macos
-            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-osx-universal2-1.24.2.tgz
-            onnxruntime_dir: onnxruntime-osx-universal2-1.24.2
-            download_runtime: true
+            ort_platform: osx-arm64
+            archive_ext: tgz
           - os: windows
-            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-win-x64-1.24.2.zip
-            onnxruntime_dir: onnxruntime-win-x64-1.24.2
-            download_runtime: true
+            ort_platform: win-x64
+            archive_ext: zip
 
     steps:
       - uses: actions/checkout@v6
@@ -36,30 +35,59 @@ jobs:
         with:
           crystal: latest
 
-      - name: Download onnxruntime (Linux/macOS)
-        if: ${{ matrix.download_runtime && matrix.os != 'windows' }}
+      - name: Resolve ONNX Runtime version (non-Windows)
+        if: ${{ matrix.os != 'windows' }}
         run: |
-          wget ${{ matrix.onnxruntime_url }}
-          tar -xvzf $(basename ${{ matrix.onnxruntime_url }})
+          if [ -z "$ORT_VERSION_TAG" ]; then
+            ORT_VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
+          fi
+          ORT_VERSION="${ORT_VERSION_TAG#v}"
+          echo "ORT_VERSION_TAG=$ORT_VERSION_TAG" >> $GITHUB_ENV
+          echo "ORT_VERSION=$ORT_VERSION" >> $GITHUB_ENV
+          echo "ORT_RUNTIME_DIR=onnxruntime-${{ matrix.ort_platform }}-$ORT_VERSION" >> $GITHUB_ENV
+          echo "ORT_URL=https://github.com/microsoft/onnxruntime/releases/download/$ORT_VERSION_TAG/onnxruntime-${{ matrix.ort_platform }}-$ORT_VERSION.${{ matrix.archive_ext }}" >> $GITHUB_ENV
+
+      - name: Resolve ONNX Runtime version (Windows)
+        if: ${{ matrix.os == 'windows' }}
+        shell: pwsh
+        run: |
+          $tag = $env:ORT_VERSION_TAG
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            $tag = Get-Content ONNXRUNTIME_VERSION -Raw
+            $tag = $tag.Trim()
+          }
+          $version = $tag.TrimStart('v')
+          $runtimeDir = "onnxruntime-${{ matrix.ort_platform }}-$version"
+          $url = "https://github.com/microsoft/onnxruntime/releases/download/$tag/onnxruntime-${{ matrix.ort_platform }}-$version.${{ matrix.archive_ext }}"
+          "ORT_VERSION_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "ORT_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "ORT_RUNTIME_DIR=$runtimeDir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "ORT_URL=$url" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Download onnxruntime (Linux/macOS)
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          wget "$ORT_URL"
+          tar -xvzf "$(basename "$ORT_URL")"
 
       - name: Download onnxruntime (Windows)
         if: ${{ matrix.os == 'windows' }}
         shell: pwsh
         run: |
-          $url = "${{ matrix.onnxruntime_url }}"
+          $url = $env:ORT_URL
           $archive = Split-Path $url -Leaf
           Invoke-WebRequest -Uri $url -OutFile $archive
           Expand-Archive -Path $archive -DestinationPath . -Force
 
       - name: Configure runtime path (non-Windows)
         if: ${{ matrix.os != 'windows' }}
-        run: echo "ONNXRUNTIME_DIR=${{ github.workspace }}/${{ matrix.onnxruntime_dir }}" >> $GITHUB_ENV
+        run: echo "ONNXRUNTIME_DIR=${{ github.workspace }}/$ORT_RUNTIME_DIR" >> $GITHUB_ENV
 
       - name: Configure runtime path (Windows)
         if: ${{ matrix.os == 'windows' }}
         shell: pwsh
         run: |
-          $runtime = Join-Path $PWD '${{ matrix.onnxruntime_dir }}'
+          $runtime = Join-Path $PWD $env:ORT_RUNTIME_DIR
           if (-not (Test-Path $runtime)) {
             throw "Missing ONNX Runtime bundle at $runtime"
           }

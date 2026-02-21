@@ -15,18 +15,22 @@
 
    ```bash
    # Example for Linux
-  wget https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-linux-x64-1.24.2.tgz
-  tar -xzf onnxruntime-linux-x64-1.24.2.tgz
-  export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-1.24.2
+  VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
+  VERSION=${VERSION_TAG#v}
+  wget https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-linux-x64-$VERSION.tgz
+  tar -xzf onnxruntime-linux-x64-$VERSION.tgz
+  export ONNXRUNTIME_DIR=/path/to/onnxruntime-linux-x64-$VERSION
    ```
 
    For macOS:
 
    ```bash
    # Example for macOS (arm64)
-  curl -L https://github.com/microsoft/onnxruntime/releases/download/v1.24.2/onnxruntime-osx-arm64-1.24.2.tgz -o onnxruntime-osx-arm64-1.24.2.tgz
-  tar -xzf onnxruntime-osx-arm64-1.24.2.tgz
-  export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-1.24.2
+  VERSION_TAG=$(cat ONNXRUNTIME_VERSION)
+  VERSION=${VERSION_TAG#v}
+  curl -L https://github.com/microsoft/onnxruntime/releases/download/$VERSION_TAG/onnxruntime-osx-arm64-$VERSION.tgz -o onnxruntime-osx-arm64-$VERSION.tgz
+  tar -xzf onnxruntime-osx-arm64-$VERSION.tgz
+  export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-$VERSION
    ```
 
 2. Add the dependency to your `shard.yml`:
