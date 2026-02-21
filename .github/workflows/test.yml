@@ -104,6 +104,23 @@ jobs:
             "PATH=$libDir;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           }
 
+      - name: Inspect ONNX Runtime bundle (Windows)
+        if: ${{ matrix.os == 'windows' }}
+        shell: pwsh
+        run: |
+          $runtime = $env:ONNXRUNTIME_DIR
+          Write-Host "ONNXRUNTIME_DIR=$runtime"
+          if (-not (Test-Path $runtime)) { throw "Missing ONNX Runtime bundle at $runtime" }
+          Get-ChildItem -Path $runtime -Depth 2 | ForEach-Object { $_.FullName }
+          $dll = Get-ChildItem -Path $runtime -Recurse -Filter onnxruntime.dll | Select-Object -First 1
+          if ($null -ne $dll) {
+            Write-Host "Found DLL: $($dll.FullName)"
+            Write-Host "FileVersion: $($dll.VersionInfo.FileVersion)"
+            Write-Host "ProductVersion: $($dll.VersionInfo.ProductVersion)"
+          } else {
+            Write-Host "onnxruntime.dll not found under runtime directory"
+          }
+
       - name: Install dependencies
         run: shards install --without-development --release
 
@@ -118,6 +135,11 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Using ONNX Runtime at: $env:ONNXRUNTIME_DIR"
+          $runtime = $env:ONNXRUNTIME_DIR
+          $libDir = Join-Path $runtime 'lib'
+          $binDir = Join-Path $runtime 'bin'
+          if (Test-Path $binDir) { $env:PATH = "$binDir;$env:PATH" }
+          if (Test-Path $libDir) { $env:PATH = "$libDir;$env:PATH" }
           crystal spec
 
       - name: Test with verbose output
