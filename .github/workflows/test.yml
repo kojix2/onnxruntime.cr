@@ -9,8 +9,6 @@ jobs:
   build:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
-    env:
-      ORT_VERSION_TAG: ${{ vars.ONNXRUNTIME_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -138,11 +136,50 @@ jobs:
           $runtime = $env:ONNXRUNTIME_DIR
           $libDir = Join-Path $runtime 'lib'
           $binDir = Join-Path $runtime 'bin'
-          if (Test-Path $binDir) { $env:PATH = "$binDir;$env:PATH" }
-          if (Test-Path $libDir) { $env:PATH = "$libDir;$env:PATH" }
-          crystal spec
+          $specExe = Join-Path $PWD 'spec_windows.exe'
+          crystal spec -o $specExe
+          $ortDll = Join-Path $libDir 'onnxruntime.dll'
+          if (Test-Path $ortDll) {
+            Copy-Item -Path $ortDll -Destination (Join-Path $PWD 'onnxruntime.dll') -Force
+          }
+          $providersDll = Join-Path $libDir 'onnxruntime_providers_shared.dll'
+          if (Test-Path $providersDll) {
+            Copy-Item -Path $providersDll -Destination (Join-Path $PWD 'onnxruntime_providers_shared.dll') -Force
+          }
+          if (Test-Path $binDir) {
+            $env:PATH = "$PWD;$binDir;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          } else {
+            $env:PATH = "$PWD;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          }
+          where.exe onnxruntime.dll
+          & $specExe
 
-      - name: Test with verbose output
-        if: failure()
+      - name: Test with verbose output (non-Windows)
+        if: ${{ failure() && matrix.os != 'windows' }}
         run: |
           crystal spec -v
+
+      - name: Test with verbose output (Windows)
+        if: ${{ failure() && matrix.os == 'windows' }}
+        shell: pwsh
+        run: |
+          $runtime = $env:ONNXRUNTIME_DIR
+          $libDir = Join-Path $runtime 'lib'
+          $binDir = Join-Path $runtime 'bin'
+          $specExe = Join-Path $PWD 'spec_windows_verbose.exe'
+          crystal spec -v -o $specExe
+          $ortDll = Join-Path $libDir 'onnxruntime.dll'
+          if (Test-Path $ortDll) {
+            Copy-Item -Path $ortDll -Destination (Join-Path $PWD 'onnxruntime.dll') -Force
+          }
+          $providersDll = Join-Path $libDir 'onnxruntime_providers_shared.dll'
+          if (Test-Path $providersDll) {
+            Copy-Item -Path $providersDll -Destination (Join-Path $PWD 'onnxruntime_providers_shared.dll') -Force
+          }
+          if (Test-Path $binDir) {
+            $env:PATH = "$PWD;$binDir;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          } else {
+            $env:PATH = "$PWD;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          }
+          where.exe onnxruntime.dll
+          & $specExe
