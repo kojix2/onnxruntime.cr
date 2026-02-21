@@ -1,0 +1,152 @@
+name: build-windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      ort_version_tag:
+        description: "Override ONNX Runtime version tag (e.g. v1.24.2)"
+        required: false
+        default: ""
+
+jobs:
+  build:
+    name: windows
+    runs-on: windows-2025
+    env:
+      ORT_VERSION_TAG: ${{ inputs.ort_version_tag }}
+      ORT_PLATFORM: win-x64
+      ARCHIVE_EXT: zip
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Cache Crystal (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\crystal
+            ~\AppData\Local\shards
+          key: ${{ runner.os }}-crystal-${{ hashFiles('**/shard.lock') }}
+
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Resolve ONNX Runtime version (Windows)
+        shell: pwsh
+        run: |
+          $tag = $env:ORT_VERSION_TAG
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            $tag = Get-Content ONNXRUNTIME_VERSION -Raw
+            $tag = $tag.Trim()
+          }
+          $version = $tag.TrimStart('v')
+          $runtimeDir = "onnxruntime-$env:ORT_PLATFORM-$version"
+          $url = "https://github.com/microsoft/onnxruntime/releases/download/$tag/onnxruntime-$env:ORT_PLATFORM-$version.$env:ARCHIVE_EXT"
+          "ORT_VERSION_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "ORT_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "ORT_RUNTIME_DIR=$runtimeDir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "ORT_URL=$url" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Download onnxruntime (Windows)
+        shell: pwsh
+        run: |
+          $url = $env:ORT_URL
+          $archive = Split-Path $url -Leaf
+          Invoke-WebRequest -Uri $url -OutFile $archive
+          Expand-Archive -Path $archive -DestinationPath . -Force
+
+      - name: Configure runtime path (Windows)
+        shell: pwsh
+        run: |
+          $runtime = Join-Path $PWD $env:ORT_RUNTIME_DIR
+          if (-not (Test-Path $runtime)) {
+            throw "Missing ONNX Runtime bundle at $runtime"
+          }
+          $libDir = Join-Path $runtime 'lib'
+          $binDir = Join-Path $runtime 'bin'
+          "ONNXRUNTIME_DIR=$runtime" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          if (Test-Path $libDir) {
+            "LIB=$libDir;$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
+          if (Test-Path $binDir) {
+            "PATH=$binDir;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
+          if (Test-Path $libDir) {
+            "PATH=$libDir;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
+
+      - name: Install dependencies
+        run: shards install --without-development --release
+
+      - name: Test (Windows)
+        shell: pwsh
+        run: |
+          Write-Host "Using ONNX Runtime at: $env:ONNXRUNTIME_DIR"
+          $runtime = $env:ONNXRUNTIME_DIR
+          $libDir = Join-Path $runtime 'lib'
+          $binDir = Join-Path $runtime 'bin'
+          $specExe = Join-Path $PWD 'spec_windows.exe'
+          crystal build spec/onnxruntime_spec.cr -o $specExe
+          # Keep DLLs next to the exe to avoid picking a different onnxruntime.dll from PATH.
+          $ortDll = Join-Path $libDir 'onnxruntime.dll'
+          if (Test-Path $ortDll) {
+            Copy-Item -Path $ortDll -Destination (Join-Path $PWD 'onnxruntime.dll') -Force
+          }
+          $providersDll = Join-Path $libDir 'onnxruntime_providers_shared.dll'
+          if (Test-Path $providersDll) {
+            Copy-Item -Path $providersDll -Destination (Join-Path $PWD 'onnxruntime_providers_shared.dll') -Force
+          }
+          if (Test-Path $binDir) {
+            $env:PATH = "$PWD;$binDir;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          } else {
+            $env:PATH = "$PWD;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          }
+          where.exe onnxruntime.dll
+          & $specExe
+
+      - name: Inspect ONNX Runtime bundle (Windows)
+        if: failure()
+        shell: pwsh
+        run: |
+          $runtime = $env:ONNXRUNTIME_DIR
+          Write-Host "ONNXRUNTIME_DIR=$runtime"
+          if (-not (Test-Path $runtime)) { throw "Missing ONNX Runtime bundle at $runtime" }
+          Get-ChildItem -Path $runtime -Depth 2 | ForEach-Object { $_.FullName }
+          $dll = Get-ChildItem -Path $runtime -Recurse -Filter onnxruntime.dll | Select-Object -First 1
+          if ($null -ne $dll) {
+            Write-Host "Found DLL: $($dll.FullName)"
+            Write-Host "FileVersion: $($dll.VersionInfo.FileVersion)"
+            Write-Host "ProductVersion: $($dll.VersionInfo.ProductVersion)"
+          } else {
+            Write-Host "onnxruntime.dll not found under runtime directory"
+          }
+
+      - name: Test with verbose output (Windows)
+        if: failure()
+        shell: pwsh
+        run: |
+          $runtime = $env:ONNXRUNTIME_DIR
+          $libDir = Join-Path $runtime 'lib'
+          $binDir = Join-Path $runtime 'bin'
+          $specExe = Join-Path $PWD 'spec_windows_verbose.exe'
+          crystal build spec/onnxruntime_spec.cr -o $specExe
+          $ortDll = Join-Path $libDir 'onnxruntime.dll'
+          if (Test-Path $ortDll) {
+            Copy-Item -Path $ortDll -Destination (Join-Path $PWD 'onnxruntime.dll') -Force
+          }
+          $providersDll = Join-Path $libDir 'onnxruntime_providers_shared.dll'
+          if (Test-Path $providersDll) {
+            Copy-Item -Path $providersDll -Destination (Join-Path $PWD 'onnxruntime_providers_shared.dll') -Force
+          }
+          if (Test-Path $binDir) {
+            $env:PATH = "$PWD;$binDir;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          } else {
+            $env:PATH = "$PWD;$libDir;$env:SystemRoot\System32;$env:SystemRoot"
+          }
+          where.exe onnxruntime.dll
+          & $specExe -v
