@@ -232,36 +232,32 @@ export ONNXRUNTIME_DIR=/path/to/onnxruntime-osx-arm64-$VERSION</code></pre>
 </a>Usage</h2>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;onnxruntime&quot;</span>
 
-<span class="c"># Load a model</span>
-session <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
+<span class="c"># Recommended: RAII block style</span>
+<span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.open(<span class="s">&quot;path/to/model.onnx&quot;</span>, release_env: <span class="n">true</span>) <span class="k">do</span> <span class="o">|</span>session<span class="o">|</span>
+  <span class="c"># Print model inputs and outputs</span>
+  puts <span class="s">&quot;Inputs:&quot;</span>
+  session.inputs.each <span class="k">do</span> <span class="o">|</span>input<span class="o">|</span>
+    puts <span class="s">&quot;  </span><span class="i">#{</span>input.name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>input.<span class="k">type</span><span class="i">}</span><span class="s"> </span><span class="i">#{</span>input.shape<span class="i">}</span><span class="s">&quot;</span>
+  <span class="k">end</span>
 
-<span class="c"># Print model inputs and outputs</span>
-puts <span class="s">&quot;Inputs:&quot;</span>
-session.inputs.each <span class="k">do</span> <span class="o">|</span>input<span class="o">|</span>
-  puts <span class="s">&quot;  </span><span class="i">#{</span>input.name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>input.<span class="k">type</span><span class="i">}</span><span class="s"> </span><span class="i">#{</span>input.shape<span class="i">}</span><span class="s">&quot;</span>
-<span class="k">end</span>
+  puts <span class="s">&quot;Outputs:&quot;</span>
+  session.outputs.each <span class="k">do</span> <span class="o">|</span>output<span class="o">|</span>
+    puts <span class="s">&quot;  </span><span class="i">#{</span>output.name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>output.<span class="k">type</span><span class="i">}</span><span class="s"> </span><span class="i">#{</span>output.shape<span class="i">}</span><span class="s">&quot;</span>
+  <span class="k">end</span>
 
-puts <span class="s">&quot;Outputs:&quot;</span>
-session.outputs.each <span class="k">do</span> <span class="o">|</span>output<span class="o">|</span>
-  puts <span class="s">&quot;  </span><span class="i">#{</span>output.name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>output.<span class="k">type</span><span class="i">}</span><span class="s"> </span><span class="i">#{</span>output.shape<span class="i">}</span><span class="s">&quot;</span>
-<span class="k">end</span>
+  <span class="c"># Prepare input data</span>
+  input_data <span class="o">=</span> {
+    <span class="s">&quot;input_name&quot;</span> <span class="o">=&gt;</span> [<span class="n">1.0_f32</span>, <span class="n">2.0_f32</span>, <span class="n">3.0_f32</span>]
+  }
 
-<span class="c"># Prepare input data</span>
-input_data <span class="o">=</span> {
-  <span class="s">&quot;input_name&quot;</span> <span class="o">=&gt;</span> [<span class="n">1.0_f32</span>, <span class="n">2.0_f32</span>, <span class="n">3.0_f32</span>]
-}
+  <span class="c"># Run inference</span>
+  result <span class="o">=</span> session.run(input_data)
 
-<span class="c"># Run inference</span>
-result <span class="o">=</span> session.run(input_data)
-
-<span class="c"># Process results</span>
-result.each <span class="k">do</span> <span class="o">|</span>name, data<span class="o">|</span>
-  puts <span class="s">&quot;</span><span class="i">#{</span>name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>data<span class="i">}</span><span class="s">&quot;</span>
-<span class="k">end</span>
-
-<span class="c"># Explicitly release resources</span>
-session.release_session
-<span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
+  <span class="c"># Process results</span>
+  result.each <span class="k">do</span> <span class="o">|</span>name, data<span class="o">|</span>
+    puts <span class="s">&quot;</span><span class="i">#{</span>name<span class="i">}</span><span class="s">: </span><span class="i">#{</span>data<span class="i">}</span><span class="s">&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
 <h2><a id="mnist-example" class="anchor" href="#mnist-example">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -294,7 +290,13 @@ session.release_session
     <use href="#octicon-link"/>
   </svg>
 </a>Memory Management</h2>
-<p>Currently, you must explicitly release resources when you're done with them:</p>
+<p>You can use either explicit release or block-based RAII.</p>
+<p>Recommended for short scripts: block-based RAII</p>
+<pre><code class="language-crystal"><span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.open(<span class="s">&quot;path/to/model.onnx&quot;</span>, release_env: <span class="n">true</span>) <span class="k">do</span> <span class="o">|</span>session<span class="o">|</span>
+  result <span class="o">=</span> session.run(input_data)
+  <span class="c"># session is always released, even if an error is raised</span>
+<span class="k">end</span></code></pre>
+<p>Explicit release (useful for long-running apps):</p>
 <pre><code class="language-crystal"><span class="c"># Create and use session</span>
 session <span class="o">=</span> <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.new(<span class="s">&quot;path/to/model.onnx&quot;</span>)
 result <span class="o">=</span> session.run(input_data)
@@ -302,7 +304,7 @@ result <span class="o">=</span> session.run(input_data)
 <span class="c"># When finished, explicitly release resources</span>
 session.release_session
 <span class="t">OnnxRuntime</span><span class="t">::</span><span class="t">InferenceSession</span>.release_env</code></pre>
-<p>For long-running applications like web servers, consider setting up signal handlers to ensure resources are properly released on shutdown:</p>
+<p>For long-running applications like web servers, use explicit release with signal handlers:</p>
 <pre><code class="language-crystal"><span class="t">Signal</span><span class="t">::</span><span class="t">INT</span>.trap <span class="k">do</span>
   puts <span class="s">&quot;Shutting down...&quot;</span>
   session.release_session
