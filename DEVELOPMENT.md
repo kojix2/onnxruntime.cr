@@ -1,50 +1,243 @@
-# onnxruntime.cr 開発ガイドライン
+# onnxruntime.cr Development Guidelines
 
-## メモリ管理の重要ポイント
+## Memory Management Overview
 
-- **構造体ごとにメモリ確保方法を決定**: 各構造体について、Crystal側で確保するかC側で確保するかを事前に決める
-- **混在を避ける**: 同じ構造体に対してCrystalとCの両方でメモリ確保が行われると二重解放の原因になる
-- **解放状態の追跡**: `@resource_released`フラグを使用して解放状態を追跡する
-- **エラー時のリソース解放**: `begin/ensure`ブロックを使用して確実にリソースを解放する
+This library provides Crystal bindings to the ONNX Runtime C API. Proper memory management is critical to avoid resource leaks, double-free errors, and use-after-free bugs when working with C resources from Crystal.
 
-## 環境変数の管理
+### Key Principles
 
-- **シングルトンパターン**: `OrtEnvironment`シングルトンを使用して環境変数を一元管理
-- **スレッドセーフ**: ミューテックスを使用して環境変数へのアクセスを同期
-- **明示的な解放**: 環境変数はファイナライザではなく明示的に解放する
-- **使用パターン**:
+- **Explicit Resource Allocation**: For each ORT structure, decide whether Crystal or C is responsible for allocation
+- **Avoid Mixed Ownership**: Never allow both Crystal and C to manage the same resource—this leads to double-free errors
+- **Track Release State**: Use `@resource_released` flags to prevent releasing the same resource twice
+- **Exception Safety**: Use `begin/ensure` blocks to guarantee cleanup even when exceptions occur
+
+## Environment Management
+
+ONNX Runtime requires a global environment (`OrtEnv`) that must outlive all sessions. This library manages it using a singleton pattern.
+
+### OrtEnvironment Singleton
+
+- **Pattern**: `OrtEnvironment` class implements thread-safe singleton pattern
+- **Thread Safety**: Mutex protects concurrent access to shared environment
+- **Explicit Release**: Environment must be released manually, not via finalizer
+- **Usage Pattern**:
   ```crystal
-  # セッションの作成と使用
+  # Create multiple sessions (environment created automatically on first use)
   session1 = OnnxRuntime::InferenceSession.new("model1.onnx")
   session2 = OnnxRuntime::InferenceSession.new("model2.onnx")
   
-  # セッションの使用...
+  # Use sessions for inference...
   
-  # 終了時に明示的に解放
+  # On shutdown: release sessions first, then environment
   session1.release_session
   session2.release_session
   
-  # 最後に環境変数を解放
+  # Release shared environment last
   OnnxRuntime::InferenceSession.release_env
   ```
 
-## 構造体別の管理方法
+### Why Manual Release?
 
-### OrtEnv
-- C API関数で作成、`api.release_env`で解放
-- `OrtEnvironment`シングルトンで管理
+Previous attempts to use Crystal's `finalize` for automatic cleanup caused crashes on macOS:
 
-### OrtSession
-- C API関数で作成、`api.release_session`で解放
-- `@session_released`フラグで解放状態を追跡
+```
+libc++abi: terminating due to uncaught exception of type std::__1::system_error: mutex lock failed: Invalid argument
+```
+
+This appears to be caused by undefined finalization order in multi-threaded contexts. Manual resource management via explicit `release_*` methods avoids this issue.
+
+## Resource Management by Type
+
+### OrtEnv (Global Environment)
+
+- **Creation**: C API via `api.create_env`
+- **Release**: `api.release_env` (called by `OrtEnvironment.release`)
+- **Ownership**: Managed by `OrtEnvironment` singleton
+- **Lifetime**: Must outlive all sessions
+
+### OrtSession (Inference Session)
+
+- **Creation**: C API via `api.create_session` or `api.create_session_from_array`
+- **Release**: `api.release_session` (called by `InferenceSession#release_session`)
+- **Tracking**: `@session_released` flag prevents double-free
+- **Lifetime**: Created per model, released before environment
 
 ### OrtValue (Tensors)
-- C API関数で作成、`api.release_value`で解放
-- `ensure`ブロックで確実に解放
 
-## よくある問題
+- **Creation**: C API functions like `api.create_tensor_with_data_as_ort_value`
+- **Release**: `api.release_value`
+- **Pattern**: Always released in `ensure` block immediately after use
+- **Examples**:
+  - Input tensors: Released after `session.run` completes
+  - Output tensors: Released after data extraction
+  - Intermediate tensors: Released in `ensure` block
 
-1. Crystal側とC側の両方でリソースが解放される二重解放
-2. エラー発生時にリソースが解放されないメモリリーク
-3. 解放済みリソースへのアクセスによるダングリングポインタ
-4. 共有リソースの同時解放による競合
+### OrtAllocator (Memory Allocator)
+
+- **Creation**: `api.get_allocator_with_default_options` (default allocator)
+- **Release**: Default allocator typically doesn't need explicit release (commented out in code)
+- **Usage**: Used for allocating ORT-managed memory
+
+### OrtSessionOptions
+
+- **Creation**: `api.create_session_options`
+- **Release**: `api.release_session_options`
+- **Pattern**: Released in `ensure` block after session creation
+
+### OrtRunOptions
+
+- **Creation**: `api.create_run_options`
+- **Release**: `api.release_run_options`
+- **Pattern**: Released in `ensure` block after inference
+
+### OrtModelMetadata
+
+- **Creation**: `api.session_get_model_metadata`
+- **Release**: `api.release_model_metadata`
+- **Pattern**: Released in `ensure` block after data extraction
+
+### Provider Options (CUDA, TensorRT, etc.)
+
+- **Creation**: Provider-specific API (e.g., `api.create_cuda_provider_options`)
+- **Release**: Provider-specific release (e.g., `api.release_cuda_provider_options`)
+- **Tracking**: `@released` flag in provider classes
+- **Pattern**: Released via finalizer or explicit `release` method
+
+### OrtIoBinding
+
+- **Creation**: `api.create_io_binding`
+- **Release**: `api.release_io_binding`
+- **Tracking**: `@released` flag
+- **Pattern**: Released via finalizer or explicit `release` method
+
+## Common Pitfalls
+
+### 1. Double-Free Errors
+
+**Problem**: Resource released by both Crystal finalizer and C library
+
+**Solution**: Use `@resource_released` flags and check before releasing:
+
+```crystal
+def release_session
+  return if @session_released
+  api.release_session.call(@session) if @session
+  @session_released = true
+end
+```
+
+### 2. Memory Leaks from Exceptions
+
+**Problem**: Exception thrown before resource release, causing leak
+
+**Solution**: Always use `begin/ensure`:
+
+```crystal
+memory_info = create_cpu_memory_info(api)
+# ... use memory_info ...
+ensure
+  api.release_memory_info.call(memory_info) if memory_info && api
+end
+```
+
+### 3. Dangling Pointers
+
+**Problem**: Accessing ORT resource after it's been released
+
+**Solution**: Track release state and raise on access:
+
+```crystal
+def env
+  raise "Environment has been released" if @released
+  @env
+end
+```
+
+### 4. Resource Release Order
+
+**Problem**: Releasing environment before sessions causes crashes
+
+**Solution**: Always release in correct order:
+1. Release all sessions first
+2. Release environment last
+
+```crystal
+session1.release_session
+session2.release_session
+OnnxRuntime::InferenceSession.release_env  # Must be last
+```
+
+### 5. Thread Safety Issues
+
+**Problem**: Concurrent access to shared environment without synchronization
+
+**Solution**: Use mutex in `OrtEnvironment`:
+
+```crystal
+@@mutex.synchronize do
+  @@instance ||= new
+end
+```
+
+## Development Best Practices
+
+### Adding New ORT API Bindings
+
+When adding new ONNX Runtime API functions:
+
+1. **Add function pointer to `OrtApi` struct** in `libonnxruntime.cr`
+2. **Define type aliases** for any new ORT types
+3. **Create wrapper methods** in appropriate classes (`InferenceSession`, `Tensor`, etc.)
+4. **Implement proper resource tracking** with `@released` flags if applicable
+5. **Use `ensure` blocks** to guarantee cleanup
+6. **Test resource release** to verify no leaks or double-frees
+
+### Error Handling
+
+Always check API call status and release status object:
+
+```crystal
+private def check_status(status)
+  return if status.null?
+
+  error_code = api.get_error_code.call(status)
+  error_message = String.new(api.get_error_message.call(status))
+  api.release_status.call(status)  # Important: release status
+
+  raise "ONNXRuntime Error: #{error_message} (#{error_code})"
+end
+```
+
+### Testing Resource Management
+
+When writing tests, always ensure proper cleanup:
+
+```crystal
+Spec.after_suite do
+  OnnxRuntime::OrtEnvironment.instance.release
+end
+```
+
+## Architecture Summary
+
+```
+src/onnxruntime/
+├── libonnxruntime.cr       # C API bindings (OrtApi function pointers)
+├── ort_environment.cr      # OrtEnv singleton manager
+├── inference_session.cr    # OrtSession wrapper (inference entry point)
+├── tensor.cr               # OrtValue wrapper for dense tensors
+├── sparse_tensor.cr        # OrtValue wrapper for sparse tensors
+├── tensor_info.cr          # Tensor metadata (shape, type)
+├── model_metadata.cr       # Model metadata reader
+├── provider.cr             # Execution provider options (CPU, CUDA, etc.)
+├── run_options.cr          # OrtRunOptions wrapper
+├── io_binding.cr           # OrtIoBinding wrapper (zero-copy I/O)
+└── training_session.cr     # Training API (placeholder)
+```
+
+### Design Philosophy
+
+- **Explicit over implicit**: Require manual resource release for predictability
+- **Fail fast**: Raise errors on invalid states (e.g., accessing released resources)
+- **Minimize C<->Crystal boundary crossings**: Batch operations when possible
+- **Safety first**: Prefer ensure blocks and state tracking over relying on finalizers
