@@ -69,7 +69,6 @@ module OnnxRuntime
       end
 
       api = session.api
-      allocator = session.allocator
       memory_info = create_cpu_memory_info(api)
 
       status = api.create_tensor_with_data_as_ort_value.call(
@@ -161,7 +160,6 @@ module OnnxRuntime
     def self.extract_data(tensor, session)
       # Get type info
       type_info = get_type_info(tensor, session)
-      api = session.api
 
       onnx_type = get_onnx_type_from_type_info(type_info, session)
 
@@ -176,13 +174,11 @@ module OnnxRuntime
         raise "Unsupported ONNX type: #{onnx_type}"
       end
     ensure
-      api.release_type_info.call(type_info) if type_info && api
+      session.api.release_type_info.call(type_info) if type_info
     end
 
     # Extract data from a dense tensor
     private def self.extract_dense_tensor_data(tensor, type_info, session)
-      api = session.api
-
       tensor_info = cast_type_info_to_tensor_info(type_info, session)
 
       element_type = get_tensor_element_type(tensor_info, session)

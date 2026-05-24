@@ -6,25 +6,25 @@ context = "Although Alan Turing made numerous contributions to mathematics and c
 query = "Who developed the foundational architecture of modern computers?"
 
 OptionParser.parse do |parser|
-  parser.banner = <<-BANNER
-    Usage: bidaf [options]
-    Bidirectional Attention Flow (BiDAF) for Question Answering
-    Download bidaf-9.onnx from https://github.com/onnx/models/tree/main/validated/text/machine_comprehension/bidirectional_attention_flow
-      bidaf -m bidaf-9.onnx
-      bidaf -m bidaf-9.onnx -c "A quick brown fox jumps over the lazy dog." -q "What color is the fox?"
-    Options:
-  BANNER
+  parser.banner = [
+    "Usage: bidaf [options]",
+    "Bidirectional Attention Flow (BiDAF) for Question Answering",
+    "Download bidaf-9.onnx from https://github.com/onnx/models/tree/main/validated/text/machine_comprehension/bidirectional_attention_flow",
+    "  bidaf -m bidaf-9.onnx",
+    "  bidaf -m bidaf-9.onnx -c \"A quick brown fox jumps over the lazy dog.\" -q \"What color is the fox?\"",
+    "Options:",
+  ].join('\n')
 
-  parser.on("-m MODEL", "--model=MODEL", "Path to the ONNX model file (required)") do |m|
-    model_path = m
+  parser.on("-m MODEL", "--model=MODEL", "Path to the ONNX model file (required)") do |model|
+    model_path = model
   end
 
-  parser.on("-c CONTEXT", "--context=CONTEXT", "The context text for question answering") do |c|
-    context = c
+  parser.on("-c CONTEXT", "--context=CONTEXT", "The context text for question answering") do |context_text|
+    context = context_text
   end
 
-  parser.on("-q QUERY", "--query=QUERY", "The question to answer") do |q|
-    query = q
+  parser.on("-q QUERY", "--query=QUERY", "The question to answer") do |query_text|
+    query = query_text
   end
 
   parser.on("-h", "--help", "Show this help") do

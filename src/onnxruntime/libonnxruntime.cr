@@ -1,7 +1,7 @@
 module OnnxRuntime
   @[Link("onnxruntime")]
   lib LibOnnxRuntime
-    ORT_API_VERSION = 24_u32
+    ORT_API_VERSION = 26_u32
 
     {% if flag?(:win32) %}
       alias ORTCHAR_T = LibC::WCHAR
@@ -242,8 +242,10 @@ module OnnxRuntime
 
     # External memory handle type for importing GPU resources
     enum ExternalMemoryHandleType
-      D3D12_RESOURCE = 0
-      D3D12_HEAP     = 1
+      D3D12_RESOURCE      = 0
+      D3D12_HEAP          = 1
+      VK_MEMORY_WIN32
+      VK_MEMORY_OPAQUE_FD
     end
 
     # For C API compatibility
@@ -251,11 +253,22 @@ module OnnxRuntime
 
     # External semaphore type for GPU synchronization
     enum ExternalSemaphoreType
-      D3D12_FENCE = 0
+      D3D12_FENCE                     = 0
+      VK_TIMELINE_SEMAPHORE_WIN32
+      VK_TIMELINE_SEMAPHORE_OPAQUE_FD
     end
 
     # For C API compatibility
     alias OrtExternalSemaphoreType = ExternalSemaphoreType
+
+    enum GraphicsApi
+      NONE   = 0
+      D3D12
+      VULKAN
+    end
+
+    # For C API compatibility
+    alias OrtGraphicsApi = GraphicsApi
 
     enum CompiledModelCompatibility
       EP_NOT_APPLICABLE                 = 0
@@ -296,6 +309,13 @@ module OnnxRuntime
       shape : Int64*
       rank : LibC::SizeT
       offset_bytes : LibC::SizeT
+    end
+
+    struct OrtGraphicsInteropConfig
+      version : UInt32
+      graphics_api : OrtGraphicsApi
+      command_queue : Void*
+      additional_options : OrtKeyValuePairs*
     end
 
     # Runtime classes
@@ -1040,6 +1060,8 @@ module OnnxRuntime
       release_external_semaphore_handle : (OrtExternalSemaphoreHandle* -> Void)
       wait_semaphore : (OrtExternalResourceImporter*, OrtExternalSemaphoreHandle*, OrtSyncStream*, UInt64 -> OrtStatus*)
       signal_semaphore : (OrtExternalResourceImporter*, OrtExternalSemaphoreHandle*, OrtSyncStream*, UInt64 -> OrtStatus*)
+      init_graphics_interop_for_ep_device : (OrtEpDevice*, OrtGraphicsInteropConfig* -> OrtStatus*)
+      deinit_graphics_interop_for_ep_device : (OrtEpDevice* -> OrtStatus*)
     end
 
     struct ApiBase

@@ -20,28 +20,28 @@ module OnnxRuntime
 
       begin
         # Get producer name
-        producer_name = get_metadata_string(api, metadata, session.allocator, session) do |md, alloc, ptr|
-          api.model_metadata_get_producer_name.call(md, alloc, ptr)
+        producer_name = get_metadata_string(api, metadata, session.allocator, session) do |metadata_ptr, allocator_ptr, value_ptr|
+          api.model_metadata_get_producer_name.call(metadata_ptr, allocator_ptr, value_ptr)
         end
 
         # Get graph name
-        graph_name = get_metadata_string(api, metadata, session.allocator, session) do |md, alloc, ptr|
-          api.model_metadata_get_graph_name.call(md, alloc, ptr)
+        graph_name = get_metadata_string(api, metadata, session.allocator, session) do |metadata_ptr, allocator_ptr, value_ptr|
+          api.model_metadata_get_graph_name.call(metadata_ptr, allocator_ptr, value_ptr)
         end
 
         # Get domain
-        domain = get_metadata_string(api, metadata, session.allocator, session) do |md, alloc, ptr|
-          api.model_metadata_get_domain.call(md, alloc, ptr)
+        domain = get_metadata_string(api, metadata, session.allocator, session) do |metadata_ptr, allocator_ptr, value_ptr|
+          api.model_metadata_get_domain.call(metadata_ptr, allocator_ptr, value_ptr)
         end
 
         # Get description
-        description = get_metadata_string(api, metadata, session.allocator, session) do |md, alloc, ptr|
-          api.model_metadata_get_description.call(md, alloc, ptr)
+        description = get_metadata_string(api, metadata, session.allocator, session) do |metadata_ptr, allocator_ptr, value_ptr|
+          api.model_metadata_get_description.call(metadata_ptr, allocator_ptr, value_ptr)
         end
 
         # Get graph description
-        graph_description = get_metadata_string(api, metadata, session.allocator, session) do |md, alloc, ptr|
-          api.model_metadata_get_graph_description.call(md, alloc, ptr)
+        graph_description = get_metadata_string(api, metadata, session.allocator, session) do |metadata_ptr, allocator_ptr, value_ptr|
+          api.model_metadata_get_graph_description.call(metadata_ptr, allocator_ptr, value_ptr)
         end
 
         # Get version

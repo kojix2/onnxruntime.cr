@@ -73,7 +73,7 @@ module OnnxRuntime
         yield session
       ensure
         session.release
-        release_env if release_env
+        InferenceSession.release_env if release_env
       end
     end
 
@@ -211,6 +211,7 @@ module OnnxRuntime
       outputs
     end
 
+    # ameba:disable Metrics/CyclomaticComplexity
     def run(input_feed, output_names = nil, run_options : RunOptions? = nil, **options)
       # Track if we created run_options_ptr locally
       owned_run_options = run_options.nil?
@@ -281,6 +282,8 @@ module OnnxRuntime
       # Release input tensors
       input_tensors.each { |tensor| api.release_value.call(tensor) if tensor } if input_tensors
     end
+
+    # ameba:enable Metrics/CyclomaticComplexity
 
     private def api_call(&)
       status = yield api

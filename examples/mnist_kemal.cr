@@ -7,6 +7,7 @@ MNIST_SIZE = 28
 MODEL_PATH = "../spec/fixtures/mnist.onnx"
 
 # HTML content
+# ameba:disable Style/HeredocIndent
 MNIST_HTML = <<-HTML
 <!DOCTYPE html>
 <html>
@@ -44,16 +45,16 @@ MNIST_HTML = <<-HTML
     ctx.lineCap = 'round';
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     // Drawing state
     let drawing = false, lastX, lastY;
-    
+
     // Drawing functions
     canvas.onmousedown = e => {
       drawing = true;
       [lastX, lastY] = [e.offsetX, e.offsetY];
     };
-    
+
     canvas.onmousemove = e => {
       if (!drawing) return;
       ctx.beginPath();
@@ -62,30 +63,30 @@ MNIST_HTML = <<-HTML
       ctx.stroke();
       [lastX, lastY] = [e.offsetX, e.offsetY];
     };
-    
+
     canvas.onmouseup = canvas.onmouseout = () => drawing = false;
-    
+
     // Clear button
     document.getElementById('clear').onclick = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       document.getElementById('result').textContent = 'Draw a digit and click Predict';
       document.getElementById('bar-chart').innerHTML = ''; // Clear the bar chart
     };
-    
+
     // Predict button
     document.getElementById('predict').onclick = async () => {
       // Get image data
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const pixels = imageData.data;
-      
+
       // Resize to 28x28
       const blockSize = canvas.width / 28;
       const resizedData = new Array(28 * 28).fill(0);
-      
+
       for (let y = 0; y < 28; y++) {
         for (let x = 0; x < 28; x++) {
           let sum = 0, count = 0;
-          
+
           // Average the pixels in this block
           for (let dy = 0; dy < blockSize; dy++) {
             for (let dx = 0; dx < blockSize; dx++) {
@@ -97,12 +98,12 @@ MNIST_HTML = <<-HTML
               }
             }
           }
-          
+
           // Normalize and threshold
           resizedData[y * 28 + x] = count > 0 && (sum / count) > 50 ? 1 : 0;
         }
       }
-      
+
       try {
         // Send to server
         const response = await fetch('/predict', {
@@ -110,18 +111,17 @@ MNIST_HTML = <<-HTML
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ data: resizedData })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
           // Display prediction result
-          document.getElementById('result').textContent = 
-            `Predicted: ${result.prediction} (Confidence: ${result.confidence.toFixed(2)})`;
-          
+          document.getElementById('result').textContent = `Predicted: ${result.prediction} (Confidence: ${result.confidence.toFixed(2)})`;
+
           // Create bar chart
           const barChart = document.getElementById('bar-chart');
           barChart.innerHTML = '';
-          
+
           // Convert scores to probabilities using softmax
           const softmax = (scores) => {
             const maxScore = Math.max(...scores);
@@ -129,51 +129,51 @@ MNIST_HTML = <<-HTML
             const sumExps = exps.reduce((sum, exp) => sum + exp, 0);
             return exps.map(exp => exp / sumExps);
           };
-          
+
           // Calculate probabilities
           const probabilities = softmax(result.scores);
-          
+
           // Create bars for each digit
           probabilities.forEach((probability, digit) => {
             // Calculate percentage for bar width (0-100%)
             const percentage = probability * 100;
-            
+
             // Create row for this digit
             const row = document.createElement('div');
             row.className = 'bar-row';
-            
+
             // Add digit label
             const label = document.createElement('div');
             label.className = 'bar-label';
             label.textContent = digit;
             row.appendChild(label);
-            
+
             // Add bar container
             const barOuter = document.createElement('div');
             barOuter.className = 'bar-outer';
-            
+
             // Add actual bar
             const barInner = document.createElement('div');
             barInner.className = 'bar-inner';
             barInner.style.width = `${percentage}%`;
             barOuter.appendChild(barInner);
             row.appendChild(barOuter);
-            
+
             // Add score value
             const value = document.createElement('div');
             value.className = 'bar-value';
             value.textContent = probability.toFixed(4);
             row.appendChild(value);
-            
+
             // Highlight the predicted digit
             if (digit === result.prediction) {
               row.style.fontWeight = 'bold';
               barInner.style.backgroundColor = '#2196F3';
             }
-            
+
             // No midpoint indicator needed for probability display
             barOuter.style.position = 'relative';
-            
+
             // Add row to chart
             barChart.appendChild(row);
           });
@@ -188,6 +188,7 @@ MNIST_HTML = <<-HTML
 </body>
 </html>
 HTML
+# ameba:enable Style/HeredocIndent
 
 # Load model
 puts "Loading MNIST model from #{MODEL_PATH}"
@@ -206,7 +207,7 @@ server = HTTP::Server.new do |context|
       next unless body
 
       json_data = JSON.parse(body)
-      pixel_data = json_data["data"].as_a.map { |v| v.as_i.to_f32 }
+      pixel_data = json_data["data"].as_a.map(&.as_i.to_f32)
 
       # Print pattern visualization
       puts "Input pattern:"
@@ -244,18 +245,17 @@ server = HTTP::Server.new do |context|
   end
 end
 
-# Set up signal handler to release resources on shutdown
-Signal::INT.trap do
+# Set up termination handler to release resources on shutdown
+Process.on_terminate do
   puts "\nShutting down server..."
   # Explicitly release resources
   session.release
   OnnxRuntime::InferenceSession.release_env
   puts "Resources released, exiting."
-  exit
 end
 
 # Start server
-address = server.bind_tcp 3000
+server.bind_tcp 3000
 puts "Server running at http://localhost:3000"
 puts "Press Ctrl+C to stop the server"
 server.listen

@@ -54,18 +54,18 @@ module MNISTDataset
 
         if extract_status
           puts "#{description.capitalize} downloaded and extracted to #{output_path}"
-          return true
+          true
         else
           puts "Error extracting #{description}. Using a simulated MNIST #{description} instead."
           # Create an empty file to avoid repeated download attempts
           File.write(output_path, "")
-          return false
+          false
         end
       else
         puts "Error downloading MNIST #{description}. Using a simulated MNIST #{description} instead."
         # Create an empty file to avoid repeated download attempts
         File.write(output_path, "")
-        return false
+        false
       end
     end
 
