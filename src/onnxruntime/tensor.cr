@@ -157,7 +157,7 @@ module OnnxRuntime
     end
 
     # Extract data from a tensor
-    def self.extract_data(tensor, session)
+    def self.extract_data(tensor, session, expected_shape : Array(Int64)? = nil)
       # Get type info
       type_info = get_type_info(tensor, session)
 
@@ -169,7 +169,7 @@ module OnnxRuntime
         extract_dense_tensor_data(tensor, type_info, session)
       when LibOnnxRuntime::OnnxType::SPARSETENSOR
         # Handle sparse tensor
-        extract_sparse_tensor_data(tensor, session)
+        extract_sparse_tensor_data(tensor, session, expected_shape)
       else
         raise "Unsupported ONNX type: #{onnx_type}"
       end
@@ -277,7 +277,7 @@ module OnnxRuntime
     end
 
     # Extract data from a sparse tensor
-    private def self.extract_sparse_tensor_data(tensor, session)
+    private def self.extract_sparse_tensor_data(tensor, session, expected_shape : Array(Int64)?)
       api = session.api
 
       # Get sparse tensor format
@@ -306,8 +306,8 @@ module OnnxRuntime
         # Extract indices based on format
         indices = extract_indices_format(tensor, format, session)
 
-        # Get dense shape from the first output
-        dense_shape = session.outputs.first.shape
+        # Dense shape should come from the matching output metadata when available.
+        dense_shape = expected_shape || values_shape
 
         # Create and return SparseTensor with the appropriate type
         case values

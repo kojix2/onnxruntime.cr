@@ -269,7 +269,7 @@ module OnnxRuntime
       NamedTensors.new.tap do |result|
         output_names.each_with_index do |name, i|
           next unless tensor = output_tensors[i]
-          result[name] = Tensor.extract_data(tensor, self)
+          result[name] = Tensor.extract_data(tensor, self, @outputs[i]?.try(&.shape))
         end
       end
     ensure
