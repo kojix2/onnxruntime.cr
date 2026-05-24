@@ -280,6 +280,8 @@ module OnnxRuntime
     private def self.extract_sparse_tensor_data(tensor, session, expected_shape : Array(Int64)?)
       api = session.api
 
+      raise "Sparse tensor extraction requires expected_shape" if expected_shape.nil?
+
       # Get sparse tensor format
       format = get_sparse_tensor_format(tensor, session)
 
@@ -306,8 +308,7 @@ module OnnxRuntime
         # Extract indices based on format
         indices = extract_indices_format(tensor, format, session)
 
-        # Dense shape should come from the matching output metadata when available.
-        dense_shape = expected_shape || values_shape
+        dense_shape = expected_shape
 
         # Create and return SparseTensor with the appropriate type
         case values
