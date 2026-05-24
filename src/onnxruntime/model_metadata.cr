@@ -67,10 +67,15 @@ module OnnxRuntime
       value_ptr = Pointer(UInt8).null
       status = yield metadata, allocator, pointerof(value_ptr)
 
-      # If the status indicates an error, return empty string
+      # Return empty only when the metadata field is genuinely absent.
       if !status.null?
+        error_code = api.get_error_code.call(status)
+        error_message = String.new(api.get_error_message.call(status))
         api.release_status.call(status)
-        return ""
+
+        return "" if error_code.not_found?
+
+        raise "ONNXRuntime Error: #{error_message} (#{error_code})"
       end
 
       begin
@@ -95,10 +100,15 @@ module OnnxRuntime
         pointerof(value_ptr)
       )
 
-      # If key doesn't exist, return empty string
+      # Return empty when a key is not present. Raise for other failures.
       if !status.null?
+        error_code = api.get_error_code.call(status)
+        error_message = String.new(api.get_error_message.call(status))
         api.release_status.call(status)
-        return ""
+
+        return "" if error_code.not_found?
+
+        raise "ONNXRuntime Error: #{error_message} (#{error_code})"
       end
 
       begin
@@ -137,25 +147,30 @@ module OnnxRuntime
       # Create hash to store custom metadata
       custom_metadata = {} of String => String
 
-      # Get custom metadata values
-      if keys_count > 0 && !keys.null?
-        keys_array = keys
-        keys_count.times do |i|
-          key_ptr = keys_array[i]
-          key = key_ptr.null? ? "" : String.new(key_ptr)
-          value = get_string_from_metadata(api, metadata, key, session)
-          custom_metadata[key] = value
+      begin
+        # Get custom metadata values
+        if keys_count > 0 && !keys.null?
+          keys_array = keys
+          keys_count.times do |i|
+            key_ptr = keys_array[i]
 
-          unless key_ptr.null?
-            free_status = api.allocator_free.call(allocator, key_ptr.as(Void*))
-            session.check_status(free_status)
+            begin
+              key = key_ptr.null? ? "" : String.new(key_ptr)
+              value = get_string_from_metadata(api, metadata, key, session)
+              custom_metadata[key] = value
+            ensure
+              unless key_ptr.null?
+                free_status = api.allocator_free.call(allocator, key_ptr.as(Void*))
+                session.check_status(free_status)
+              end
+            end
           end
         end
-      end
-
-      unless keys.null?
-        free_keys_status = api.allocator_free.call(allocator, keys.as(Void*))
-        session.check_status(free_keys_status)
+      ensure
+        unless keys.null?
+          free_keys_status = api.allocator_free.call(allocator, keys.as(Void*))
+          session.check_status(free_keys_status)
+        end
       end
 
       custom_metadata
