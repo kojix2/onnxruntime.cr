@@ -28,11 +28,14 @@ module OnnxRuntime
       # Convert to the format expected by the SparseTensor constructor
       # Always create a Hash(Symbol, Array(Int32) | Array(Int64)) type
       indices_hash = {} of Symbol => Array(Int32) | Array(Int64)
+      flat_indices = indices.flatten
 
-      if indices.first.is_a?(Int32)
-        indices_hash[:coo_indices] = indices.flatten.as(Array(Int32))
+      if flat_indices.empty?
+        indices_hash[:coo_indices] = [] of Int64
+      elsif flat_indices.first.is_a?(Int32)
+        indices_hash[:coo_indices] = flat_indices.as(Array(Int32))
       else
-        indices_hash[:coo_indices] = indices.flatten.map(&.to_i64)
+        indices_hash[:coo_indices] = flat_indices.map(&.to_i64)
       end
 
       new(LibOnnxRuntime::SparseFormat::COO, values, indices_hash, dense_shape)
@@ -170,14 +173,12 @@ module OnnxRuntime
         raise "Unsupported value type: #{@values.class}"
       end
 
-      # Convert indices to Int64 if needed
-      indices_ptr = if coo_indices.is_a?(Array(Int32))
-                      # Convert Int32 indices to Int64
-                      int64_indices = coo_indices.map(&.to_i64)
-                      int64_indices.to_unsafe
-                    else
-                      coo_indices.as(Array(Int64)).to_unsafe
-                    end
+      # Keep converted indices alive for the full FFI call.
+      int64_indices = if coo_indices.is_a?(Array(Int32))
+                        coo_indices.map(&.to_i64)
+                      else
+                        coo_indices.as(Array(Int64))
+                      end
 
       status = api.fill_sparse_tensor_coo.call(
         tensor,
@@ -185,7 +186,7 @@ module OnnxRuntime
         values_shape.to_unsafe,
         values_shape.size.to_u64,
         values_ptr,
-        indices_ptr,
+        int64_indices.to_unsafe,
         coo_indices.size.to_u64
       )
       session.check_status(status)
